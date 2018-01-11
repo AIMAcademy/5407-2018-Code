@@ -1,13 +1,3 @@
-
-### FRC Library ###
-
-.classpath
-.project
-build.properties
-build.xml
-
-### END FRC Library ###
-
 # Created by https://www.gitignore.io/api/java,macos,eclipse
 
 ### Eclipse ###
