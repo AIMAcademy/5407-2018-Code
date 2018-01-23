@@ -26,6 +26,10 @@ import edu.wpi.first.wpilibj.livewindow.*;
  * it contains the code necessary to operate a robot with tank drive.
  */
 public class Robot extends IterativeRobot {
+	
+	Sensors sensors;
+	
+	
 	private DifferentialDrive _drive;
 	private Joystick m_leftStick;
 	
@@ -52,6 +56,7 @@ public class Robot extends IterativeRobot {
 	public void autonInit(){
 		_backLeftSlave.getSensorCollection().setQuadraturePosition(0, 0);
 		_frontRightMotor.getSensorCollection().setQuadraturePosition(0, 0);
+		
 	}		
 	
 	public void autonPeriodic() {
@@ -71,18 +76,20 @@ public class Robot extends IterativeRobot {
     	double forward = -m_leftStick.getY(); // logitech gampad left X, positive is forward
     	double turn = m_leftStick.getX(); // logitech gampad right X, positive means turn right
     	_drive.arcadeDrive(forward, turn);
-    	
-    	
+     	
     	double LeftsideQuadraturePosition = _backLeftSlave.getSensorCollection().getQuadraturePosition();
     	double InchesLS = LeftsideQuadraturePosition / 3313 * 4 * Math.PI;
     	SmartDashboard.putNumber("Distance Left side", LeftsideQuadraturePosition);
     	SmartDashboard.putNumber("left side inches", InchesLS);
-    	
-  
-    	double RightsideQuadraturePosition = _frontRightMotor.getSensorCollection().getQuadraturePosition();
+
+   	
+     	double RightsideQuadraturePosition = _frontRightMotor.getSensorCollection().getQuadraturePosition();
     	double InchesRS = -RightsideQuadraturePosition / 3313 * 4 * Math.PI;
     	SmartDashboard.putNumber("Distance Right side", RightsideQuadraturePosition);
     	SmartDashboard.putNumber("right side inches", InchesRS);
+    	
+    	double pwm = _frontRightMotor.getSensorCollection().getPulseWidthPosition();
+    	SmartDashboard.putNumber("Pwm", pwm);
     	
     	if (m_leftStick.getRawButton(1)){
     		_backLeftSlave.getSensorCollection().setQuadraturePosition(0, 0);
