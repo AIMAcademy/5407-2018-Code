@@ -79,17 +79,18 @@ public class Robot extends IterativeRobot {
      	
     	double LeftsideQuadraturePosition = _backLeftSlave.getSensorCollection().getQuadraturePosition();
     	double InchesLS = LeftsideQuadraturePosition / 3313 * 4 * Math.PI;
-    	SmartDashboard.putNumber("Distance Left side", LeftsideQuadraturePosition);
+    	//SmartDashboard.putNumber("Distance Left side", LeftsideQuadraturePosition);
     	SmartDashboard.putNumber("left side inches", InchesLS);
 
    	
      	double RightsideQuadraturePosition = _frontRightMotor.getSensorCollection().getQuadraturePosition();
     	double InchesRS = -RightsideQuadraturePosition / 3313 * 4 * Math.PI;
-    	SmartDashboard.putNumber("Distance Right side", RightsideQuadraturePosition);
+    	//SmartDashboard.putNumber("Distance Right side", RightsideQuadraturePosition);
     	SmartDashboard.putNumber("right side inches", InchesRS);
     	
-    	double pwm = _frontRightMotor.getSensorCollection().getPulseWidthPosition();
-    	SmartDashboard.putNumber("Pwm", pwm);
+    	// Tested PWM variable. Data does not seem reliable or helpful. //
+    	//double pwm = _frontRightMotor.getSensorCollection().getPulseWidthPosition();
+    	//SmartDashboard.putNumber("Pwm", pwm);
     	
     	if (m_leftStick.getRawButton(1)){
     		_backLeftSlave.getSensorCollection().setQuadraturePosition(0, 0);
