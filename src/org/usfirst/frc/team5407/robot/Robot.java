@@ -79,17 +79,29 @@ public class Robot extends IterativeRobot {
 		// Arcade Drive
     	double forward = -m_leftStick.getY(); // logitech gampad left X, positive is forward
     	double turn = m_leftStick.getX(); // logitech gampad right X, positive means turn right
-    	boolean b_EnableGyro = false;
+//    	boolean b_EnableGyro = false;
+//    	if (turn <= .05 && turn >=-0.05 ){
+//    		if(b_EnableGyro == false){sensors.setFollowAngle(0);}
+//    		b_EnableGyro = true;
+//    		_drive.arcadeDrive(forward, (sensors.getFollowAngle()-sensors.getPresentAngle())*Kp);
+//    	}
+//    	else{
+//    		_drive.arcadeDrive(forward, turn);
+//    		b_EnableGyro = false;
+//    	}
+    	
+    	// TESTING NAVX
+    	boolean b_EnableGyroNAVX = false;
     	if (turn <= .05 && turn >=-0.05 ){
-    		if(b_EnableGyro == false){sensors.setFollowAngle(0);}
-    		b_EnableGyro = true;
-    		_drive.arcadeDrive(forward, (sensors.getFollowAngle()-sensors.getPresentAngle())*Kp);
+    		if(b_EnableGyroNAVX == false){sensors.setFollowAngleNAVX(0);}
+    		b_EnableGyroNAVX = true;
+    		_drive.arcadeDrive(forward, (sensors.getFollowAngleNAVX()-sensors.getPresentAngleNAVX())*Kp);
     	}
     	else{
     		_drive.arcadeDrive(forward, turn);
-    		b_EnableGyro = false;
+    		b_EnableGyroNAVX = false;
     	}
-    	
+    	// END TESTING NAVX
     	
     	double LeftsideQuadraturePosition = _backLeftSlave.getSensorCollection().getQuadraturePosition();
     	double InchesLS = LeftsideQuadraturePosition / 3313 * 4 * Math.PI;
@@ -114,6 +126,7 @@ public class Robot extends IterativeRobot {
     	
     	
     	SmartDashboard.putNumber("Gyro", sensors.analogGyro.getAngle());
+    	SmartDashboard.putNumber("Gyro-NAVX", sensors.ahrs.getAngle());
     	
     	
     	SmartDashboard.updateValues();
