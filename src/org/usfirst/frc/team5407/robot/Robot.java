@@ -40,6 +40,9 @@ public class Robot extends IterativeRobot {
 	WPI_TalonSRX _backLeftSlave = new WPI_TalonSRX(12);
 	WPI_TalonSRX _backRightSlave = new WPI_TalonSRX(16);
 
+//	public void disabledPeriodic() {
+//		checkJeVois();
+//	}
 
 	@Override
 	public void robotInit() {
