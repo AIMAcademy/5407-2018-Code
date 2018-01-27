@@ -27,7 +27,8 @@ import edu.wpi.first.wpilibj.livewindow.*;
  */
 public class Robot extends IterativeRobot {
 	
-	Sensors sensors;
+	Sensors sensors = new Sensors();
+	
 	
 	
 	private DifferentialDrive _drive;
@@ -43,6 +44,9 @@ public class Robot extends IterativeRobot {
 
 	//Temporary to run grip
 	Compressor tc = new Compressor(0);
+	
+	//gyro kp
+	double Kp = 0.02;
 
 	@Override
 	public void robotInit() {
@@ -75,17 +79,25 @@ public class Robot extends IterativeRobot {
 		// Arcade Drive
     	double forward = -m_leftStick.getY(); // logitech gampad left X, positive is forward
     	double turn = m_leftStick.getX(); // logitech gampad right X, positive means turn right
-    	_drive.arcadeDrive(forward, turn);
-     	
+    	boolean b_EnableGyro = false;
+    	if (turn <= .05 && turn >=-0.05 ){
+    		if(b_EnableGyro == false){sensors.setFollowAngle(0);}
+    		b_EnableGyro = true;
+    		_drive.arcadeDrive(forward, (sensors.getFollowAngle()-sensors.getPresentAngle())*Kp);
+    	}
+    	else{
+    		_drive.arcadeDrive(forward, turn);
+    		b_EnableGyro = false;
+    	}
+    	
+    	
     	double LeftsideQuadraturePosition = _backLeftSlave.getSensorCollection().getQuadraturePosition();
     	double InchesLS = LeftsideQuadraturePosition / 3313 * 4 * Math.PI;
-    	//SmartDashboard.putNumber("Distance Left side", LeftsideQuadraturePosition);
     	SmartDashboard.putNumber("left side inches", InchesLS);
 
    	
      	double RightsideQuadraturePosition = _frontRightMotor.getSensorCollection().getQuadraturePosition();
     	double InchesRS = -RightsideQuadraturePosition / 3313 * 4 * Math.PI;
-    	//SmartDashboard.putNumber("Distance Right side", RightsideQuadraturePosition);
     	SmartDashboard.putNumber("right side inches", InchesRS);
     	
     	// Tested PWM variable. Data does not seem reliable or helpful. //
@@ -98,7 +110,11 @@ public class Robot extends IterativeRobot {
     	}
     	
     	//Temporary to run grip
-    	tc.setClosedLoopControl(true);
+    	//tc.setClosedLoopControl(true);
+    	
+    	
+    	SmartDashboard.putNumber("Gyro", sensors.analogGyro.getAngle());
+    	
     	
     	SmartDashboard.updateValues();
     
