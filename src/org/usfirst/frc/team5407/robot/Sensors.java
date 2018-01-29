@@ -1,21 +1,20 @@
 package org.usfirst.frc.team5407.robot;
 
-import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.kauailabs.navx.frc.AHRS;
-import com.ctre.phoenix.motorcontrol.FeedbackDevice;
-import com.ctre.phoenix.motorcontrol.can.*;
-import com.ctre.phoenix.motorcontrol.StatusFrameEnhanced;
 import edu.wpi.first.wpilibj.ADXRS450_Gyro;
 import edu.wpi.first.wpilibj.AnalogInput;
+import edu.wpi.first.wpilibj.AnalogPotentiometer;
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.interfaces.Potentiometer;
 
 public class Sensors {
 	
 	ADXRS450_Gyro analogGyro;
 	AHRS ahrs;
+	Potentiometer TestPot;
+//	private AnalogInput mAnalogInputRevAirSensor; 
 
 	double followAngle;
     double rotateToAngleRate;
@@ -24,6 +23,9 @@ public class Sensors {
 
 	public Sensors(){
 		analogGyro = new ADXRS450_Gyro();
+	//	TestPot = new AnalogPotentiometer(0, 360, 30);
+	//	mAnalogInputRevAirSensor = new AnalogInput(1);
+		 
 		analogGyro.reset();
 		
 	    try {
@@ -31,19 +33,27 @@ public class Sensors {
 	    } catch (RuntimeException ex ) {
 	        DriverStation.reportError("Error instantiating navX MXP:  " + ex.getMessage(), true);
 	    }
+	    
 	}
 
-	public void setFollowAngle(double offset){
-		this.followAngle = this.analogGyro.getAngle() + offset;
-	}
+	 
+	 //Rev Robotics Air Pressure Sensor doing calculation to get the pressure reading
+//	 public double getAirPressurePsi(){
+		 //taken from the datasheet
+//		 return 250.0 * mAnalogInputRevAirSensor.getVoltage() / 5.0 - 25.0; 
+//	 }
+
+//	public void setFollowAngle(double offset){
+//		this.followAngle = this.analogGyro.getAngle() + offset;
+//	}
+//	
+//	public double getFollowAngle() {
+//		return this.followAngle;
+//	}
 	
-	public double getFollowAngle() {
-		return this.followAngle;
-	}
-	
-	public double getPresentAngle(){
-		return this.analogGyro.getAngle();
-	}
+//	public double getPresentAngle(){
+//		return this.analogGyro.getAngle();
+//	}
 	
 	// NAVX Code
 	public void setFollowAngleNAVX(double offset){
