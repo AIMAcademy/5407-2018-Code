@@ -14,7 +14,7 @@ public class Sensors {
 	ADXRS450_Gyro analogGyro;
 	AHRS ahrs;
 	Potentiometer TestPot;
-//	private AnalogInput mAnalogInputRevAirSensor; 
+	private AnalogInput mAnalogInputRevAirSensor; 
 
 	double followAngle;
     double rotateToAngleRate;
@@ -24,7 +24,7 @@ public class Sensors {
 	public Sensors(){
 		analogGyro = new ADXRS450_Gyro();
 	//	TestPot = new AnalogPotentiometer(0, 360, 30);
-	//	mAnalogInputRevAirSensor = new AnalogInput(1);
+		mAnalogInputRevAirSensor = new AnalogInput(1);
 		 
 		analogGyro.reset();
 		
@@ -38,10 +38,10 @@ public class Sensors {
 
 	 
 	 //Rev Robotics Air Pressure Sensor doing calculation to get the pressure reading
-//	 public double getAirPressurePsi(){
+	 public double getAirPressurePsi(){
 		 //taken from the datasheet
-//		 return 250.0 * mAnalogInputRevAirSensor.getVoltage() / 5.0 - 25.0; 
-//	 }
+		 return 250.0 * mAnalogInputRevAirSensor.getVoltage() / 5.0 - 25.0; 
+	 }
 
 //	public void setFollowAngle(double offset){
 //		this.followAngle = this.analogGyro.getAngle() + offset;

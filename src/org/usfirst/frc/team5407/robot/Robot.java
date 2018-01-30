@@ -11,8 +11,12 @@ package org.usfirst.frc.team5407.robot;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
+import edu.wpi.first.wpilibj.livewindow.LiveWindow;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.AnalogPotentiometer;
 
 /**
  * This is a demo program showing the use of the RobotDrive class, specifically
@@ -24,8 +28,10 @@ public class Robot extends IterativeRobot {
 	Air air;
 	
 	private DifferentialDrive _drive;
-	private Joystick m_leftStick;
+	private Joystick j_leftStick;
+	private Joystick j_rightStick;
 	
+	boolean bp_MinDisplay;
 	
 	/* talons for arcade drive */
 	WPI_TalonSRX _frontLeftMotor = new WPI_TalonSRX(11); 		/* device IDs here (1 of 2) */
@@ -33,10 +39,17 @@ public class Robot extends IterativeRobot {
 	
 	WPI_TalonSRX _backLeftSlave = new WPI_TalonSRX(12);
 	WPI_TalonSRX _backRightSlave = new WPI_TalonSRX(16);
-	
+
+	AnalogPotentiometer pot1 = new AnalogPotentiometer(0);
 
 	//gyro kp
 	double Kp = 0.015;
+	
+	//Auton
+	final String defaultAuton = "Default Auton";
+	final String DriveBaseLine = "Drive BaseLine";
+	String autonSelected;
+	SendableChooser<String> chooser;
 
 	@Override
 	public void robotInit() {
@@ -44,19 +57,53 @@ public class Robot extends IterativeRobot {
 		_backRightSlave.follow(_frontRightMotor);
 					
 		_drive = new DifferentialDrive(_frontLeftMotor, _frontRightMotor);
-		m_leftStick = new Joystick(0);
+		j_leftStick = new Joystick(0);
+		j_rightStick = new Joystick(1);
 		
-		air = new Air(0,1,2);
+		
+		air = new Air(0,1,2,3);
+		
+    	double LeftsideQuadraturePosition = _backLeftSlave.getSensorCollection().getQuadraturePosition();
+    	double InchesLS = LeftsideQuadraturePosition / 3313 * 4 * Math.PI;
+    	SmartDashboard.putNumber("left side inches", InchesLS);
+
+   	
+     	double RightsideQuadraturePosition = _frontRightMotor.getSensorCollection().getQuadraturePosition();
+    	double InchesRS = -RightsideQuadraturePosition / 3313 * 4 * Math.PI;
+    	SmartDashboard.putNumber("right side inches", InchesRS);
+    	
 	}
+	
+	
 
 	public void autonInit(){
+		
+		//zero and initalize values 
 		_backLeftSlave.getSensorCollection().setQuadraturePosition(0, 0);
 		_frontRightMotor.getSensorCollection().setQuadraturePosition(0, 0);
 		air.initializeAir();
 		
+		//Auton Chooser and its SmartDashBoard component
+		autonSelected = chooser.getSelected();
+		SmartDashboard.putString("My Selected Auton is ", autonSelected);
+		
+		
 	}		
 	
 	public void autonPeriodic() {
+		
+		if(autonSelected == defaultAuton){
+			defaultAuton();
+		}
+		
+		else if(autonSelected == DriveBaseLine){
+			DriveBaseLine();
+		}
+		
+		//test go 10 feet or 120 inches straight 
+	//	if(_frontRightMotor.InchesRS >120 && InchesLS){
+			
+	//	}
     		
 		
 	}
@@ -70,9 +117,13 @@ public class Robot extends IterativeRobot {
 
 	@Override
 	public void teleopPeriodic() {
+
+		checkMinDisplay();
+		
 		// Arcade Drive
-    	double forward = -(m_leftStick.getY())*(Math.abs(m_leftStick.getY())); // logitech gampad left X, positive is forward
-    	double turn = m_leftStick.getX(); // logitech gampad right X, positive means turn right
+		//
+    	double forward = -(j_leftStick.getY()); // logitech gampad left X, positive is forward
+    	double turn = j_leftStick.getX(); // logitech gampad right X, positive means turn right
 //    	boolean b_EnableGyro = false;
 //    	if (turn <= .05 && turn >=-0.05 ){
 //    		if(b_EnableGyro == false){sensors.setFollowAngle(0);}
@@ -97,27 +148,17 @@ public class Robot extends IterativeRobot {
     	}
     	// END TESTING NAVX
     	
-    	
-    	double LeftsideQuadraturePosition = _backLeftSlave.getSensorCollection().getQuadraturePosition();
-    	double InchesLS = LeftsideQuadraturePosition / 3313 * 4 * Math.PI;
-    	SmartDashboard.putNumber("left side inches", InchesLS);
-
-   	
-     	double RightsideQuadraturePosition = _frontRightMotor.getSensorCollection().getQuadraturePosition();
-    	double InchesRS = -RightsideQuadraturePosition / 3313 * 4 * Math.PI;
-    	SmartDashboard.putNumber("right side inches", InchesRS);
-    	
     	// Tested PWM variable. Data does not seem reliable or helpful. //
     	//double pwm = _frontRightMotor.getSensorCollection().getPulseWidthPosition();
     	//SmartDashboard.putNumber("Pwm", pwm);
     	
-    	if (m_leftStick.getRawButton(1)){
+    	if (j_leftStick.getRawButton(1)){
     		_backLeftSlave.getSensorCollection().setQuadraturePosition(0, 0);
     		_frontRightMotor.getSensorCollection().setQuadraturePosition(0, 0);
     	}
     	
     	//xbox button RB
-    	if (m_leftStick.getRawButton(6)){
+    	if (j_leftStick.getRawButton(6)){
     		air.s_DSShifter.set(true);
     	}
     	else{
@@ -125,7 +166,7 @@ public class Robot extends IterativeRobot {
     	}
     	
     	//xbox button A
-    	if (m_leftStick.getRawButton(1)){
+    	if (j_rightStick.getRawButton(1)){
     		air.s_sol1.set(true);
     	}
     	else{
@@ -133,11 +174,18 @@ public class Robot extends IterativeRobot {
     	}
     	
     	//xbox button B
-    	if (m_leftStick.getRawButton(2)){
+    	if (j_rightStick.getRawButton(2)){
     		air.s_sol2.set(true);
     	}
     	else{
     		air.s_sol2.set(false);
+    	}
+    	
+    	if (j_rightStick.getRawButton(6)){
+    		air.s_sol3.set(true);
+    	}
+    	else{
+    		air.s_sol3.set(false);
     	}
     	
     	//Temporary to run grip
@@ -145,10 +193,32 @@ public class Robot extends IterativeRobot {
     	
     	
     	SmartDashboard.putNumber("Gyro", sensors.analogGyro.getAngle());
+    	SmartDashboard.putNumber("Gyro-NAVX", sensors.ahrs.getAngle());    	
+    	SmartDashboard.putNumber("10 Turn Voltage", pot1.get());
     	SmartDashboard.putNumber("Gyro-NAVX", sensors.ahrs.getAngle());
+    	SmartDashboard.putNumber("Air PSI", sensors.getAirPressurePsi());
+
+
     	
     	
     	SmartDashboard.updateValues();
     
 	}
+		
+	public void checkMinDisplay(){
+		this.bp_MinDisplay = Preferences.getInstance().getBoolean("R_MinDisplay(bool)", (true));
+	}
+	
+	public void defaultAuton(){
+		if (autonSelected == defaultAuton){}
+	}
+	
+	public void DriveBaseLine(){
+		//if(){}
+		
+	}
+
+
+
+
 }
