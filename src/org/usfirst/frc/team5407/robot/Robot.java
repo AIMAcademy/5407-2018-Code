@@ -8,15 +8,11 @@
 package org.usfirst.frc.team5407.robot;
 
 
-import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.Preferences;
-import edu.wpi.first.wpilibj.drive.DifferentialDrive;
-import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj.AnalogPotentiometer;
 
 /**
  * This is a demo program showing the use of the RobotDrive class, specifically
@@ -28,14 +24,12 @@ public class Robot extends IterativeRobot {
 	Air air;
 	DriveTrain drivetrain = new DriveTrain();
 	
-	private DifferentialDrive _drive;
+	//private DifferentialDrive drive;
 	private Joystick j_leftStick;
 	private Joystick j_rightStick;
 	
-	boolean bp_MinDisplay;
+	//boolean bp_MinDisplay;
 	
-	AnalogPotentiometer pot1 = new AnalogPotentiometer(0);
-
 	//gyro kp
 	double Kp = 0.015;
 	
@@ -53,7 +47,7 @@ public class Robot extends IterativeRobot {
 		
 		
 		air = new Air(0,1,2,3);
-		 	
+ 	
 	}
 	
 	public void autonInit(){
@@ -96,7 +90,7 @@ public class Robot extends IterativeRobot {
 	@Override
 	public void teleopPeriodic() {
 
-		checkMinDisplay();
+		//checkMinDisplay();
 		
 		// Arcade Drive
 		//
@@ -130,10 +124,6 @@ public class Robot extends IterativeRobot {
     	//double pwm = _frontRightMotor.getSensorCollection().getPulseWidthPosition();
     	//SmartDashboard.putNumber("Pwm", pwm);
     	
-    	//if (j_leftStick.getRawButton(1)){
-    	//	_backLeftSlave.getSensorCollection().setQuadraturePosition(0, 0);
-    	//	_frontRightMotor.getSensorCollection().setQuadraturePosition(0, 0);
-    	//}
     	//xbox button RB
     	if (j_leftStick.getRawButton(6)){
     		air.s_DSShifter.set(true);
@@ -171,20 +161,18 @@ public class Robot extends IterativeRobot {
     	
     	SmartDashboard.putNumber("Gyro", sensors.analogGyro.getAngle());
     	SmartDashboard.putNumber("Gyro-NAVX", sensors.ahrs.getAngle());    	
-    	SmartDashboard.putNumber("10 Turn Voltage", pot1.get());
     	SmartDashboard.putNumber("Gyro-NAVX", sensors.ahrs.getAngle());
     	SmartDashboard.putNumber("Air PSI", sensors.getAirPressurePsi());
-
-
-    	
+	//	SmartDashboard.putNumber("left side inches", drivetrain.LeftSideMagEncoder());
+	//	SmartDashboard.putNumber("right side inches", drivetrain.RightSideMagEncoder());
     	
     	SmartDashboard.updateValues();
     
 	}
 		
-	public void checkMinDisplay(){
-		this.bp_MinDisplay = Preferences.getInstance().getBoolean("R_MinDisplay(bool)", (true));
-	}
+//	public void checkMinDisplay(){
+//		this.bp_MinDisplay = Preferences.getInstance().getBoolean("R_MinDisplay(bool)", (true));
+//	}
 	
 	public void defaultAuton(){
 		if (autonSelected == defaultAuton){}
