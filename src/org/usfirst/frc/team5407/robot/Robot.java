@@ -164,7 +164,7 @@ public class Robot extends IterativeRobot {
     	SmartDashboard.putNumber("Gyro-NAVX", sensors.ahrs.getAngle());
     	SmartDashboard.putNumber("Air PSI", sensors.getAirPressurePsi());
 	//	SmartDashboard.putNumber("left side inches", drivetrain.LeftSideMagEncoder());
-	//	SmartDashboard.putNumber("right side inches", drivetrain.RightSideMagEncoder());
+		SmartDashboard.putNumber("right side inches", drivetrain.RightSideMagEncoder());
     	
     	SmartDashboard.updateValues();
     

@@ -8,7 +8,9 @@ public class DriveTrain {
 
 	public WPI_TalonSRX frontLeftDriveMotor, frontRightDriveMotor, backLeftDriveSlave, backRightDriveSlave;
 	public DifferentialDrive drive;
-
+	double RightsideQuadraturePosition = 0.0;
+	double LeftsideQuadraturePosition = 0.0;
+	
 	public DriveTrain(){	
 
 		/* talons for arcade drive */
@@ -24,18 +26,18 @@ public class DriveTrain {
 
 		drive = new DifferentialDrive(frontLeftDriveMotor, frontRightDriveMotor);
 
+		RightsideQuadraturePosition = frontRightDriveMotor.getSensorCollection().getQuadraturePosition()*1.0;
+		LeftsideQuadraturePosition = frontRightDriveMotor.getSensorCollection().getQuadraturePosition()*1.0;
+		
 	}
 
 	public double RightSideMagEncoder(){		   	
-		double RightsideQuadraturePosition = frontRightDriveMotor.getSensorCollection().getQuadraturePosition()*1.0;
-		double InchesRS = -RightsideQuadraturePosition / 3313 * 4 * Math.PI;
-		return InchesRS;
+		return  (-frontRightDriveMotor.getSensorCollection().getQuadraturePosition()*1.0 / 3313 * 4 * Math.PI);
+		
 	}
 
 	public double LeftSideMagEncoder(){
-		double LeftsideQuadraturePosition = frontLeftDriveMotor.getSensorCollection().getQuadraturePosition()*1.0;
-		double InchesLS = LeftsideQuadraturePosition / 3313 * 4 * Math.PI;
-		return InchesLS;
+		return  (-frontLeftDriveMotor.getSensorCollection().getQuadraturePosition()*1.0 / 3313 * 4 * Math.PI);
 	}
 
 }
