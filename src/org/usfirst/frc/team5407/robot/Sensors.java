@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.interfaces.Potentiometer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Sensors {
 	
@@ -36,7 +37,18 @@ public class Sensors {
 	    
 	}
 
-	 
+	//need to make drivetrain class
+//	 public double LeftSideMagEncoder(){
+//	    	double LeftsideQuadraturePosition = Robot._backLeftSlave.getSensorCollection().getQuadraturePosition();
+//	    	double InchesLS = LeftsideQuadraturePosition / 3313 * 4 * Math.PI;
+//	    	SmartDashboard.putNumber("left side inches", InchesLS);
+//	 }
+	 //need to make drivetrain class
+//	 public double RightSideMagEncoder(){		   	
+//	     	double RightsideQuadraturePosition = _frontRightMotor.getSensorCollection().getQuadraturePosition();
+//	    	double InchesRS = -RightsideQuadraturePosition / 3313 * 4 * Math.PI;
+//	    	SmartDashboard.putNumber("right side inches", InchesRS);
+//	 }
 	 //Rev Robotics Air Pressure Sensor doing calculation to get the pressure reading
 	 public double getAirPressurePsi(){
 		 //taken from the datasheet

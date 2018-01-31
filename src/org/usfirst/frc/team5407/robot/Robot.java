@@ -26,6 +26,7 @@ public class Robot extends IterativeRobot {
 	
 	Sensors sensors = new Sensors();
 	Air air;
+	DriveTrain drivetrain = new DriveTrain();
 	
 	private DifferentialDrive _drive;
 	private Joystick j_leftStick;
@@ -33,13 +34,6 @@ public class Robot extends IterativeRobot {
 	
 	boolean bp_MinDisplay;
 	
-	/* talons for arcade drive */
-	WPI_TalonSRX _frontLeftMotor = new WPI_TalonSRX(11); 		/* device IDs here (1 of 2) */
-	WPI_TalonSRX _frontRightMotor = new WPI_TalonSRX(15);
-	
-	WPI_TalonSRX _backLeftSlave = new WPI_TalonSRX(12);
-	WPI_TalonSRX _backRightSlave = new WPI_TalonSRX(16);
-
 	AnalogPotentiometer pot1 = new AnalogPotentiometer(0);
 
 	//gyro kp
@@ -53,34 +47,19 @@ public class Robot extends IterativeRobot {
 
 	@Override
 	public void robotInit() {
-		_backLeftSlave.follow(_frontLeftMotor);
-		_backRightSlave.follow(_frontRightMotor);
-					
-		_drive = new DifferentialDrive(_frontLeftMotor, _frontRightMotor);
+
 		j_leftStick = new Joystick(0);
 		j_rightStick = new Joystick(1);
 		
 		
 		air = new Air(0,1,2,3);
-		
-    	double LeftsideQuadraturePosition = _backLeftSlave.getSensorCollection().getQuadraturePosition();
-    	double InchesLS = LeftsideQuadraturePosition / 3313 * 4 * Math.PI;
-    	SmartDashboard.putNumber("left side inches", InchesLS);
-
-   	
-     	double RightsideQuadraturePosition = _frontRightMotor.getSensorCollection().getQuadraturePosition();
-    	double InchesRS = -RightsideQuadraturePosition / 3313 * 4 * Math.PI;
-    	SmartDashboard.putNumber("right side inches", InchesRS);
-    	
+		 	
 	}
 	
-	
-
 	public void autonInit(){
 		
 		//zero and initalize values 
-		_backLeftSlave.getSensorCollection().setQuadraturePosition(0, 0);
-		_frontRightMotor.getSensorCollection().setQuadraturePosition(0, 0);
+		//need to zero encoder values
 		air.initializeAir();
 		
 		//Auton Chooser and its SmartDashBoard component
@@ -109,8 +88,7 @@ public class Robot extends IterativeRobot {
 	}
 
 	public void teleopInit() {
-		_backLeftSlave.getSensorCollection().setQuadraturePosition(0, 0);
-		_frontRightMotor.getSensorCollection().setQuadraturePosition(0, 0);
+		//zero and initialize all inputs and sensors
 		air.initializeAir();
 
 	}
@@ -140,10 +118,10 @@ public class Robot extends IterativeRobot {
     	if (turn <= .05 && turn >=-0.05 ){
     		if(b_EnableGyroNAVX == false){sensors.setFollowAngleNAVX(0);}
     		b_EnableGyroNAVX = true;
-    		_drive.arcadeDrive(forward, (sensors.getFollowAngleNAVX()-sensors.getPresentAngleNAVX())*Kp);
+    		drivetrain.drive.arcadeDrive(forward, (sensors.getFollowAngleNAVX()-sensors.getPresentAngleNAVX())*Kp);
     	}
     	else{
-    		_drive.arcadeDrive(forward, turn);
+    		drivetrain.drive.arcadeDrive(forward, turn);
     		b_EnableGyroNAVX = false;
     	}
     	// END TESTING NAVX
@@ -152,11 +130,10 @@ public class Robot extends IterativeRobot {
     	//double pwm = _frontRightMotor.getSensorCollection().getPulseWidthPosition();
     	//SmartDashboard.putNumber("Pwm", pwm);
     	
-    	if (j_leftStick.getRawButton(1)){
-    		_backLeftSlave.getSensorCollection().setQuadraturePosition(0, 0);
-    		_frontRightMotor.getSensorCollection().setQuadraturePosition(0, 0);
-    	}
-    	
+    	//if (j_leftStick.getRawButton(1)){
+    	//	_backLeftSlave.getSensorCollection().setQuadraturePosition(0, 0);
+    	//	_frontRightMotor.getSensorCollection().setQuadraturePosition(0, 0);
+    	//}
     	//xbox button RB
     	if (j_leftStick.getRawButton(6)){
     		air.s_DSShifter.set(true);
