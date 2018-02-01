@@ -20,9 +20,9 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  */
 public class Robot extends IterativeRobot {
 	
-	Sensors sensors = new Sensors();
+	Sensors sensors;
 	Air air;
-	DriveTrain drivetrain = new DriveTrain();
+	DriveTrain drivetrain;
 	
 	//private DifferentialDrive drive;
 	private Joystick j_leftStick;
@@ -41,6 +41,9 @@ public class Robot extends IterativeRobot {
 
 	@Override
 	public void robotInit() {
+		
+		drivetrain = new DriveTrain();
+		sensors = new Sensors();
 
 		j_leftStick = new Joystick(0);
 		j_rightStick = new Joystick(1);
@@ -89,6 +92,9 @@ public class Robot extends IterativeRobot {
 
 	@Override
 	public void teleopPeriodic() {
+		
+		drivetrain.getLeftQuadPosition();
+		drivetrain.getRightQuadPosition();
 
 		//checkMinDisplay();
 		
@@ -163,8 +169,8 @@ public class Robot extends IterativeRobot {
     	SmartDashboard.putNumber("Gyro-NAVX", sensors.ahrs.getAngle());    	
     	SmartDashboard.putNumber("Gyro-NAVX", sensors.ahrs.getAngle());
     	SmartDashboard.putNumber("Air PSI", sensors.getAirPressurePsi());
-	//	SmartDashboard.putNumber("left side inches", drivetrain.LeftSideMagEncoder());
-		SmartDashboard.putNumber("right side inches", drivetrain.RightSideMagEncoder());
+//		SmartDashboard.putNumber("left side inches", drivetrain.LeftSideMagEncoder());
+//		SmartDashboard.putNumber("right side inches", drivetrain.RightSideMagEncoder());
     	
     	SmartDashboard.updateValues();
     
