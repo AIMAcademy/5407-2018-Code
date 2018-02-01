@@ -32,12 +32,14 @@ public class DriveTrain {
 	}
 
 	public double RightSideMagEncoder(){		   	
-		return  (-frontRightDriveMotor.getSensorCollection().getQuadraturePosition()*1.0 / 3313 * 4 * Math.PI);
+		//return  (-frontRightDriveMotor.getSensorCollection().getQuadraturePosition()*1.0 / 3313 * 4 * Math.PI);
+		return (RightsideQuadraturePosition / 3313 * 4 * Math.PI);
 		
 	}
 
 	public double LeftSideMagEncoder(){
-		return  (-frontLeftDriveMotor.getSensorCollection().getQuadraturePosition()*1.0 / 3313 * 4 * Math.PI);
+		//return  (-frontLeftDriveMotor.getSensorCollection().getQuadraturePosition()*1.0 / 3313 * 4 * Math.PI);
+		return (LeftsideQuadraturePosition / 3313 * 4 * Math.PI);
 	}
 
 }
