@@ -102,18 +102,8 @@ public class Robot extends IterativeRobot {
 		//
     	double forward = -(j_leftStick.getY()); // logitech gampad left X, positive is forward
     	double turn = j_leftStick.getX(); // logitech gampad right X, positive means turn right
-//    	boolean b_EnableGyro = false;
-//    	if (turn <= .05 && turn >=-0.05 ){
-//    		if(b_EnableGyro == false){sensors.setFollowAngle(0);}
-//    		b_EnableGyro = true;
-//    		_drive.arcadeDrive(forward, (sensors.getFollowAngle()-sensors.getPresentAngle())*Kp);
-//    	}
-//    	else{
-//    		_drive.arcadeDrive(forward, turn);
-//    		b_EnableGyro = false;
-//    	}
     	
-    	// TESTING NAVX
+    	// BEGIN NAVX Gyro Code //
     	boolean b_EnableGyroNAVX = false;
     	if (turn <= .05 && turn >=-0.05 ){
     		if(b_EnableGyroNAVX == false){sensors.setFollowAngleNAVX(0);}
@@ -124,11 +114,7 @@ public class Robot extends IterativeRobot {
     		drivetrain.drive.arcadeDrive(forward, turn);
     		b_EnableGyroNAVX = false;
     	}
-    	// END TESTING NAVX
-    	
-    	// Tested PWM variable. Data does not seem reliable or helpful. //
-    	//double pwm = _frontRightMotor.getSensorCollection().getPulseWidthPosition();
-    	//SmartDashboard.putNumber("Pwm", pwm);
+    	// END NAVX Gyro Code //
     	
     	//xbox button RB
     	if (j_leftStick.getRawButton(6)){
@@ -169,8 +155,8 @@ public class Robot extends IterativeRobot {
     	SmartDashboard.putNumber("Gyro-NAVX", sensors.ahrs.getAngle());    	
     	SmartDashboard.putNumber("Gyro-NAVX", sensors.ahrs.getAngle());
     	SmartDashboard.putNumber("Air PSI", sensors.getAirPressurePsi());
-//		SmartDashboard.putNumber("left side inches", drivetrain.LeftSideMagEncoder());
-//		SmartDashboard.putNumber("right side inches", drivetrain.RightSideMagEncoder());
+	SmartDashboard.putNumber("left side inches", drivetrain.getLeftQuadPosition());
+	SmartDashboard.putNumber("right side inches", drivetrain.getRightQuadPosition());
     	
     	SmartDashboard.updateValues();
     
