@@ -7,9 +7,8 @@
 
 package org.usfirst.frc.team5407.robot;
 
-import com.ctre.phoenix.motorcontrol.can.TalonSRX;
-import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
+import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import edu.wpi.cscore.UsbCamera;
 import edu.wpi.cscore.VideoMode;
 import edu.wpi.cscore.VideoMode.PixelFormat;
@@ -17,7 +16,6 @@ import edu.wpi.first.wpilibj.CameraServer;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.SerialPort;
-import edu.wpi.first.wpilibj.Spark;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 
 /**
@@ -34,7 +32,7 @@ public class Robot extends IterativeRobot {
 	private UsbCamera jevoisCam;
 	
 	/* talons for arcade drive */
-	WPI_TalonSRX _frontLeftMotor = new WPI_TalonSRX(11); 		/* device IDs here (1 of 2) */
+	WPI_TalonSRX _frontLeftMotor = new WPI_TalonSRX(11); 		
 	WPI_TalonSRX _frontRightMotor = new WPI_TalonSRX(15);
 	
 	WPI_TalonSRX _backLeftSlave = new WPI_TalonSRX(12);
@@ -53,6 +51,9 @@ public class Robot extends IterativeRobot {
 		m_leftStick = new Joystick(0);
 		
     	// BEGIN JeVois Code //
+		
+	// Tries to reach camera camera and if not, it prints out a failed 
+	// Without this if it did not connect, the whole program would crash
     	int tryCount = 0;
 		do {
 			try {
@@ -66,10 +67,13 @@ public class Robot extends IterativeRobot {
 			}
 		} while (tryCount < 3);
 		
+		// Creating video stream and setting video mode which is mapped to the object tracker module
 		System.out.println("Starting CameraServer");
 		if (jevoisCam == null) {
 			jevoisCam = CameraServer.getInstance().startAutomaticCapture();
 			jevoisCam.setVideoMode(PixelFormat.kYUYV,320,254,60);
+			// Below code done not work on our robot 
+			// Keeping here in case of trouble shooting later
 			//jevoisCam.setResolution(320, 254);
 			//jevoisCam.setPixelFormat(PixelFormat.kYUYV);
 			//jevoisCam.setFPS(60);
@@ -86,7 +90,8 @@ public class Robot extends IterativeRobot {
     	// END JeVois Code // 
 		
 	}
-	
+
+	// Called during periodic, if it sees jevois it tells you how long it took to connect and if it does not connect it tries to reconnect
 	public void checkJeVois() {
 		if (jevois == null) return;
 		if (jevois.getBytesReceived() > 0) {
@@ -100,7 +105,7 @@ public class Robot extends IterativeRobot {
 			writeJeVois("info\n");
 		}
 	}
-		
+		// Writes to console
 	public void writeJeVois(String cmd) {
 		if (jevois == null) return;
 		int bytes = jevois.writeString(cmd);
@@ -110,11 +115,11 @@ public class Robot extends IterativeRobot {
 
 	@Override
 	public void teleopPeriodic() {
-		// Arcade Drive
-    	double forward = -m_leftStick.getY(); // logitech gampad left X, positive is forward
-    	double turn = m_leftStick.getX(); // logitech gampad right X, positive means turn right
-    	_drive.arcadeDrive(forward, turn);
-    	
+		// Arcade Drive, uses one joystick and takes the x and y values of the joystick 
+	    	double forward = -m_leftStick.getY(); // logitech gampad left X, positive is forward
+	    	double turn = m_leftStick.getX(); // logitech gampad right X, positive means turn right
+	    	_drive.arcadeDrive(forward, turn);
 		checkJeVois();
+	
 	}
 }
