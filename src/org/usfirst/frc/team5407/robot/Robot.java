@@ -37,7 +37,12 @@ public class Robot extends IterativeRobot {
 	private Joystick j_leftStick;
 	private Joystick j_rightStick;
 
-	private ICameraSettings _currentCameraSettings = new DumbCameraSettings();
+	// Different camera settings
+	private final ICameraSettings _objectTrackerCameraSettings = new CameraSettings(320, 254, 60);
+	private final ICameraSettings _dumbCameraSettings = new CameraSettings(176, 144, 115);
+
+	// Set current camera settings (will ideally be toggled by a button)
+	private ICameraSettings _currentCameraSettings = _dumbCameraSettings;
 
 	// Gyro kp, the smaller the value the small the corrections get
 	double Kp = 0.015;
@@ -253,20 +258,16 @@ public class Robot extends IterativeRobot {
 		public int getFps();
 	}
 
-	private class ObjectTrackerCameraSettings implements ICameraSettings {
-		private int width = 320;
-		private int height = 254;
-		private int fps = 60;
+	public class CameraSettings implements ICameraSettings {
+		private int width;
+		private int height;
+		private int fps;
 
-		public int getWidth() { return width; }
-		public int getHeight() { return height; }
-		public int getFps() { return fps; }
-	}
-
-	private class DumbCameraSettings implements ICameraSettings {
-		private int width = 176;
-		private int height = 144;
-		private int fps = 115;
+		public CameraSettings(int width, int height, int fps) {
+			this.width = width;
+			this.height = height;
+			this.fps = fps;
+		}
 
 		public int getWidth() { return width; }
 		public int getHeight() { return height; }
