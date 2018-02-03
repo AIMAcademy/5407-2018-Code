@@ -11,7 +11,7 @@ import edu.wpi.first.wpilibj.interfaces.Potentiometer;
 
 public class Sensors{
 	// Names sensors and its type
-	ADXRS450_Gyro analogGyro;
+	// ADXRS450_Gyro analogGyro;
 	AHRS ahrs;
 	Potentiometer TestPot;
 	private AnalogInput mAnalogInputRevAirSensor; 
@@ -25,14 +25,14 @@ public class Sensors{
 
 	public Sensors(){
 		//create the sensor named above and call its port number and any other needed settings
-		analogGyro = new ADXRS450_Gyro();
+		// analogGyro = new ADXRS450_Gyro();
 		mAnalogInputRevAirSensor = new AnalogInput(1);
 		
 		//no smartDashBoard output
 		TestPot = new AnalogPotentiometer(0, 360, 30);
 		 
 		//resets Gryo to 0 at beginning of code
-		analogGyro.reset();
+		// analogGyro.reset();
 		
 		// tries to call NavX and if it does not respond an printout appears in the driver station
 	    try {

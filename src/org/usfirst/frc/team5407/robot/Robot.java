@@ -12,6 +12,7 @@ import edu.wpi.cscore.VideoMode;
 import edu.wpi.cscore.VideoMode.PixelFormat;
 import edu.wpi.first.wpilibj.CameraServer;
 import edu.wpi.first.wpilibj.IterativeRobot;
+import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.SerialPort;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -165,7 +166,7 @@ public class Robot extends IterativeRobot {
 		}
 
 		// Puts values on SmartDashBoard
-		SmartDashboard.putNumber("Gyro", sensors.analogGyro.getAngle());
+		// SmartDashboard.putNumber("Gyro", sensors.analogGyro.getAngle());
 		SmartDashboard.putNumber("Gyro-NAVX", sensors.ahrs.getAngle());
 		SmartDashboard.putNumber("Gyro-NAVX", sensors.ahrs.getAngle());
 		SmartDashboard.putNumber("Air PSI", sensors.getAirPressurePsi());
