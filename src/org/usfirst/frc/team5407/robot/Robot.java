@@ -141,10 +141,10 @@ public class Robot extends IterativeRobot {
 		air.s_sol3.set(inputs.isSolenoidThreeButtonPressed);
 
 		boolean setCameraToTrackObjects = inputs.isCameraButtonPressed;
-		if (setCameraToTrackObjects && _currentCameraSettings.getIsUsingDefaultSettings) {
+		if (setCameraToTrackObjects && _currentCameraSettings.getIsUsingDefaultSettings()) {
 			_currentCameraSettings.setCameraToTrackObjects();
 			System.out.println("Camera toggled: default -> object");
-		} else if (!setCameraToTrackObjects && !_currentCameraSettings.getIsUsingDefaultSettings) {
+		} else if (!setCameraToTrackObjects && !_currentCameraSettings.getIsUsingDefaultSettings()) {
 			_currentCameraSettings.setDefaultSettings();
 			System.out.println("Camera toggled: object -> default");
 		}
@@ -234,6 +234,7 @@ public class Robot extends IterativeRobot {
 		public int getWidth();
 		public int getHeight();
 		public int getFps();
+		public boolean getIsUsingDefaultSettings();
 	}
 
 	public class CameraSettings implements ICameraSettings {
@@ -249,7 +250,7 @@ public class Robot extends IterativeRobot {
 		public int getWidth() { return width; }
 		public int getHeight() { return height; }
 		public int getFps() { return fps; }
-		public int getIsUsingDefaultSettings() { return isUsingDefaultSettings; }
+		public boolean getIsUsingDefaultSettings() { return isUsingDefaultSettings; }
 
 		public void setDefaultSettings() {
 			this.width = 176;
