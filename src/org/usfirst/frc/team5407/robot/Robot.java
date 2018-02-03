@@ -142,11 +142,13 @@ public class Robot extends IterativeRobot {
 
 		boolean setCameraToTrackObjects = inputs.isCameraButtonPressed;
 		if (setCameraToTrackObjects && _currentCameraSettings.getIsUsingDefaultSettings()) {
-			_currentCameraSettings.setCameraToTrackObjects();
+			_currentCameraSettings.setObjectTrackerSettings();
 			System.out.println("Camera toggled: default -> object");
+			checkJeVois();
 		} else if (!setCameraToTrackObjects && !_currentCameraSettings.getIsUsingDefaultSettings()) {
 			_currentCameraSettings.setDefaultSettings();
 			System.out.println("Camera toggled: object -> default");
+			checkJeVois();
 		}
 
 		// Getting the encoder values for the drivetrain and cooking and returning them
@@ -189,23 +191,11 @@ public class Robot extends IterativeRobot {
 
 	// Called during periodic, if it sees jevois it tells you how long it took to connect and if it does not connect it tries to reconnect
 	public void checkJeVois() {
-		if (jevois == null)
-			return;
-
-		if (jevois.getBytesReceived() > 0) {
-			System.out.println("Waited: " + loopCount + " loops, Rcv'd: " + jevois.readString());
-			loopCount = 0;
-		}
-
-		if (++loopCount % 150 == 0) {
-			System.out.println("checkJeVois() waiting..." + loopCount);
+			System.out.println("checkJeVois() setting video mode: " + _currentCameraSettings);
 			jevoisCam.setVideoMode(PixelFormat.kYUYV, _currentCameraSettings.getWidth(),
 					_currentCameraSettings.getHeight(), _currentCameraSettings.getFps());
-			writeJeVois("getpar serout\n");
-			writeJeVois("info\n");
-		}
-
-		
+			// writeJeVois("getpar serout\n");
+			// writeJeVois("info\n");
 	}
 
 	// Writes to console
