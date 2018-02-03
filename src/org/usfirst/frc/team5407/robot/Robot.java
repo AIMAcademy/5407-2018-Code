@@ -138,6 +138,11 @@ public class Robot extends IterativeRobot {
 	public void teleopPeriodic() {
 		inputs.ReadValues();
 
+		air.s_DSShifter.set(inputs.isDualSpeedShifterButtonPressed);
+		air.s_sol1.set(inputs.isSolenoidOneButtonPressed);
+		air.s_sol2.set(inputs.isSolenoidTwoButtonPressed);
+		air.s_sol3.set(inputs.isSolenoidThreeButtonPressed);
+
 		boolean setCameraToTrackObjects = inputs.isCameraButtonPressed;
 		if (setCameraToTrackObjects && _currentCameraSettings != _objectTrackerCameraSettings) {
 			_currentCameraSettings = _objectTrackerCameraSettings;
@@ -154,8 +159,8 @@ public class Robot extends IterativeRobot {
 		drivetrain.getRightQuadPosition();
 
 		// Arcade Drive using first joystick
-		double forward = -input.j_leftStick.getY(); // xbox gampad left X, positive is forward
-		double turn = input.j_leftStick.getX(); // xbox gampad right X, positive means turn right
+		double forward = -inputs.j_leftStick.getY(); // xbox gampad left X, positive is forward
+		double turn = inputs.j_leftStick.getX(); // xbox gampad right X, positive means turn right
 
 		// BEGIN NAVX Gyro Code //
 		// Creates a boolean for enabling or disabling NavX
