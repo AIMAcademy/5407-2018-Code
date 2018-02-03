@@ -10,17 +10,17 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.interfaces.Potentiometer;
 
 public class Sensors{
-	//names sensors and its type
+	// Names sensors and its type
 	ADXRS450_Gyro analogGyro;
 	AHRS ahrs;
 	Potentiometer TestPot;
 	private AnalogInput mAnalogInputRevAirSensor; 
 
-	//create and put doubles here
+	// Create and put doubles here
 	double followAngle;
     double rotateToAngleRate;
 
-    //creates a timer
+    // Creates a timer
 	Timer counter;
 
 	public Sensors(){
@@ -43,24 +43,24 @@ public class Sensors{
 	    
 	}
 	
-	 //Rev Robotics Air Pressure Sensor doing calculation to get the pressure reading
+	 // Rev Robotics Air Pressure Sensor doing calculation to get the pressure reading
 	 public double getAirPressurePsi(){
 		 //taken from the datasheet
 		 return 250.0 * mAnalogInputRevAirSensor.getVoltage() / 5.0 - 25.0; 
 	 }
 	
 	// NAVX Code
-	 //sets the follow angle by getting angle and then getting the offset
+	// Sets the follow angle by getting angle and then getting the offset
 	public void setFollowAngleNAVX(double offset){
 		this.followAngle = this.ahrs.getAngle() + offset;
 	}
 	
-	//makes public and gets the follow angle
+	// Makes public and gets the follow angle
 	public double getFollowAngleNAVX() {
 		return this.followAngle;
 	}
 	
-	//makes public and gets the present angles
+	// Makes public and gets the present angles
 	public double getPresentAngleNAVX(){
 		return this.ahrs.getAngle();
 	}

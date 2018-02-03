@@ -4,7 +4,7 @@ import edu.wpi.first.wpilibj.Solenoid;
 
 public class Air {
 	
-	//create solenoids here and name them
+	// Create solenoids here and name them
 	Solenoid s_DSShifter; 
 	Solenoid s_sol1;
 	Solenoid s_sol2;
@@ -13,17 +13,17 @@ public class Air {
 	
 	public Air(int i_sol0, int i_sol1, int i_sol2, int i_sol3){
 		
-		//calls solenoids name, creates solenoid and gives them a port number
+		// Calls solenoids name, creates solenoid and gives them a port number
 		s_DSShifter = new Solenoid(i_sol0);
 		s_sol1 = new Solenoid(i_sol1);
 		s_sol2 = new Solenoid(i_sol2);
 		s_sol3 = new Solenoid(i_sol3);
 		
-		//gives the default values of the solenoids
+		// Gives the default values of the solenoids
 		initializeAir();
 		
 	}
-	//set the default values of the solenoids here
+	// Set the default values of the solenoids here
 	public void initializeAir(){
 		s_DSShifter.set(false);
 		s_sol1.set(true);
