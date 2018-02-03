@@ -26,6 +26,5 @@ public class Air {
 		s_sol1.set(true);
 		s_sol2.set(false);
 		s_sol3.set(false);
-		
 	}
 }

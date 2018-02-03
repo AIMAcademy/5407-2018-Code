@@ -32,10 +32,6 @@ public class Robot extends IterativeRobot {
 	private int loopCount;
 	private UsbCamera jevoisCam;
 
-	// Different camera settings
-	private final ICameraSettings _objectTrackerCameraSettings = new CameraSettings(320, 254, 60);
-	private final ICameraSettings _dumbCameraSettings = new CameraSettings(176, 144, 60);
-
 	private ICameraSettings _currentCameraSettings;
 
 	// Gyro kp, the smaller the value the small the corrections get
@@ -62,7 +58,8 @@ public class Robot extends IterativeRobot {
 		air = new Air(0, 1, 2, 3);
 
 		// BEGIN JeVois Code //
-		_currentCameraSettings = _dumbCameraSettings;
+		// Get default camera settings
+		_currentCameraSettings = new CameraSettings();
 
 		// Tries to reach camera camera and if not, it prints out a failed 
 		// Without this if it did not connect, the whole program would crash
@@ -144,13 +141,12 @@ public class Robot extends IterativeRobot {
 		air.s_sol3.set(inputs.isSolenoidThreeButtonPressed);
 
 		boolean setCameraToTrackObjects = inputs.isCameraButtonPressed;
-		System.out.println(setCameraToTrackObjects);
-
-		if (setCameraToTrackObjects && _currentCameraSettings != _objectTrackerCameraSettings) {
-			// _currentCameraSettings = _objectTrackerCameraSettings;
-			// TODO: Tell camera the video mode changed
-		} else if (_currentCameraSettings != _dumbCameraSettings) {
-			// _currentCameraSettings = _dumbCameraSettings;
+		if (setCameraToTrackObjects && _currentCameraSettings.getIsUsingDefaultSettings) {
+			_currentCameraSettings.setCameraToTrackObjects();
+			System.out.println("Camera toggled: default -> object");
+		} else if (!setCameraToTrackObjects && !_currentCameraSettings.getIsUsingDefaultSettings) {
+			_currentCameraSettings.setDefaultSettings();
+			System.out.println("Camera toggled: object -> default");
 		}
 
 		// Getting the encoder values for the drivetrain and cooking and returning them
@@ -224,8 +220,7 @@ public class Robot extends IterativeRobot {
 
 	// When no Auton is called this one will be run
 	public void defaultAuton() {
-		if (autonSelected == defaultAuton) {
-		}
+		if (autonSelected == defaultAuton) { }
 	}
 
 	// The most basic Auton: Drive forward 10 feet and stop
@@ -245,16 +240,32 @@ public class Robot extends IterativeRobot {
 		private int width;
 		private int height;
 		private int fps;
+		private boolean isUsingDefaultSettings;
 
-		public CameraSettings(int width, int height, int fps) {
-			this.width = width;
-			this.height = height;
-			this.fps = fps;
+		public CameraSettings() {
+			setDefaultSettings();
 		}
 
 		public int getWidth() { return width; }
 		public int getHeight() { return height; }
 		public int getFps() { return fps; }
+		public int getIsUsingDefaultSettings() { return isUsingDefaultSettings; }
+
+		public void setDefaultSettings() {
+			this.width = 176;
+			this.height = 144;
+			this.fps = 60;
+
+			this.isUsingDefaultSettings = true;
+		}
+
+		public void setObjectTrackerSettings() {
+			this.width = 320;
+			this.height = 254;
+			this.fps = 60;
+
+			this.isUsingDefaultSettings = false;
+		}
 	}
 	// End private camera settings
 }
