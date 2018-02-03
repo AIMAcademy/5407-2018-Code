@@ -6,11 +6,11 @@ import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 
 public class DriveTrain {
 
-	// Declaring all the drivetrain motors and making it public
+	// Declaring all the drive train motors and making it public
 	public WPI_TalonSRX frontLeftDriveMotor, frontRightDriveMotor, backLeftDriveSlave, backRightDriveSlave;
 	// Creating a differentialDrive and naming it 
 	public DifferentialDrive drive;
-	// Creating doubles for getting encoder quad positioning and setting them to equal 0 at beganning
+	// Creating doubles for getting encoder quad positioning and setting them to equal 0 at beginning
 	double RightsideQuadraturePosition = 0.0;
 	double LeftsideQuadraturePosition = 0.0;
 	
