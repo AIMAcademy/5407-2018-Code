@@ -143,12 +143,10 @@ public class Robot extends IterativeRobot {
 		boolean setCameraToTrackObjects = inputs.isCameraButtonPressed;
 		if (setCameraToTrackObjects && _currentCameraSettings.getIsUsingDefaultSettings()) {
 			_currentCameraSettings.setObjectTrackerSettings();
-			System.out.println("Camera toggled: default -> object");
-			checkJeVois();
+			setJeVoisVideoMode();
 		} else if (!setCameraToTrackObjects && !_currentCameraSettings.getIsUsingDefaultSettings()) {
 			_currentCameraSettings.setDefaultSettings();
-			System.out.println("Camera toggled: object -> default");
-			checkJeVois();
+			setJeVoisVideoMode();
 		}
 
 		// Getting the encoder values for the drivetrain and cooking and returning them
@@ -190,12 +188,9 @@ public class Robot extends IterativeRobot {
 	}
 
 	// Called during periodic, if it sees jevois it tells you how long it took to connect and if it does not connect it tries to reconnect
-	public void checkJeVois() {
-			System.out.println("checkJeVois() setting video mode: " + _currentCameraSettings);
-			jevoisCam.setVideoMode(PixelFormat.kYUYV, _currentCameraSettings.getWidth(),
-					_currentCameraSettings.getHeight(), _currentCameraSettings.getFps());
-			// writeJeVois("getpar serout\n");
-			// writeJeVois("info\n");
+	public void setJeVoisVideoMode() {
+		jevoisCam.setVideoMode(PixelFormat.kYUYV, _currentCameraSettings.getWidth(),
+				_currentCameraSettings.getHeight(), _currentCameraSettings.getFps());
 	}
 
 	// Writes to console
@@ -210,7 +205,8 @@ public class Robot extends IterativeRobot {
 
 	// When no Auton is called this one will be run
 	public void defaultAuton() {
-		if (autonSelected == defaultAuton) { }
+		if (autonSelected == defaultAuton) {
+		}
 	}
 
 	// The most basic Auton: Drive forward 10 feet and stop
@@ -241,7 +237,7 @@ public class Robot extends IterativeRobot {
 
 		public int getWidth() { return width; }
 		public int getHeight() { return height; }
-		public int getFps() { return fps; }
+		public int getFps() { return fps;}
 		public boolean getIsUsingDefaultSettings() { return isUsingDefaultSettings; }
 
 		public void setDefaultSettings() {
@@ -251,7 +247,6 @@ public class Robot extends IterativeRobot {
 
 			this.isUsingDefaultSettings = true;
 		}
-
 		public void setObjectTrackerSettings() {
 			this.width = 320;
 			this.height = 254;
