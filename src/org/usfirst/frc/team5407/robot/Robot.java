@@ -253,7 +253,7 @@ public class Robot extends IterativeRobot {
 		public int getFps();
 	}
 
-	private class ObjectTrackerSettings implements ICameraSettings {
+	private class ObjectTrackerCameraSettings implements ICameraSettings {
 		private int width = 320;
 		private int height = 254;
 		private int fps = 60;
