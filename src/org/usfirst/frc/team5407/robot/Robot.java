@@ -144,14 +144,13 @@ public class Robot extends IterativeRobot {
 		air.s_sol3.set(inputs.isSolenoidThreeButtonPressed);
 
 		boolean setCameraToTrackObjects = inputs.isCameraButtonPressed;
+		System.out.println(setCameraToTrackObjects);
+
 		if (setCameraToTrackObjects && _currentCameraSettings != _objectTrackerCameraSettings) {
-			_currentCameraSettings = _objectTrackerCameraSettings;
-			System.out.println("Attempted to switch camera: Dumb -> Object Track");
+			// _currentCameraSettings = _objectTrackerCameraSettings;
 			// TODO: Tell camera the video mode changed
 		} else if (_currentCameraSettings != _dumbCameraSettings) {
-			_currentCameraSettings = _dumbCameraSettings;
-			System.out.println("Attempted to switch camera: Object Track -> Dumb");
-			// TODO: Tell camera the video mode changed
+			// _currentCameraSettings = _dumbCameraSettings;
 		}
 
 		// Getting the encoder values for the drivetrain and cooking and returning them
