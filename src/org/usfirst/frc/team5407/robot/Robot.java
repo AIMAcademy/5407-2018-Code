@@ -37,6 +37,8 @@ public class Robot extends IterativeRobot {
 	
 	WPI_TalonSRX _backLeftSlave = new WPI_TalonSRX(12);
 	WPI_TalonSRX _backRightSlave = new WPI_TalonSRX(16);
+	
+	private ICameraSettings _currentCameraSettings = new DumbCameraSettings();
 
 //	public void disabledPeriodic() {
 //		checkJeVois();
@@ -59,6 +61,7 @@ public class Robot extends IterativeRobot {
 			try {
 				System.out.print("Trying to create jevois SerialPort...");
 				jevois = new SerialPort(9600, SerialPort.Port.kUSB);
+				System.out.println("jevois: " + jevois);
 				tryCount = 99;
 				System.out.println("success!");
 			} catch (Exception e) {
@@ -70,17 +73,28 @@ public class Robot extends IterativeRobot {
 		// Creating video stream and setting video mode which is mapped to the object tracker module
 		System.out.println("Starting CameraServer");
 		if (jevoisCam == null) {
-			jevoisCam = CameraServer.getInstance().startAutomaticCapture();
-			jevoisCam.setVideoMode(PixelFormat.kYUYV,320,254,60);
+			try {
+				jevoisCam = CameraServer.getInstance().startAutomaticCapture();
+				jevoisCam.setVideoMode(
+					PixelFormat.kYUYV,
+					_currentCameraSettings.getWidth(),
+					_currentCameraSettings.getHeight(),
+					_currentCameraSettings.getFps()
+				);
+				VideoMode vm = jevoisCam.getVideoMode();
+				System.out.println("jevoisCam pixel: " + vm.pixelFormat);
+				System.out.println("jevoisCam res: " + vm.width + "x" + vm.height);
+				System.out.println("jevoisCam fps: " + vm.fps);
+			} catch (Exception e) {
+				System.out.println(e.toString());
+				System.out.println("no camera connection");
+			}
+			
 			// Below code done not work on our robot 
 			// Keeping here in case of trouble shooting later
 			//jevoisCam.setResolution(320, 254);
 			//jevoisCam.setPixelFormat(PixelFormat.kYUYV);
 			//jevoisCam.setFPS(60);
-			VideoMode vm = jevoisCam.getVideoMode();
-			System.out.println("jevoisCam pixel: " + vm.pixelFormat);
-			System.out.println("jevoisCam res: " + vm.width + "x" + vm.height);
-			System.out.println("jevoisCam fps: " + vm.fps);
 		}
 		
 		if (tryCount == 99) {
@@ -100,7 +114,12 @@ public class Robot extends IterativeRobot {
 		}
 		if (++loopCount % 150 == 0) {
 			System.out.println("checkJeVois() waiting..." + loopCount);
-			jevoisCam.setVideoMode(PixelFormat.kYUYV,320,254,60);
+			jevoisCam.setVideoMode(
+				PixelFormat.kYUYV,
+				_currentCameraSettings.getWidth(),
+				_currentCameraSettings.getHeight(),
+				_currentCameraSettings.getFps()
+			);
 			writeJeVois("getpar serout\n");
 			writeJeVois("info\n");
 		}
@@ -120,6 +139,35 @@ public class Robot extends IterativeRobot {
 	    	double turn = m_leftStick.getX(); // logitech gampad right X, positive means turn right
 	    	_drive.arcadeDrive(forward, turn);
 		checkJeVois();
-	
 	}
+
+	// Private camera settings code
+	private interface ICameraSettings {
+		// Any class that "implements" this interface must define these methods.
+		// This way we know any camera settings class can getWidth, getHeight, and getFps.
+		public int getWidth();
+		public int getHeight();
+		public int getFps();
+	}
+
+	private class ObjectTrackerSettings implements ICameraSettings {
+		private int width = 320;
+		private int height = 254;
+		private int fps = 60;
+
+		public int getWidth() { return width; }
+		public int getHeight() { return height; }
+		public int getFps() { return fps; }
+	}
+
+	private class DumbCameraSettings implements ICameraSettings {
+		private int width = 176;
+		private int height = 144;
+		private int fps = 115;
+
+		public int getWidth() { return width; }
+		public int getHeight() { return height; }
+		public int getFps() { return fps; }
+	}
+	// End private camera settings code
 }
