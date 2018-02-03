@@ -10,7 +10,6 @@ package org.usfirst.frc.team5407.robot;
 
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
@@ -20,6 +19,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  */
 public class Robot extends IterativeRobot {
 	
+	//Create new classes and call them here 
 	Sensors sensors;
 	Air air;
 	DriveTrain drivetrain;
@@ -28,12 +28,10 @@ public class Robot extends IterativeRobot {
 	private Joystick j_leftStick;
 	private Joystick j_rightStick;
 	
-	//boolean bp_MinDisplay;
-	
-	//gyro kp
+	//gyro kp, the smaller the value the small the corrections get
 	double Kp = 0.015;
 	
-	//Auton
+	//Auton, creating string for new auton and has a sendable chooser at the end of it
 	final String defaultAuton = "Default Auton";
 	final String DriveBaseLine = "Drive BaseLine";
 	String autonSelected;
@@ -42,32 +40,33 @@ public class Robot extends IterativeRobot {
 	@Override
 	public void robotInit() {
 		
+		//makes classes recongized in program and execute
 		drivetrain = new DriveTrain();
 		sensors = new Sensors();
-
+		
+		//callling the 0 and 1 port for usb on driverstation computer
 		j_leftStick = new Joystick(0);
 		j_rightStick = new Joystick(1);
 		
-		
+		//called 4 solenoids in the air class
 		air = new Air(0,1,2,3);
  	
 	}
 	
 	public void autonInit(){
 		
-		//zero and initalize values 
-		//need to zero encoder values
+		//zero and initalize values for auton 
 		air.initializeAir();
 		
 		//Auton Chooser and its SmartDashBoard component
 		autonSelected = chooser.getSelected();
 		SmartDashboard.putString("My Selected Auton is ", autonSelected);
-		
-		
+			
 	}		
 	
 	public void autonPeriodic() {
 		
+		//if else statement for auton selection
 		if(autonSelected == defaultAuton){
 			defaultAuton();
 		}
@@ -76,16 +75,12 @@ public class Robot extends IterativeRobot {
 			DriveBaseLine();
 		}
 		
-		//test go 10 feet or 120 inches straight 
-	//	if(_frontRightMotor.InchesRS >120 && InchesLS){
-			
-	//	}
     		
 		
 	}
 
 	public void teleopInit() {
-		//zero and initialize all inputs and sensors
+		//zero and initialize all inputs and sensors for teleop
 		air.initializeAir();
 
 	}
@@ -93,30 +88,31 @@ public class Robot extends IterativeRobot {
 	@Override
 	public void teleopPeriodic() {
 		
+		//getting the encoder values for the drivetrain and cooking and returning them
 		drivetrain.getLeftQuadPosition();
 		drivetrain.getRightQuadPosition();
-
-		//checkMinDisplay();
 		
-		// Arcade Drive
-		//
-    	double forward = -(j_leftStick.getY()); // logitech gampad left X, positive is forward
-    	double turn = j_leftStick.getX(); // logitech gampad right X, positive means turn right
+		// Arcade Drive using first joystick
+    	double forward = -(j_leftStick.getY()); // xbox gampad left X, positive is forward
+    	double turn = j_leftStick.getX(); // xbox gampad right X, positive means turn right
     	
     	// BEGIN NAVX Gyro Code //
+    	//creates a boolean for enabling or disabling NavX
     	boolean b_EnableGyroNAVX = false;
+    	//if robot is going forward or back ward with thin certain values, enable NavX drive straight 
     	if (turn <= .05 && turn >=-0.05 ){
     		if(b_EnableGyroNAVX == false){sensors.setFollowAngleNAVX(0);}
     		b_EnableGyroNAVX = true;
     		drivetrain.drive.arcadeDrive(forward, (sensors.getFollowAngleNAVX()-sensors.getPresentAngleNAVX())*Kp);
     	}
+    	//if robot is doing anything other than forward or backward turn NavX Drive straight off
     	else{
     		drivetrain.drive.arcadeDrive(forward, turn);
     		b_EnableGyroNAVX = false;
     	}
     	// END NAVX Gyro Code //
     	
-    	//xbox button RB
+    	//if else statement for first joystick button RB, switched between high and low gear
     	if (j_leftStick.getRawButton(6)){
     		air.s_DSShifter.set(true);
     	}
@@ -124,7 +120,7 @@ public class Robot extends IterativeRobot {
     		air.s_DSShifter.set(false);
     	}
     	
-    	//xbox button A
+    	//if else statement for button A on second joystick
     	if (j_rightStick.getRawButton(1)){
     		air.s_sol1.set(true);
     	}
@@ -132,7 +128,7 @@ public class Robot extends IterativeRobot {
     		air.s_sol1.set(false);
     	}
     	
-    	//xbox button B
+    	//if else statement for button B on second joystick
     	if (j_rightStick.getRawButton(2)){
     		air.s_sol2.set(true);
     	}
@@ -140,6 +136,7 @@ public class Robot extends IterativeRobot {
     		air.s_sol2.set(false);
     	}
     	
+    	//If else statement for #6 button on second joystick
     	if (j_rightStick.getRawButton(6)){
     		air.s_sol3.set(true);
     	}
@@ -147,10 +144,7 @@ public class Robot extends IterativeRobot {
     		air.s_sol3.set(false);
     	}
     	
-    	//Temporary to run grip
-    	//tc.setClosedLoopControl(true);
-    	
-    	
+    	//Put values on SmartDashBoard
     	SmartDashboard.putNumber("Gyro", sensors.analogGyro.getAngle());
     	SmartDashboard.putNumber("Gyro-NAVX", sensors.ahrs.getAngle());    	
     	SmartDashboard.putNumber("Gyro-NAVX", sensors.ahrs.getAngle());
@@ -158,20 +152,19 @@ public class Robot extends IterativeRobot {
 	SmartDashboard.putNumber("left side inches", drivetrain.getLeftQuadPosition());
 	SmartDashboard.putNumber("right side inches", drivetrain.getRightQuadPosition());
     	
+	//Updating the values put on SmartDashboard
     	SmartDashboard.updateValues();
     
 	}
 		
-//	public void checkMinDisplay(){
-//		this.bp_MinDisplay = Preferences.getInstance().getBoolean("R_MinDisplay(bool)", (true));
-//	}
-	
+	//When no Auton is called this one will be run
 	public void defaultAuton(){
 		if (autonSelected == defaultAuton){}
 	}
 	
+	//The most basic Auton: Drive forward 10 feet and stop
 	public void DriveBaseLine(){
-		//if(){}
+	
 		
 	}
 

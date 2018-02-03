@@ -10,26 +10,31 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.interfaces.Potentiometer;
 
 public class Sensors{
-	
+	//names sensors and its type
 	ADXRS450_Gyro analogGyro;
 	AHRS ahrs;
 	Potentiometer TestPot;
 	private AnalogInput mAnalogInputRevAirSensor; 
 
+	//create and put doubles here
 	double followAngle;
     double rotateToAngleRate;
 
+    //creates a timer
 	Timer counter;
 
 	public Sensors(){
+		//create the sensor named above and call its port number and any other needed settings
 		analogGyro = new ADXRS450_Gyro();
+		mAnalogInputRevAirSensor = new AnalogInput(1);
 		
 		//no smartDashBoard output
 		TestPot = new AnalogPotentiometer(0, 360, 30);
-		mAnalogInputRevAirSensor = new AnalogInput(1);
 		 
+		//resets Gryo to 0 at beginning of code
 		analogGyro.reset();
 		
+		// tries to call NavX and if it does not respond an printout appears in the driver station
 	    try {
 	        ahrs = new AHRS(SPI.Port.kMXP);
 	    } catch (RuntimeException ex ) {
@@ -45,14 +50,17 @@ public class Sensors{
 	 }
 	
 	// NAVX Code
+	 //sets the follow angle by getting angle and then getting the offset
 	public void setFollowAngleNAVX(double offset){
 		this.followAngle = this.ahrs.getAngle() + offset;
 	}
 	
+	//makes public and gets the follow angle
 	public double getFollowAngleNAVX() {
 		return this.followAngle;
 	}
 	
+	//makes public and gets the present angles
 	public double getPresentAngleNAVX(){
 		return this.ahrs.getAngle();
 	}
