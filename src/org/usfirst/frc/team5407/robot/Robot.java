@@ -235,6 +235,8 @@ public class Robot extends IterativeRobot {
 		public int getHeight();
 		public int getFps();
 		public boolean getIsUsingDefaultSettings();
+		public void setDefaultSettings();
+		public void setObjectTrackerSettings();
 	}
 
 	public class CameraSettings implements ICameraSettings {
