@@ -60,7 +60,7 @@ public class Robot extends IterativeRobot {
 		// BEGIN JeVois Code //
 		// Get default camera settings
 		_currentCameraSettings = new CameraSettings();
-
+		
 		// Tries to reach camera camera and if not, it prints out a failed 
 		// Without this if it did not connect, the whole program would crash
 		int tryCount = 0;
@@ -105,18 +105,35 @@ public class Robot extends IterativeRobot {
 		}
 		loopCount = 0;
 		// END JeVois Code // 
+		
+		chooser = new SendableChooser<String>();
+		chooser.addDefault("Default Auton", defaultAuton);
+		chooser.addObject("Drive to Baseline", DriveBaseLine);
+		SmartDashboard.putData("Auton Choices", chooser);
+
+	}
+	
+	public void robotPeriodic() {}
+	
+	public void disabledInit() {}
+	
+	public void disabledPeriodic() {
+		
+		autonSelected = chooser.getSelected();
+		SmartDashboard.putString("My Selected Auton is ", autonSelected);
 	}
 
 	public void autonInit() {
 		// Zero and initalize values for auton 
 		air.initializeAir();
-
-		// Auton Chooser and its SmartDashBoard component
-		autonSelected = chooser.getSelected();
-		SmartDashboard.putString("My Selected Auton is ", autonSelected);
 	}
 
 	public void autonPeriodic() {
+		
+		
+		autonSelected = chooser.getSelected();
+		SmartDashboard.putString("My Selected Auton is ", autonSelected);
+		
 		// If else statement for auton selection
 		if (autonSelected == defaultAuton) {
 			defaultAuton();
@@ -182,6 +199,7 @@ public class Robot extends IterativeRobot {
 		SmartDashboard.putNumber("Air PSI", sensors.getAirPressurePsi());
 		SmartDashboard.putNumber("left side inches", drivetrain.getLeftQuadPosition());
 		SmartDashboard.putNumber("right side inches", drivetrain.getRightQuadPosition());
+		// Auton Chooser and its SmartDashBoard component
 
 		// Updating the values put on SmartDashboard
 		SmartDashboard.updateValues();
