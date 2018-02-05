@@ -14,8 +14,6 @@ public class DriveTrain {
 	double RightsideQuadraturePosition = 0.0;
 	double LeftsideQuadraturePosition = 0.0;
 	
-	//double leftmath;
-	
 	public DriveTrain(){	
 
 		/* talons for arcade drive */
@@ -33,6 +31,7 @@ public class DriveTrain {
 		// Calling differentalDrive and says what motors are in it, we only need the front ones because the back ones follow them
 		drive = new DifferentialDrive(frontLeftDriveMotor, frontRightDriveMotor);
 	}
+
 	// Encoder for left side, gets value from encoder, and returns a value in inches divided by 3313 then multiples by the wheel diameter * Pi 
 	public double getLeftQuadPosition(){		   	
 		//return  (-frontRightDriveMotor.getSensorCollection().getQuadraturePosition()*1.0 / 3313 * 4 * Math.PI);

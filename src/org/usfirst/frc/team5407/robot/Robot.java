@@ -25,6 +25,7 @@ public class Robot extends IterativeRobot {
 	Sensors sensors;
 	Air air;
 	Inputs inputs;
+	Constants constants;
 
 	DriveTrain drivetrain;
 	// JeVois Variables
@@ -126,6 +127,9 @@ public class Robot extends IterativeRobot {
 	public void autonInit() {
 		// Zero and initalize values for auton 
 		air.initializeAir();
+		
+		drivetrain.frontLeftDriveMotor.setSelectedSensorPosition(constants.sensorpos, 0, 10);
+		drivetrain.frontRightDriveMotor.setSelectedSensorPosition(constants.sensorpos, 0, 10);
 	}
 
 	public void autonPeriodic() {
@@ -147,6 +151,9 @@ public class Robot extends IterativeRobot {
 	public void teleopInit() {
 		// Zero and initialize all inputs and sensors for teleop
 		air.initializeAir();
+		
+	//	drivetrain.frontLeftDriveMotor.setSelectedSensorPosition(constants.sensorpos, 0, 10);
+	//	drivetrain.frontRightDriveMotor.setSelectedSensorPosition(constants.sensorpos, 0, 10);
 	}
 
 	public void teleopPeriodic() {
@@ -229,6 +236,7 @@ public class Robot extends IterativeRobot {
 
 	// The most basic Auton: Drive forward 10 feet and stop
 	public void DriveBaseLine() {
+		
 	}
 
 	// Private camera settings code
