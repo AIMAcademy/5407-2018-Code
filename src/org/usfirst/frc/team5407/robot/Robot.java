@@ -55,6 +55,7 @@ public class Robot extends IterativeRobot {
 
 		// Called 4 solenoids in the air class
 		air = new Air(0, 1, 2, 3);
+		constants = new Constants();
 
 		// BEGIN JeVois Code //
 		// Get default camera settings
@@ -110,6 +111,9 @@ public class Robot extends IterativeRobot {
 		chooser.addObject("Drive to Baseline", driveBaseLine);
 		chooser.addObject("Turn 90 Right", turn90Right);
 		SmartDashboard.putData("Auton Choices", chooser);
+		
+		//drivetrain.frontLeftDriveMotor.setSelectedSensorPosition(constants.encoderpos, 0, 10);
+		//drivetrain.frontRightDriveMotor.setSelectedSensorPosition(constants.encoderpos, 0, 10);
 
 	}
 	
@@ -119,20 +123,32 @@ public class Robot extends IterativeRobot {
 	
 	public void disabledPeriodic() {
 		
-		autonSelected = chooser.getSelected();
-		SmartDashboard.putString("My Selected Auton is ", autonSelected);
+		//autonSelected = chooser.getSelected();
+		//SmartDashboard.putString("My Selected Auton is ", autonSelected);
 	}
 
-	public void autonInit() {
+	public void autonomousInit() {
 		// Zero and initalize values for auton 
 		air.initializeAir();
 		
 		drivetrain.frontLeftDriveMotor.setSelectedSensorPosition(constants.encoderpos, 0, 10);
 		drivetrain.frontRightDriveMotor.setSelectedSensorPosition(constants.encoderpos, 0, 10);
+		
+		sensors.ahrs.reset();
 	}
 
-	public void autonPeriodic() {
+	public void autonomousPeriodic() {
 		
+		//drivetrain.frontLeftDriveMotor.setSelectedSensorPosition(constants.encoderpos, 0, 10);
+		//drivetrain.frontRightDriveMotor.setSelectedSensorPosition(constants.encoderpos, 0, 10);
+		
+		// Getting the encoder values for the drivetrain and cooking and returning them
+		drivetrain.getLeftQuadPosition();
+		drivetrain.getRightQuadPosition();
+		
+		sensors.getPresentAngleNAVX();
+		sensors.getFollowAngleNAVX();
+		sensors.ahrs.getAngle();
 		
 		autonSelected = chooser.getSelected();
 		SmartDashboard.putString("My Selected Auton is ", autonSelected);
@@ -145,6 +161,15 @@ public class Robot extends IterativeRobot {
 		}else if (autonSelected == turn90Right) {
 			turn90Right();
 		}
+		
+		
+		//SmartDashboard.putNumber("Gyro-NAVX", sensors.ahrs.getAngle());
+		SmartDashboard.putNumber("Gyro-NAVX", sensors.ahrs.getAngle());
+		SmartDashboard.putNumber("Air PSI", sensors.getAirPressurePsi());
+		SmartDashboard.putNumber("left side inches", drivetrain.getLeftQuadPosition());
+		SmartDashboard.putNumber("right side inches", drivetrain.getRightQuadPosition());
+		SmartDashboard.updateValues();
+		
 	}
 
 	public void teleopInit() {
@@ -200,7 +225,7 @@ public class Robot extends IterativeRobot {
 
 		// Puts values on SmartDashBoard
 		// SmartDashboard.putNumber("Gyro", sensors.analogGyro.getAngle());
-		SmartDashboard.putNumber("Gyro-NAVX", sensors.ahrs.getAngle());
+		//SmartDashboard.putNumber("Gyro-NAVX", sensors.ahrs.getAngle());
 		SmartDashboard.putNumber("Gyro-NAVX", sensors.ahrs.getAngle());
 		SmartDashboard.putNumber("Air PSI", sensors.getAirPressurePsi());
 		SmartDashboard.putNumber("left side inches", drivetrain.getLeftQuadPosition());
@@ -229,14 +254,13 @@ public class Robot extends IterativeRobot {
 
 	// When no Auton is called this one will be run, we just sit there
 	public void defaultAuton() {
-		if (autonSelected == defaultAuton) {
-		}
+		if (autonSelected == defaultAuton) {}
 	}
 
 	// The most basic Auton: Drive forward 10 feet and stop, needs testing and tuning!!!!!
 	public void driveBaseLine() {
 		if (drivetrain.getLeftQuadPosition() < 60 && drivetrain.getRightQuadPosition() < 60) {
-			drivetrain.drive.arcadeDrive(0.25, (sensors.getFollowAngleNAVX() - sensors.getPresentAngleNAVX()) * constants.Kp);
+			drivetrain.drive.arcadeDrive(0.50, 0);
 		}else {
 			drivetrain.drive.arcadeDrive(0, 0);
 		}
@@ -244,8 +268,8 @@ public class Robot extends IterativeRobot {
 
 	//deff needs testing because I have little idea of what it will do!!!
 	public void turn90Right() {
-		if(sensors.getPresentAngleNAVX() < 90) {
-			drivetrain.drive.arcadeDrive(.20, 90 - sensors.getPresentAngleNAVX());
+		if(sensors.ahrs.getAngle() < 90) {
+			drivetrain.drive.arcadeDrive(0, 0.5);
 		}else {
 			drivetrain.drive.arcadeDrive(0, 0);
 		}
