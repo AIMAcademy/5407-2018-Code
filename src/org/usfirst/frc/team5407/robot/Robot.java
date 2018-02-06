@@ -183,12 +183,12 @@ public class Robot extends IterativeRobot {
 	public void teleopPeriodic() {
 		inputs.ReadValues();
 
-		air.s_DSShifter.set(inputs.isDualSpeedShifterButtonPressed);
-		air.s_sol1.set(inputs.isSolenoidOneButtonPressed);
-		air.s_sol2.set(inputs.isSolenoidTwoButtonPressed);
-		air.s_sol3.set(inputs.isSolenoidThreeButtonPressed);
+		air.s_DSShifter.set(inputs.getIsDualSpeedShifterButtonPressed());
+		air.s_sol1.set(inputs.getIsSolenoidOneButtonPressed());
+		air.s_sol2.set(inputs.getIsSolenoidTwoButtonPressed());
+		air.s_sol3.set(inputs.getIsSolenoidThreeButtonPressed());
 
-		boolean setCameraToTrackObjects = inputs.isCameraButtonPressed;
+		boolean setCameraToTrackObjects = inputs.getIsCameraButtonPressed();
 		if (setCameraToTrackObjects && _currentCameraSettings.getIsUsingDefaultSettings()) {
 			_currentCameraSettings.setObjectTrackerSettings();
 			setJeVoisVideoMode();
@@ -278,7 +278,7 @@ public class Robot extends IterativeRobot {
 	// Private camera settings code
 	private interface ICameraSettings {
 		// Any class that "implements" this interface must define these methods.
-		// This way we know any camera settings class can getWidth, getHeight, and getFps.
+		// This way we know any camera settings class can getWidth, getHeight, and getFps, etc.
 		public int getWidth();
 		public int getHeight();
 		public int getFps();
@@ -303,18 +303,18 @@ public class Robot extends IterativeRobot {
 		public boolean getIsUsingDefaultSettings() { return isUsingDefaultSettings; }
 
 		public void setDefaultSettings() {
-			this.width = 176;
-			this.height = 144;
-			this.fps = 60;
+			width = 176;
+			height = 144;
+			fps = 60;
 
-			this.isUsingDefaultSettings = true;
+			isUsingDefaultSettings = true;
 		}
 		public void setObjectTrackerSettings() {
-			this.width = 320;
-			this.height = 254;
-			this.fps = 60;
+			width = 320;
+			height = 254;
+			fps = 60;
 
-			this.isUsingDefaultSettings = false;
+			isUsingDefaultSettings = false;
 		}
 	}
 	// End private camera settings
