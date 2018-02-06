@@ -45,7 +45,8 @@ public class DriveTrain {
 		//return  (-frontLeftDriveMotor.getSensorCollection().getQuadraturePosition()*1.0 / 3313 * 4 * Math.PI);
 		LeftsideQuadraturePosition = this.frontLeftDriveMotor.getSensorCollection().getQuadraturePosition();
 		// System.out.println("Left side quad position: " + LeftsideQuadraturePosition);  // Prints position to console
-		return (LeftsideQuadraturePosition / 3313 * 4 * Math.PI);
+		return (LeftsideQuadraturePosition / 3313 * 4 * Math.PI) * -1;
+		//negative 1 added for invert sensor, needs testing!!!
 	}
 
 }

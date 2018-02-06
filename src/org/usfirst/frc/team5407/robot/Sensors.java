@@ -29,9 +29,6 @@ public class Sensors{
 		
 		//no smartDashBoard output
 		TestPot = new AnalogPotentiometer(0, 360, 30);
-		 
-		//resets Gryo to 0 at beginning of code
-		// analogGyro.reset();
 		
 		// tries to call NavX and if it does not respond an printout appears in the driver station
 	    try {

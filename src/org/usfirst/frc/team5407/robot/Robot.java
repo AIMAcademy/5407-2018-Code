@@ -35,16 +35,14 @@ public class Robot extends IterativeRobot {
 
 	private ICameraSettings _currentCameraSettings;
 
-	// Gyro kp, the smaller the value the small the corrections get
-	double Kp = 0.015;
-
 	//	public void disabledPeriodic() {
 	//		checkJeVois();
 	//	}
 
 	// Auton, creating string for new auton and has a sendable chooser at the end of it
 	final String defaultAuton = "Default Auton";
-	final String DriveBaseLine = "Drive BaseLine";
+	final String driveBaseLine = "Drive BaseLine"; //Needs Testing
+	final String turn90Right = "Turn 90 Right"; //Needs Testing
 	String autonSelected;
 	SendableChooser<String> chooser;
 
@@ -109,7 +107,8 @@ public class Robot extends IterativeRobot {
 		
 		chooser = new SendableChooser<String>();
 		chooser.addDefault("Default Auton", defaultAuton);
-		chooser.addObject("Drive to Baseline", DriveBaseLine);
+		chooser.addObject("Drive to Baseline", driveBaseLine);
+		chooser.addObject("Turn 90 Right", turn90Right);
 		SmartDashboard.putData("Auton Choices", chooser);
 
 	}
@@ -128,8 +127,8 @@ public class Robot extends IterativeRobot {
 		// Zero and initalize values for auton 
 		air.initializeAir();
 		
-		drivetrain.frontLeftDriveMotor.setSelectedSensorPosition(constants.sensorpos, 0, 10);
-		drivetrain.frontRightDriveMotor.setSelectedSensorPosition(constants.sensorpos, 0, 10);
+		drivetrain.frontLeftDriveMotor.setSelectedSensorPosition(constants.encoderpos, 0, 10);
+		drivetrain.frontRightDriveMotor.setSelectedSensorPosition(constants.encoderpos, 0, 10);
 	}
 
 	public void autonPeriodic() {
@@ -141,10 +140,10 @@ public class Robot extends IterativeRobot {
 		// If else statement for auton selection
 		if (autonSelected == defaultAuton) {
 			defaultAuton();
-		}
-
-		else if (autonSelected == DriveBaseLine) {
-			DriveBaseLine();
+		}else if (autonSelected == driveBaseLine) {
+			driveBaseLine();
+		}else if (autonSelected == turn90Right) {
+			turn90Right();
 		}
 	}
 
@@ -191,7 +190,7 @@ public class Robot extends IterativeRobot {
 				sensors.setFollowAngleNAVX(0);
 			}
 			b_EnableGyroNAVX = true;
-			drivetrain.drive.arcadeDrive(forward, (sensors.getFollowAngleNAVX() - sensors.getPresentAngleNAVX()) * Kp);
+			drivetrain.drive.arcadeDrive(forward, (sensors.getFollowAngleNAVX() - sensors.getPresentAngleNAVX()) * constants.Kp);
 		}
 		// If robot is doing anything other than forward or backward turn NavX Drive straight off
 		else {
@@ -228,15 +227,28 @@ public class Robot extends IterativeRobot {
 		loopCount = 0;
 	}
 
-	// When no Auton is called this one will be run
+	// When no Auton is called this one will be run, we just sit there
 	public void defaultAuton() {
 		if (autonSelected == defaultAuton) {
 		}
 	}
 
-	// The most basic Auton: Drive forward 10 feet and stop
-	public void DriveBaseLine() {
-		
+	// The most basic Auton: Drive forward 10 feet and stop, needs testing and tuning!!!!!
+	public void driveBaseLine() {
+		if (drivetrain.getLeftQuadPosition() < 60 && drivetrain.getRightQuadPosition() < 60) {
+			drivetrain.drive.arcadeDrive(0.25, (sensors.getFollowAngleNAVX() - sensors.getPresentAngleNAVX()) * constants.Kp);
+		}else {
+			drivetrain.drive.arcadeDrive(0, 0);
+		}
+	}
+
+	//deff needs testing because I have little idea of what it will do!!!
+	public void turn90Right() {
+		if(sensors.getPresentAngleNAVX() < 90) {
+			drivetrain.drive.arcadeDrive(.20, 90 - sensors.getPresentAngleNAVX());
+		}else {
+			drivetrain.drive.arcadeDrive(0, 0);
+		}
 	}
 
 	// Private camera settings code
