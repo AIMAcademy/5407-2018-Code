@@ -17,8 +17,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
- * This is a demo program showing the use of the RobotDrive class, specifically
- * it contains the code necessary to operate a robot with tank drive.
+ * This program contains FRC team 5407's code for the 2018 competition season 
  */
 public class Robot extends IterativeRobot {
 	// Create new classes and call them here 
@@ -39,7 +38,7 @@ public class Robot extends IterativeRobot {
 	//		checkJeVois();
 	//	}
 
-	// Auton, creating string for new auton and has a sendable chooser at the end of it
+	// Autos, creating string for new auton and has a sendable chooser at the end of it
 	final String defaultAuton = "Default Auton";
 	final String driveBaseLine = "Drive BaseLine"; //Needs Testing
 	final String turn90Right = "Turn 90 Right"; //Needs Testing
@@ -48,14 +47,14 @@ public class Robot extends IterativeRobot {
 
 	@Override
 	public void robotInit() {
-		// Makes classes recongized in program and execute
+		// Makes classes recognized in program and execute
 		drivetrain = new DriveTrain();
 		sensors = new Sensors();
-		inputs = new Inputs(0, 1);
-
-		// Called 4 solenoids in the air class
-		air = new Air(0, 1, 2, 3);
+		inputs = new Inputs(0, 1); 
 		constants = new Constants();
+
+		// Calls 4 solenoids in the air class
+		air = new Air(0, 1, 2, 3);
 
 		// BEGIN JeVois Code //
 		// Get default camera settings
@@ -112,9 +111,6 @@ public class Robot extends IterativeRobot {
 		chooser.addObject("Turn 90 Right", turn90Right);
 		SmartDashboard.putData("Auton Choices", chooser);
 		
-		//drivetrain.frontLeftDriveMotor.setSelectedSensorPosition(constants.encoderpos, 0, 10);
-		//drivetrain.frontRightDriveMotor.setSelectedSensorPosition(constants.encoderpos, 0, 10);
-
 	}
 	
 	public void robotPeriodic() {}
@@ -131,25 +127,23 @@ public class Robot extends IterativeRobot {
 		// Zero and initalize values for auton 
 		air.initializeAir();
 		
+		//resets both drive encoders to zero
 		drivetrain.frontLeftDriveMotor.setSelectedSensorPosition(constants.encoderpos, 0, 10);
 		drivetrain.frontRightDriveMotor.setSelectedSensorPosition(constants.encoderpos, 0, 10);
 		
+		//resets gyro to zero
 		sensors.ahrs.reset();
 	}
 
-	public void autonomousPeriodic() {
-		
-		//drivetrain.frontLeftDriveMotor.setSelectedSensorPosition(constants.encoderpos, 0, 10);
-		//drivetrain.frontRightDriveMotor.setSelectedSensorPosition(constants.encoderpos, 0, 10);
-		
+	public void autonomousPeriodic() {		
 		// Getting the encoder values for the drivetrain and cooking and returning them
 		drivetrain.getLeftQuadPosition();
 		drivetrain.getRightQuadPosition();
-		
+		// Gets all needed angles from NavX
 		sensors.getPresentAngleNAVX();
 		sensors.getFollowAngleNAVX();
 		sensors.ahrs.getAngle();
-		
+		// Gets auto choosen and displays it on SmartDashboard
 		autonSelected = chooser.getSelected();
 		SmartDashboard.putString("My Selected Auton is ", autonSelected);
 		
@@ -162,8 +156,7 @@ public class Robot extends IterativeRobot {
 			turn90Right();
 		}
 		
-		
-		//SmartDashboard.putNumber("Gyro-NAVX", sensors.ahrs.getAngle());
+		//Puts values on SmartDashboard in Auto
 		SmartDashboard.putNumber("Gyro-NAVX", sensors.ahrs.getAngle());
 		SmartDashboard.putNumber("Air PSI", sensors.getAirPressurePsi());
 		SmartDashboard.putNumber("left side inches", drivetrain.getLeftQuadPosition());
@@ -175,14 +168,12 @@ public class Robot extends IterativeRobot {
 	public void teleopInit() {
 		// Zero and initialize all inputs and sensors for teleop
 		air.initializeAir();
-		
-	//	drivetrain.frontLeftDriveMotor.setSelectedSensorPosition(constants.sensorpos, 0, 10);
-	//	drivetrain.frontRightDriveMotor.setSelectedSensorPosition(constants.sensorpos, 0, 10);
 	}
 
 	public void teleopPeriodic() {
 		inputs.ReadValues();
 
+		//put all buttons here
 		air.s_DSShifter.set(inputs.getIsDualSpeedShifterButtonPressed());
 		air.s_sol1.set(inputs.getIsSolenoidOneButtonPressed());
 		air.s_sol2.set(inputs.getIsSolenoidTwoButtonPressed());
@@ -223,14 +214,11 @@ public class Robot extends IterativeRobot {
 			b_EnableGyroNAVX = false;
 		}
 
-		// Puts values on SmartDashBoard
-		// SmartDashboard.putNumber("Gyro", sensors.analogGyro.getAngle());
-		//SmartDashboard.putNumber("Gyro-NAVX", sensors.ahrs.getAngle());
+		//Puts values on SmartDashBoard
 		SmartDashboard.putNumber("Gyro-NAVX", sensors.ahrs.getAngle());
 		SmartDashboard.putNumber("Air PSI", sensors.getAirPressurePsi());
 		SmartDashboard.putNumber("left side inches", drivetrain.getLeftQuadPosition());
 		SmartDashboard.putNumber("right side inches", drivetrain.getRightQuadPosition());
-		// Auton Chooser and its SmartDashBoard component
 
 		// Updating the values put on SmartDashboard
 		SmartDashboard.updateValues();

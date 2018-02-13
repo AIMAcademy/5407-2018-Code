@@ -24,7 +24,6 @@ public class Sensors{
 
 	public Sensors(){
 		//create the sensor named above and call its port number and any other needed settings
-		// analogGyro = new ADXRS450_Gyro();
 		mAnalogInputRevAirSensor = new AnalogInput(1);
 		
 		//no smartDashBoard output
