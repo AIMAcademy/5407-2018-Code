@@ -36,7 +36,7 @@ public class Robot extends IterativeRobot {
 
 	private ICameraSettings _currentCameraSettings;
 	
-	private IIntakeSettings _currentIntakeSettings;
+	//private IIntakeSettings _currentIntakeSettings;
 
 	//	public void disabledPeriodic() {
 	//		checkJeVois();
@@ -60,9 +60,9 @@ public class Robot extends IterativeRobot {
 		intake = new Intake(1,2);
 
 		// Calls 4 solenoids in the air class
-		air = new Air(0, 1, 2, 3);
+		air = new Air(0, 1, 2, 4);
 
-		_currentIntakeSettings = new IntakeSettings();
+		//_currentIntakeSettings = new IntakeSettings();
 		// BEGIN JeVois Code //
 		// Get default camera settings
 		_currentCameraSettings = new CameraSettings();
@@ -185,17 +185,30 @@ public class Robot extends IterativeRobot {
 		air.s_DSShifter.set(inputs.getIsDualSpeedShifterButtonPressed());
 		air.s_sol1.set(inputs.getIsSolenoidOneButtonPressed());
 		air.s_sol2.set(inputs.getIsSolenoidTwoButtonPressed());
-		air.s_sol3.set(inputs.getIsSolenoidThreeButtonPressed());
+		air.s_sol4.set(inputs.getIsSolenoidThreeButtonPressed());
 		
-		
-		boolean setIntakeUnjamSettings = inputs.getIsIntakeButtonPressed();
-		if (setIntakeUnjamSettings && _currentIntakeSettings.getIsUsingDefaultIntakeSetting()) {
-			_currentIntakeSettings.setIntakeUnjamSettings();
-			setIntakeMode();
-		} else if (!setIntakeUnjamSettings && !_currentIntakeSettings.getIsUsingDefaultIntakeSetting()) {
-			_currentIntakeSettings.setDefaultIntakeSettings();
-			setIntakeMode();
+		if(inputs.getIsIntakeButtonPressed() == true) {
+			intake.mot_leftSideIntake.set(-0.8);;
+			intake.mot_rightSideIntake.set(0.8);
+		}else if (inputs.getisUnjamButtonPressed() == true) {
+			intake.mot_leftSideIntake.set(0.8);;
+			intake.mot_rightSideIntake.set(-0.8);
+		}else {
+			intake.mot_leftSideIntake.set(0.0);;
+			intake.mot_rightSideIntake.set(0.0);
 		}
+		
+	
+		
+		
+//		boolean setIntakeUnjamSettings = inputs.getIsIntakeButtonPressed();
+//		if (setIntakeUnjamSettings && _currentIntakeSettings.getIsUsingDefaultIntakeSetting()) {
+//			_currentIntakeSettings.setIntakeUnjamSettings();
+//			setIntakeMode();
+//		} else if (!setIntakeUnjamSettings && !_currentIntakeSettings.getIsUsingDefaultIntakeSetting()) {
+//			_currentIntakeSettings.setDefaultIntakeSettings();
+//			setIntakeMode();
+//		}
 
 		boolean setCameraToTrackObjects = inputs.getIsCameraButtonPressed();
 		if (setCameraToTrackObjects && _currentCameraSettings.getIsUsingDefaultSettings()) {
@@ -261,10 +274,10 @@ public class Robot extends IterativeRobot {
 		loopCount = 0;
 	}
 
-	public void setIntakeMode() {
-		intake.mot_leftSideIntake.set(_currentIntakeSettings.getLeftSpeed());
-		intake.mot_rightSideIntake.set(_currentIntakeSettings.getRightSpeed());
-	}
+//	public void setIntakeMode() {
+//		intake.mot_leftSideIntake.set(_currentIntakeSettings.getLeftSpeed());
+//		intake.mot_rightSideIntake.set(_currentIntakeSettings.getRightSpeed());
+//	}
 	
 	// When no Auton is called this one will be run, we just sit there
 	public void defaultAuton() {
@@ -333,45 +346,39 @@ public class Robot extends IterativeRobot {
 	}
 	// End private camera settings
 	
-	private interface IIntakeSettings {
-		public double getLeftSpeed();
-		public double getRightSpeed();
-		public boolean getIsUsingDefaultIntakeSetting();
-		public void setDefaultIntakeSettings();
-		public void setIntakeUnjamSettings();
-	}
-	
-	public class IntakeSettings implements IIntakeSettings {
-		private double LeftSideSpeed;
-		private double RightSideSpeed;
-		private boolean isUsingDefaultIntakeSettings;
-		
-		public IntakeSettings() {
-			setDefaultIntakeSettings();
-		}
-		
-		public double getLeftSpeed() { return LeftSideSpeed; }
-		public double getRightSpeed() { return RightSideSpeed; }
-		public boolean getIsUsingDefaultIntakeSettings() { return isUsingDefaultIntakeSettings; }
-		
-		public void setDefaultIntakeSettings() {
-			LeftSideSpeed = -0.8;
-			RightSideSpeed = 0.8;
-			
-			isUsingDefaultIntakeSettings = true;
-		}
-		
-		public void setIntakeUnjamSettings() {
-			LeftSideSpeed = 0.0;
-			RightSideSpeed = 0.0;
-			
-			isUsingDefaultIntakeSettings = false;
-		}
-
-		@Override
-		public boolean getIsUsingDefaultIntakeSetting() {
-			// TODO Auto-generated method stub
-			return false;
-		}
-	}
+//	private interface IIntakeSettings {
+//		public double getLeftSpeed();
+//		public double getRightSpeed();
+//		public boolean getIsUsingDefaultIntakeSetting();
+//		public void setDefaultIntakeSettings();
+//		public void setIntakeUnjamSettings();
+//	}
+//	
+//	public class IntakeSettings implements IIntakeSettings {
+//		private double LeftSideSpeed;
+//		private double RightSideSpeed;
+//		private boolean isUsingDefaultIntakeSettings;
+//		
+//		public IntakeSettings() {
+//			setDefaultIntakeSettings();
+//		}
+//		
+//		public double getLeftSpeed() { return LeftSideSpeed; }
+//		public double getRightSpeed() { return RightSideSpeed; }
+//		public boolean getIsUsingDefaultIntakeSettings() { return isUsingDefaultIntakeSettings; }
+//		
+//		public void setDefaultIntakeSettings() {
+//			LeftSideSpeed = -0.8;
+//			RightSideSpeed = 0.8;
+//			
+//			isUsingDefaultIntakeSettings = true;
+//		}
+//		
+//		public void setIntakeUnjamSettings() {
+//			LeftSideSpeed = 0.0;
+//			RightSideSpeed = 0.0;
+//			
+//			isUsingDefaultIntakeSettings = false;
+//		}
+//	}
 }
