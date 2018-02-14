@@ -1,6 +1,5 @@
 package org.usfirst.frc.team5407.robot;
 
-
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 

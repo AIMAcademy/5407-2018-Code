@@ -7,10 +7,12 @@ public class Inputs {
     public Joystick j_rightStick;
 
     private boolean isCameraButtonPressed;
+    private boolean isIntakeButtonPressed;
     private boolean isDualSpeedShifterButtonPressed;
     private boolean isSolenoidOneButtonPressed;
     private boolean isSolenoidTwoButtonPressed;
     private boolean isSolenoidThreeButtonPressed;
+
 
     public Inputs(int leftJoystickPort, int rightJoystickPort) {
         j_leftStick = new Joystick(leftJoystickPort);
@@ -22,6 +24,7 @@ public class Inputs {
     public boolean getIsSolenoidOneButtonPressed() { return isSolenoidOneButtonPressed; }
     public boolean getIsSolenoidTwoButtonPressed() { return isSolenoidTwoButtonPressed; }
     public boolean getIsSolenoidThreeButtonPressed() { return isSolenoidThreeButtonPressed; }
+    public boolean getIsIntakeButtonPressed() { return isIntakeButtonPressed;  }
 
     public void ReadValues() {
         isCameraButtonPressed = j_leftStick.getRawButton(5);
@@ -29,5 +32,7 @@ public class Inputs {
         isSolenoidOneButtonPressed = j_rightStick.getRawButton(1);
         isSolenoidTwoButtonPressed = j_rightStick.getRawButton(2);
         isSolenoidThreeButtonPressed = j_rightStick.getRawButton(6);
+        isIntakeButtonPressed = j_rightStick.getRawButton(4);
+
     }
 }

@@ -25,14 +25,18 @@ public class Robot extends IterativeRobot {
 	Air air;
 	Inputs inputs;
 	Constants constants;
-
+	Lift lift;
 	DriveTrain drivetrain;
+	Intake intake;
+
 	// JeVois Variables
 	private SerialPort jevois = null;
 	private int loopCount;
 	private UsbCamera jevoisCam;
 
 	private ICameraSettings _currentCameraSettings;
+	
+	private IIntakeSettings _currentIntakeSettings;
 
 	//	public void disabledPeriodic() {
 	//		checkJeVois();
@@ -52,13 +56,17 @@ public class Robot extends IterativeRobot {
 		sensors = new Sensors();
 		inputs = new Inputs(0, 1); 
 		constants = new Constants();
+		lift = new Lift(0);
+		intake = new Intake(1,2);
 
 		// Calls 4 solenoids in the air class
 		air = new Air(0, 1, 2, 3);
 
+		_currentIntakeSettings = new IntakeSettings();
 		// BEGIN JeVois Code //
 		// Get default camera settings
 		_currentCameraSettings = new CameraSettings();
+	
 		
 		// Tries to reach camera camera and if not, it prints out a failed 
 		// Without this if it did not connect, the whole program would crash
@@ -178,6 +186,16 @@ public class Robot extends IterativeRobot {
 		air.s_sol1.set(inputs.getIsSolenoidOneButtonPressed());
 		air.s_sol2.set(inputs.getIsSolenoidTwoButtonPressed());
 		air.s_sol3.set(inputs.getIsSolenoidThreeButtonPressed());
+		
+		
+		boolean setIntakeUnjamSettings = inputs.getIsIntakeButtonPressed();
+		if (setIntakeUnjamSettings && _currentIntakeSettings.getIsUsingDefaultIntakeSetting()) {
+			_currentIntakeSettings.setIntakeUnjamSettings();
+			setIntakeMode();
+		} else if (!setIntakeUnjamSettings && !_currentIntakeSettings.getIsUsingDefaultIntakeSetting()) {
+			_currentIntakeSettings.setDefaultIntakeSettings();
+			setIntakeMode();
+		}
 
 		boolean setCameraToTrackObjects = inputs.getIsCameraButtonPressed();
 		if (setCameraToTrackObjects && _currentCameraSettings.getIsUsingDefaultSettings()) {
@@ -193,8 +211,11 @@ public class Robot extends IterativeRobot {
 		drivetrain.getRightQuadPosition();
 
 		// Arcade Drive using first joystick
-		double forward = -inputs.j_leftStick.getY(); // xbox gampad left X, positive is forward
-		double turn = inputs.j_leftStick.getX(); // xbox gampad right X, positive means turn right
+		double forward = -inputs.j_leftStick.getY(); // xbox left X, positive is forward
+		double turn = inputs.j_leftStick.getX(); // xbox right X, positive means turn right
+		
+		//controls the lift pickup 
+		lift.mot_liftDart.set(inputs.j_rightStick.getY());
 
 		// BEGIN NAVX Gyro Code //
 		// Creates a boolean for enabling or disabling NavX
@@ -240,6 +261,11 @@ public class Robot extends IterativeRobot {
 		loopCount = 0;
 	}
 
+	public void setIntakeMode() {
+		intake.mot_leftSideIntake.set(_currentIntakeSettings.getLeftSpeed());
+		intake.mot_rightSideIntake.set(_currentIntakeSettings.getRightSpeed());
+	}
+	
 	// When no Auton is called this one will be run, we just sit there
 	public void defaultAuton() {
 		if (autonSelected == defaultAuton) {}
@@ -306,4 +332,46 @@ public class Robot extends IterativeRobot {
 		}
 	}
 	// End private camera settings
+	
+	private interface IIntakeSettings {
+		public double getLeftSpeed();
+		public double getRightSpeed();
+		public boolean getIsUsingDefaultIntakeSetting();
+		public void setDefaultIntakeSettings();
+		public void setIntakeUnjamSettings();
+	}
+	
+	public class IntakeSettings implements IIntakeSettings {
+		private double LeftSideSpeed;
+		private double RightSideSpeed;
+		private boolean isUsingDefaultIntakeSettings;
+		
+		public IntakeSettings() {
+			setDefaultIntakeSettings();
+		}
+		
+		public double getLeftSpeed() { return LeftSideSpeed; }
+		public double getRightSpeed() { return RightSideSpeed; }
+		public boolean getIsUsingDefaultIntakeSettings() { return isUsingDefaultIntakeSettings; }
+		
+		public void setDefaultIntakeSettings() {
+			LeftSideSpeed = -0.8;
+			RightSideSpeed = 0.8;
+			
+			isUsingDefaultIntakeSettings = true;
+		}
+		
+		public void setIntakeUnjamSettings() {
+			LeftSideSpeed = 0.0;
+			RightSideSpeed = 0.0;
+			
+			isUsingDefaultIntakeSettings = false;
+		}
+
+		@Override
+		public boolean getIsUsingDefaultIntakeSetting() {
+			// TODO Auto-generated method stub
+			return false;
+		}
+	}
 }
