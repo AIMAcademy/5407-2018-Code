@@ -6,7 +6,7 @@ public class Constants {
 	public final int encoderpos = 0;
 	
 	// Gyro kp, the smaller the value the small the corrections get
-	public final double Kp = 0.015;
+	public final double GyroKp = 0.015;
 
 
 

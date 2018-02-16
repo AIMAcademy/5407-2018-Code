@@ -11,14 +11,5 @@ public class Lift {
 		mot_liftDart.set(0.0);
 
 	}
-	
-	public void liftFast(double liftSpeed) {
-		this.mot_liftDart.set(liftSpeed * .50);
-	}
-	
-	public void liftSlow(double liftSpeed) {
-		this.mot_liftDart.set(liftSpeed * .25);
-	}
-	
 
 }

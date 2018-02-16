@@ -36,7 +36,6 @@ public class Robot extends IterativeRobot {
 
 	private ICameraSettings _currentCameraSettings;
 	
-	//private IIntakeSettings _currentIntakeSettings;
 
 	//	public void disabledPeriodic() {
 	//		checkJeVois();
@@ -47,8 +46,8 @@ public class Robot extends IterativeRobot {
 	final String driveBaseLine = "Drive BaseLine"; //Needs Testing
 	final String turn90Right = "Turn 90 Right"; //Needs Testing
 	String autonSelected;
-	SendableChooser<String> chooser;
-
+	SendableChooser<String> Autonchooser;
+	
 	@Override
 	public void robotInit() {
 		// Makes classes recognized in program and execute
@@ -62,11 +61,9 @@ public class Robot extends IterativeRobot {
 		// Calls 4 solenoids in the air class
 		air = new Air(0, 1, 2, 4);
 
-		//_currentIntakeSettings = new IntakeSettings();
 		// BEGIN JeVois Code //
 		// Get default camera settings
 		_currentCameraSettings = new CameraSettings();
-	
 		
 		// Tries to reach camera camera and if not, it prints out a failed 
 		// Without this if it did not connect, the whole program would crash
@@ -113,11 +110,11 @@ public class Robot extends IterativeRobot {
 		loopCount = 0;
 		// END JeVois Code // 
 		
-		chooser = new SendableChooser<String>();
-		chooser.addDefault("Default Auton", defaultAuton);
-		chooser.addObject("Drive to Baseline", driveBaseLine);
-		chooser.addObject("Turn 90 Right", turn90Right);
-		SmartDashboard.putData("Auton Choices", chooser);
+		Autonchooser = new SendableChooser<String>();
+		Autonchooser.addDefault("Default Auton", defaultAuton);
+		Autonchooser.addObject("Drive to Baseline", driveBaseLine);
+		Autonchooser.addObject("Turn 90 Right", turn90Right);
+		SmartDashboard.putData("Auton Choices", Autonchooser);
 		
 	}
 	
@@ -152,7 +149,7 @@ public class Robot extends IterativeRobot {
 		sensors.getFollowAngleNAVX();
 		sensors.ahrs.getAngle();
 		// Gets auto choosen and displays it on SmartDashboard
-		autonSelected = chooser.getSelected();
+		autonSelected = Autonchooser.getSelected();
 		SmartDashboard.putString("My Selected Auton is ", autonSelected);
 		
 		// If else statement for auton selection
@@ -197,18 +194,6 @@ public class Robot extends IterativeRobot {
 			intake.mot_leftSideIntake.set(0.0);;
 			intake.mot_rightSideIntake.set(0.0);
 		}
-		
-	
-		
-		
-//		boolean setIntakeUnjamSettings = inputs.getIsIntakeButtonPressed();
-//		if (setIntakeUnjamSettings && _currentIntakeSettings.getIsUsingDefaultIntakeSetting()) {
-//			_currentIntakeSettings.setIntakeUnjamSettings();
-//			setIntakeMode();
-//		} else if (!setIntakeUnjamSettings && !_currentIntakeSettings.getIsUsingDefaultIntakeSetting()) {
-//			_currentIntakeSettings.setDefaultIntakeSettings();
-//			setIntakeMode();
-//		}
 
 		boolean setCameraToTrackObjects = inputs.getIsCameraButtonPressed();
 		if (setCameraToTrackObjects && _currentCameraSettings.getIsUsingDefaultSettings()) {
@@ -228,7 +213,7 @@ public class Robot extends IterativeRobot {
 		double turn = inputs.j_leftStick.getX(); // xbox right X, positive means turn right
 		
 		//controls the lift pickup 
-		lift.mot_liftDart.set(inputs.j_rightStick.getY());
+		lift.mot_liftDart.set(-inputs.j_rightStick.getY());
 
 		// BEGIN NAVX Gyro Code //
 		// Creates a boolean for enabling or disabling NavX
@@ -240,7 +225,7 @@ public class Robot extends IterativeRobot {
 				sensors.setFollowAngleNAVX(0);
 			}
 			b_EnableGyroNAVX = true;
-			drivetrain.drive.arcadeDrive(forward, (sensors.getFollowAngleNAVX() - sensors.getPresentAngleNAVX()) * constants.Kp);
+			drivetrain.drive.arcadeDrive(forward, (sensors.getFollowAngleNAVX() - sensors.getPresentAngleNAVX()) * constants.GyroKp);
 		}
 		// If robot is doing anything other than forward or backward turn NavX Drive straight off
 		else {
@@ -253,6 +238,7 @@ public class Robot extends IterativeRobot {
 		SmartDashboard.putNumber("Air PSI", sensors.getAirPressurePsi());
 		SmartDashboard.putNumber("left side inches", drivetrain.getLeftQuadPosition());
 		SmartDashboard.putNumber("right side inches", drivetrain.getRightQuadPosition());
+		SmartDashboard.putNumber("Lift Pot", sensors.analogLiftPot.get());
 
 		// Updating the values put on SmartDashboard
 		SmartDashboard.updateValues();
@@ -273,11 +259,6 @@ public class Robot extends IterativeRobot {
 		System.out.println("wrote " + bytes + "/" + cmd.length() + " bytes");
 		loopCount = 0;
 	}
-
-//	public void setIntakeMode() {
-//		intake.mot_leftSideIntake.set(_currentIntakeSettings.getLeftSpeed());
-//		intake.mot_rightSideIntake.set(_currentIntakeSettings.getRightSpeed());
-//	}
 	
 	// When no Auton is called this one will be run, we just sit there
 	public void defaultAuton() {
@@ -346,39 +327,4 @@ public class Robot extends IterativeRobot {
 	}
 	// End private camera settings
 	
-//	private interface IIntakeSettings {
-//		public double getLeftSpeed();
-//		public double getRightSpeed();
-//		public boolean getIsUsingDefaultIntakeSetting();
-//		public void setDefaultIntakeSettings();
-//		public void setIntakeUnjamSettings();
-//	}
-//	
-//	public class IntakeSettings implements IIntakeSettings {
-//		private double LeftSideSpeed;
-//		private double RightSideSpeed;
-//		private boolean isUsingDefaultIntakeSettings;
-//		
-//		public IntakeSettings() {
-//			setDefaultIntakeSettings();
-//		}
-//		
-//		public double getLeftSpeed() { return LeftSideSpeed; }
-//		public double getRightSpeed() { return RightSideSpeed; }
-//		public boolean getIsUsingDefaultIntakeSettings() { return isUsingDefaultIntakeSettings; }
-//		
-//		public void setDefaultIntakeSettings() {
-//			LeftSideSpeed = -0.8;
-//			RightSideSpeed = 0.8;
-//			
-//			isUsingDefaultIntakeSettings = true;
-//		}
-//		
-//		public void setIntakeUnjamSettings() {
-//			LeftSideSpeed = 0.0;
-//			RightSideSpeed = 0.0;
-//			
-//			isUsingDefaultIntakeSettings = false;
-//		}
-//	}
 }

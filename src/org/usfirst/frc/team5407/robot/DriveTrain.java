@@ -17,11 +17,11 @@ public class DriveTrain {
 
 		/* talons for arcade drive */
 		// Both front motors have the encoders attached 
-		frontLeftDriveMotor = new WPI_TalonSRX(12); 		/* device IDs here (1 of 2) */
+		frontLeftDriveMotor = new WPI_TalonSRX(16); 		/* device IDs here (1 of 2) */
 		frontRightDriveMotor = new WPI_TalonSRX(15); 	
 
 		backLeftDriveSlave = new WPI_TalonSRX(11);
-		backRightDriveSlave = new WPI_TalonSRX(16);
+		backRightDriveSlave = new WPI_TalonSRX(12);
 
 		// The commands are sent to the first TalonSRX's then the same sent to the back ones
 		backLeftDriveSlave.follow(frontLeftDriveMotor);

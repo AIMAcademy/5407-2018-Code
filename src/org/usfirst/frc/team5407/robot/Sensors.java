@@ -7,12 +7,14 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.interfaces.Potentiometer;
+import edu.wpi.first.wpilibj.Ultrasonic;
 
 public class Sensors{
 	// Names sensors and its type
-	// ADXRS450_Gyro analogGyro;
 	AHRS ahrs;
-	Potentiometer TestPot;
+	Potentiometer analogLiftPot;
+	Ultrasonic leftSideUltraSonic;
+	Ultrasonic rightSideUltraSonic;
 	private AnalogInput mAnalogInputRevAirSensor; 
 
 	// Create and put doubles here
@@ -27,7 +29,8 @@ public class Sensors{
 		mAnalogInputRevAirSensor = new AnalogInput(1);
 		
 		//no smartDashBoard output
-		TestPot = new AnalogPotentiometer(0, 360, 30);
+		analogLiftPot = new AnalogPotentiometer(0, 360, 30);
+		//double liftHeight = analogLiftPot.get();
 		
 		// tries to call NavX and if it does not respond an printout appears in the driver station
 	    try {
@@ -60,5 +63,6 @@ public class Sensors{
 		return this.ahrs.getAngle();
 	}
 	// END NAVX Code
+	
 	
 }
