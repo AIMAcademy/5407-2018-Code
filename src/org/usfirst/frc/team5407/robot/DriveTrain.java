@@ -1,12 +1,14 @@
 package org.usfirst.frc.team5407.robot;
 
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
+import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 
 public class DriveTrain {
 
 	// Declaring all the drive train motors and making it public
-	public WPI_TalonSRX frontLeftDriveMotor, frontRightDriveMotor, backLeftDriveSlave, backRightDriveSlave;
+	public WPI_TalonSRX frontLeftDriveMotor, frontRightDriveMotor;
+	public WPI_VictorSPX backLeftDriveSlave, backRightDriveSlave;
 	// Creating a differentialDrive and naming it 
 	public DifferentialDrive drive;
 	// Creating doubles for getting encoder quad positioning and setting them to equal 0 at beginning
@@ -20,8 +22,8 @@ public class DriveTrain {
 		frontLeftDriveMotor = new WPI_TalonSRX(16); 		/* device IDs here (1 of 2) */
 		frontRightDriveMotor = new WPI_TalonSRX(15); 	
 
-		backLeftDriveSlave = new WPI_TalonSRX(11);
-		backRightDriveSlave = new WPI_TalonSRX(12);
+		backLeftDriveSlave = new WPI_VictorSPX(17);
+		backRightDriveSlave = new WPI_VictorSPX(18);
 
 		// The commands are sent to the first TalonSRX's then the same sent to the back ones
 		backLeftDriveSlave.follow(frontLeftDriveMotor);
