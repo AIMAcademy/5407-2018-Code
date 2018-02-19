@@ -185,14 +185,11 @@ public class Robot extends IterativeRobot {
 		air.s_sol4.set(inputs.getIsSolenoidThreeButtonPressed());
 		
 		if(inputs.getIsIntakeButtonPressed() == true) {
-			intake.mot_leftSideIntake.set(-0.8);
-			intake.mot_rightSideIntake.set(0.8);
-		}else if (inputs.getIsUnjamButtonPressed() == true) {
-			intake.mot_leftSideIntake.set(0.8);
-			intake.mot_rightSideIntake.set(-0.8);
+			intakeIn();
+		}else if (inputs.getIsIntakeOutButtonPressed() == true) {
+			intakeOut();
 		}else {
-			intake.mot_leftSideIntake.set(0.0);
-			intake.mot_rightSideIntake.set(0.0);
+			intakeStop();
 		}
 		
 		//controls the lift pickup 
@@ -203,8 +200,10 @@ public class Robot extends IterativeRobot {
 				scaleLiftPosition();
 		} else if(inputs.getisPortalLiftButtonPressed() == true) {
 				portalLiftPosition();
-		} else if(inputs.getisDefaultLiftButtonPressed()) {
+		} else if(inputs.getisDefaultLiftButtonPressed() == true) {
 				defaultLiftPosition();
+		}else	{
+			defaultLiftPosition();
 		}
 		
 		boolean setCameraToTrackObjects = inputs.getIsCameraButtonPressed();
@@ -220,25 +219,21 @@ public class Robot extends IterativeRobot {
 		drivetrain.getLeftQuadPosition();
 		drivetrain.getRightQuadPosition();
 
-		// Arcade Drive using first joystick
-		double forward = -inputs.j_leftStick.getY(); // xbox left X, positive is forward
-		double turn = inputs.j_leftStick.getX(); // xbox right X, positive means turn right
-
 		// BEGIN NAVX Gyro Code //
 		// Creates a boolean for enabling or disabling NavX
 		boolean b_EnableGyroNAVX = false;
 
 		// If robot is going forward or back ward with thin certain values, enable NavX drive straight 
-		if (turn <= .05 && turn >= -0.05) {
+		if (inputs.getTurn() <= .05 && inputs.getTurn() >= -0.05) {
 			if (b_EnableGyroNAVX == false) {
 				sensors.setFollowAngleNAVX(0);
 			}
 			b_EnableGyroNAVX = true;
-			drivetrain.drive.arcadeDrive(forward, (sensors.getFollowAngleNAVX() - sensors.getPresentAngleNAVX()) * constants.GyroKp);
+			drivetrain.drive.arcadeDrive(inputs.getThrottle(), (sensors.getFollowAngleNAVX() - sensors.getPresentAngleNAVX()) * constants.GyroKp);
 		}
 		// If robot is doing anything other than forward or backward turn NavX Drive straight off
 		else {
-			drivetrain.drive.arcadeDrive(forward, turn);
+			drivetrain.drive.arcadeDrive(inputs.getThrottle(), inputs.getTurn());
 			b_EnableGyroNAVX = false;
 		}
 
@@ -342,6 +337,21 @@ public class Robot extends IterativeRobot {
 		}
 	}
 
+	public void intakeIn() {
+		intake.mot_leftSideIntake.set(-0.8);
+		intake.mot_rightSideIntake.set(0.8);
+	}
+	
+	public void intakeOut() {
+		intake.mot_leftSideIntake.set(0.8);
+		intake.mot_rightSideIntake.set(-0.8);
+	}
+	
+	public void intakeStop() {
+		intake.mot_leftSideIntake.set(0.0);
+		intake.mot_rightSideIntake.set(0.0);
+	}
+	
 	// When no Auton is called this one will be run, we just sit there
 	public void defaultAuton() {
 		if (autonSelected == defaultAuton) {}
