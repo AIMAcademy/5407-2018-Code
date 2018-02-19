@@ -19,8 +19,8 @@ public class DriveTrain {
 
 		/* talons for arcade drive */
 		// Both front motors have the encoders attached 
-		frontLeftDriveMotor = new WPI_TalonSRX(16); 		/* device IDs here (1 of 2) */
-		frontRightDriveMotor = new WPI_TalonSRX(15); 	
+		frontLeftDriveMotor = new WPI_TalonSRX(11); 		/* device IDs here (1 of 2) */
+		frontRightDriveMotor = new WPI_TalonSRX(16); 	
 
 		backLeftDriveSlave = new WPI_VictorSPX(17);
 		backRightDriveSlave = new WPI_VictorSPX(18);

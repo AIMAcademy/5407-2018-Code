@@ -8,6 +8,8 @@ public class Constants {
 	// Gyro kp, the smaller the value the small the corrections get
 	public final double GyroKp = 0.015;
 	
+	public final double LiftKp = 0.95;
+	
 	// Lift Pot Values
 	// Lowest Lift Position
 	public final double defaultLiftPot = 349;

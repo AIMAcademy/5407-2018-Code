@@ -180,9 +180,9 @@ public class Robot extends IterativeRobot {
 
 		//put all buttons here
 		air.s_DSShifter.set(inputs.getIsDualSpeedShifterButtonPressed());
-		air.s_sol1.set(inputs.getIsSolenoidOneButtonPressed());
+		air.s_sol4.set(inputs.getIsSolenoidFourButtonPressed());
 		air.s_sol2.set(inputs.getIsSolenoidTwoButtonPressed());
-		air.s_sol4.set(inputs.getIsSolenoidThreeButtonPressed());
+		air.s_sol1.set(inputs.getIsSolenoidThreeButtonPressed());
 		
 		if(inputs.getIsIntakeButtonPressed() == true) {
 			intakeIn();
@@ -192,9 +192,6 @@ public class Robot extends IterativeRobot {
 			intakeStop();
 		}
 		
-		//controls the lift pickup 
-		lift.mot_liftDart.set(-inputs.j_rightStick.getY());
-		
 		// Lift postion needs testing!!
 		if(inputs.getisScaleLiftButtonPressed() == true) {
 				scaleLiftPosition();
@@ -203,7 +200,7 @@ public class Robot extends IterativeRobot {
 		} else if(inputs.getisDefaultLiftButtonPressed() == true) {
 				defaultLiftPosition();
 		}else	{
-			defaultLiftPosition();
+			lift.mot_liftDart.set(-inputs.j_rightStick.getY());
 		}
 		
 		boolean setCameraToTrackObjects = inputs.getIsCameraButtonPressed();
@@ -313,7 +310,7 @@ public class Robot extends IterativeRobot {
 	//To go up make it negative
 	public void scaleLiftPosition() {
 		if(sensors.analogLiftPot.get() > constants.scaleLiftPot) {
-			lift.mot_liftDart.set(-0.50);
+			lift.mot_liftDart.set(-0.75);
 		}else if (sensors.analogLiftPot.get() == constants.scaleLiftPot) {
 			lift.mot_liftDart.set(0.0);
 		}
@@ -321,30 +318,30 @@ public class Robot extends IterativeRobot {
 
 	public void portalLiftPosition() {
 		if(sensors.analogLiftPot.get() > constants.portalLiftPot) {
-			lift.mot_liftDart.set(-0.5);
+			lift.mot_liftDart.set(-0.50* constants.LiftKp);
 		}else if (sensors.analogLiftPot.get() < constants.portalLiftPot) {
-			lift.mot_liftDart.set(0.5);
-		}else if (sensors.analogLiftPot.get() == constants.portalLiftPot){
+			lift.mot_liftDart.set(0.50* constants.LiftKp);
+		}else if (sensors.analogLiftPot.get() < 10 && constants.portalLiftPot> 10 ){
 			lift.mot_liftDart.set(0.0);
 		}
 	}
 	
 	public void defaultLiftPosition() {
 		if(sensors.analogLiftPot.get() < constants.defaultLiftPot) {
-			lift.mot_liftDart.set(0.50);
+			lift.mot_liftDart.set(0.75);
 		}else if (sensors.analogLiftPot.get() == constants.defaultLiftPot) {
 			lift.mot_liftDart.set(0.0);
 		}
 	}
 
 	public void intakeIn() {
-		intake.mot_leftSideIntake.set(-0.8);
-		intake.mot_rightSideIntake.set(0.8);
+		intake.mot_leftSideIntake.set(0.8);
+		intake.mot_rightSideIntake.set(-0.8);
 	}
 	
 	public void intakeOut() {
-		intake.mot_leftSideIntake.set(0.8);
-		intake.mot_rightSideIntake.set(-0.8);
+		intake.mot_leftSideIntake.set(-0.8);
+		intake.mot_rightSideIntake.set(0.8);
 	}
 	
 	public void intakeStop() {

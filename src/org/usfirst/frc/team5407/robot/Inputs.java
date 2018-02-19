@@ -9,7 +9,7 @@ public class Inputs {
     private boolean isCameraButtonPressed;
     private boolean isIntakeButtonPressed;
     private boolean isDualSpeedShifterButtonPressed;
-    private boolean isSolenoidOneButtonPressed;
+    private boolean isSolenoidFourButtonPressed;
     private boolean isSolenoidTwoButtonPressed;
     private boolean isSolenoidThreeButtonPressed;
     private boolean isIntakeOutButtonPressed;
@@ -29,7 +29,7 @@ public class Inputs {
     // Public Booleans
     public boolean getIsCameraButtonPressed() { return isCameraButtonPressed; }
     public boolean getIsDualSpeedShifterButtonPressed() { return isDualSpeedShifterButtonPressed; }
-    public boolean getIsSolenoidOneButtonPressed() { return isSolenoidOneButtonPressed; }
+    public boolean getIsSolenoidFourButtonPressed() { return isSolenoidFourButtonPressed; }
     public boolean getIsSolenoidTwoButtonPressed() { return isSolenoidTwoButtonPressed; }
     public boolean getIsSolenoidThreeButtonPressed() { return isSolenoidThreeButtonPressed; }
     public boolean getIsIntakeButtonPressed() { return isIntakeButtonPressed;  }
@@ -45,7 +45,7 @@ public class Inputs {
     public void ReadValues() {
     	//Driver Controller
 		// Private doubles
-		throttle = -j_leftStick.getY(); // xbox left X, positive is forward
+		throttle = j_leftStick.getY(); // xbox left X, positive is forward
 		turn = j_leftStick.getX(); // xbox right X, positive means turn right
 
 		// Private booleans
@@ -55,7 +55,7 @@ public class Inputs {
   
     //Operation Controller       
         // Private booleans
-        isSolenoidOneButtonPressed = j_rightStick.getRawButton(6);
+        isSolenoidFourButtonPressed = j_rightStick.getRawButton(6);
         isIntakeOutButtonPressed = j_rightStick.getRawButton(5);
         isScaleLiftButtonPressed = j_rightStick.getRawButton(4);
         isPortalLiftButtonPressed = j_rightStick.getRawButton(2);
