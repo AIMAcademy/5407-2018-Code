@@ -185,16 +185,28 @@ public class Robot extends IterativeRobot {
 		air.s_sol4.set(inputs.getIsSolenoidThreeButtonPressed());
 		
 		if(inputs.getIsIntakeButtonPressed() == true) {
-			intake.mot_leftSideIntake.set(-0.8);;
+			intake.mot_leftSideIntake.set(-0.8);
 			intake.mot_rightSideIntake.set(0.8);
-		}else if (inputs.getisUnjamButtonPressed() == true) {
-			intake.mot_leftSideIntake.set(0.8);;
+		}else if (inputs.getIsUnjamButtonPressed() == true) {
+			intake.mot_leftSideIntake.set(0.8);
 			intake.mot_rightSideIntake.set(-0.8);
 		}else {
-			intake.mot_leftSideIntake.set(0.0);;
+			intake.mot_leftSideIntake.set(0.0);
 			intake.mot_rightSideIntake.set(0.0);
 		}
-
+		
+		//controls the lift pickup 
+		lift.mot_liftDart.set(-inputs.j_rightStick.getY());
+		
+		// Lift postion needs testing!!
+		if(inputs.getisScaleLiftButtonPressed() == true) {
+				scaleLiftPosition();
+		} else if(inputs.getisPortalLiftButtonPressed() == true) {
+				portalLiftPosition();
+		} else if(inputs.getisDefaultLiftButtonPressed()) {
+				defaultLiftPosition();
+		}
+		
 		boolean setCameraToTrackObjects = inputs.getIsCameraButtonPressed();
 		if (setCameraToTrackObjects && _currentCameraSettings.getIsUsingDefaultSettings()) {
 			_currentCameraSettings.setObjectTrackerSettings();
@@ -211,9 +223,6 @@ public class Robot extends IterativeRobot {
 		// Arcade Drive using first joystick
 		double forward = -inputs.j_leftStick.getY(); // xbox left X, positive is forward
 		double turn = inputs.j_leftStick.getX(); // xbox right X, positive means turn right
-		
-		//controls the lift pickup 
-		lift.mot_liftDart.set(-inputs.j_rightStick.getY());
 
 		// BEGIN NAVX Gyro Code //
 		// Creates a boolean for enabling or disabling NavX
@@ -260,29 +269,6 @@ public class Robot extends IterativeRobot {
 		loopCount = 0;
 	}
 	
-	// When no Auton is called this one will be run, we just sit there
-	public void defaultAuton() {
-		if (autonSelected == defaultAuton) {}
-	}
-
-	// The most basic Auton: Drive forward 10 feet and stop, needs testing and tuning!!!!!
-	public void driveBaseLine() {
-		if (drivetrain.getLeftQuadPosition() < 60 && drivetrain.getRightQuadPosition() < 60) {
-			drivetrain.drive.arcadeDrive(0.50, 0);
-		}else {
-			drivetrain.drive.arcadeDrive(0, 0);
-		}
-	}
-
-	//deff needs testing because I have little idea of what it will do!!!
-	public void turn90Right() {
-		if(sensors.ahrs.getAngle() < 90) {
-			drivetrain.drive.arcadeDrive(0, 0.5);
-		}else {
-			drivetrain.drive.arcadeDrive(0, 0);
-		}
-	}
-
 	// Private camera settings code
 	private interface ICameraSettings {
 		// Any class that "implements" this interface must define these methods.
@@ -327,4 +313,56 @@ public class Robot extends IterativeRobot {
 	}
 	// End private camera settings
 	
+	// Lift Position methods
+	//may need to add an else statement
+	//To go up make it negative
+	public void scaleLiftPosition() {
+		if(sensors.analogLiftPot.get() > constants.scaleLiftPot) {
+			lift.mot_liftDart.set(-0.50);
+		}else if (sensors.analogLiftPot.get() == constants.scaleLiftPot) {
+			lift.mot_liftDart.set(0.0);
+		}
+	}	
+
+	public void portalLiftPosition() {
+		if(sensors.analogLiftPot.get() > constants.portalLiftPot) {
+			lift.mot_liftDart.set(-0.5);
+		}else if (sensors.analogLiftPot.get() < constants.portalLiftPot) {
+			lift.mot_liftDart.set(0.5);
+		}else if (sensors.analogLiftPot.get() == constants.portalLiftPot){
+			lift.mot_liftDart.set(0.0);
+		}
+	}
+	
+	public void defaultLiftPosition() {
+		if(sensors.analogLiftPot.get() < constants.defaultLiftPot) {
+			lift.mot_liftDart.set(0.50);
+		}else if (sensors.analogLiftPot.get() == constants.defaultLiftPot) {
+			lift.mot_liftDart.set(0.0);
+		}
+	}
+
+	// When no Auton is called this one will be run, we just sit there
+	public void defaultAuton() {
+		if (autonSelected == defaultAuton) {}
+	}
+
+	// The most basic Auton: Drive forward 10 feet and stop, needs testing and tuning!!!!!
+	public void driveBaseLine() {
+		if (drivetrain.getLeftQuadPosition() < 60 && drivetrain.getRightQuadPosition() < 60) {
+			drivetrain.drive.arcadeDrive(0.50, 0);
+		}else {
+			drivetrain.drive.arcadeDrive(0, 0);
+		}
+	}
+
+	//deff needs testing because I have little idea of what it will do!!!
+	public void turn90Right() {
+		if(sensors.ahrs.getAngle() < 90) {
+			drivetrain.drive.arcadeDrive(0, 0.5);
+		}else {
+			drivetrain.drive.arcadeDrive(0, 0);
+		}
+	}
+
 }

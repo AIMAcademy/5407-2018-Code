@@ -13,6 +13,9 @@ public class Inputs {
     private boolean isSolenoidTwoButtonPressed;
     private boolean isSolenoidThreeButtonPressed;
     private boolean isUnjamButtonPressed;
+    private boolean isScaleLiftButtonPressed;
+    private boolean isPortalLiftButtonPressed;
+    private boolean isDefaultLiftButtonPressed;
 
 
     public Inputs(int leftJoystickPort, int rightJoystickPort) {
@@ -26,16 +29,23 @@ public class Inputs {
     public boolean getIsSolenoidTwoButtonPressed() { return isSolenoidTwoButtonPressed; }
     public boolean getIsSolenoidThreeButtonPressed() { return isSolenoidThreeButtonPressed; }
     public boolean getIsIntakeButtonPressed() { return isIntakeButtonPressed;  }
-    public boolean getisUnjamButtonPressed() { return isUnjamButtonPressed; }
+    public boolean getIsUnjamButtonPressed() { return isUnjamButtonPressed; }
+    public boolean getisScaleLiftButtonPressed() { return isScaleLiftButtonPressed;}
+    public boolean getisPortalLiftButtonPressed() { return isPortalLiftButtonPressed;}
+    public boolean getisDefaultLiftButtonPressed() { return isDefaultLiftButtonPressed;}
 
     public void ReadValues() {
         isCameraButtonPressed = j_leftStick.getRawButton(5);
         isDualSpeedShifterButtonPressed = j_leftStick.getRawButton(6);
-        isSolenoidOneButtonPressed = j_rightStick.getRawButton(1);
-        isSolenoidTwoButtonPressed = j_rightStick.getRawButton(2);
-        isSolenoidThreeButtonPressed = j_rightStick.getRawButton(6);
-        isIntakeButtonPressed = j_rightStick.getRawButton(4);
-        isUnjamButtonPressed = j_rightStick.getRawButton(3);
+        isIntakeButtonPressed = j_leftStick.getRawButton(4); //moved to drive side
+        isSolenoidOneButtonPressed = j_rightStick.getRawButton(6);
+    //  isSolenoidTwoButtonPressed = j_rightStick.getRawButton(2);
+    //  isSolenoidThreeButtonPressed = j_rightStick.getRawButton(6);
+        isUnjamButtonPressed = j_rightStick.getRawButton(5);
+        isScaleLiftButtonPressed = j_rightStick.getRawButton(4);
+        isPortalLiftButtonPressed = j_rightStick.getRawButton(2);
+        isDefaultLiftButtonPressed = j_rightStick.getRawButton(1);
+        
 
     }
 }
