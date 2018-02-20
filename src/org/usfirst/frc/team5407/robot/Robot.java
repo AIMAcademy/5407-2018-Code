@@ -318,9 +318,9 @@ public class Robot extends IterativeRobot {
 
 	public void portalLiftPosition() {
 		if(sensors.analogLiftPot.get() > constants.portalLiftPot) {
-			lift.mot_liftDart.set(-0.50* constants.LiftKp);
+			lift.mot_liftDart.set(-0.50);
 		}else if (sensors.analogLiftPot.get() < constants.portalLiftPot) {
-			lift.mot_liftDart.set(0.50* constants.LiftKp);
+			lift.mot_liftDart.set(0.50);
 		}else if (sensors.analogLiftPot.get() < 10 && constants.portalLiftPot> 10 ){
 			lift.mot_liftDart.set(0.0);
 		}
