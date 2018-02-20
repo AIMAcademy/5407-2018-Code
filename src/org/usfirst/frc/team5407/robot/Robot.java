@@ -35,18 +35,22 @@ public class Robot extends IterativeRobot {
 	private UsbCamera jevoisCam;
 
 	private ICameraSettings _currentCameraSettings;
-	
 
 	//	public void disabledPeriodic() {
 	//		checkJeVois();
 	//	}
 
-	// Autos, creating string for new auton and has a sendable chooser at the end of it
-	final String defaultAuton = "Default Auton";
-	final String driveBaseLine = "Drive BaseLine"; //Needs Testing
-	final String turn90Right = "Turn 90 Right"; //Needs Testing
+	// Autos, creating string for new auto and has a sendable chooser at the end of it
+	final String doNothingAuton = "Do Nothing!!";
+	final String driveBaseLineStraight = "Drive Straight To BaseLine "; //Needs Testing
 	String autonSelected;
-	SendableChooser<String> Autonchooser;
+	SendableChooser<String> autonChooser;
+	
+	final String leftSideStart = "Left Side Start";
+	final String centerStart = "Center Start";
+	final String rightSideStart = "Right Side Start";
+	String startSelected;
+	SendableChooser<String> startChooser;
 	
 	@Override
 	public void robotInit() {
@@ -110,12 +114,16 @@ public class Robot extends IterativeRobot {
 		loopCount = 0;
 		// END JeVois Code // 
 		
-		Autonchooser = new SendableChooser<String>();
-		Autonchooser.addDefault("Default Auton", defaultAuton);
-		Autonchooser.addObject("Drive to Baseline", driveBaseLine);
-		Autonchooser.addObject("Turn 90 Right", turn90Right);
-		SmartDashboard.putData("Auton Choices", Autonchooser);
+		autonChooser = new SendableChooser<String>();
+		autonChooser.addDefault("Do Nothing!!", doNothingAuton);
+		autonChooser.addObject("Drive Straight To BaseLine ", driveBaseLineStraight);
+		SmartDashboard.putData("Auton Choices", autonChooser);
 		
+		startChooser = new SendableChooser<String>();
+		startChooser.addObject("Center Start", centerStart);
+		startChooser.addObject("Left Side Start", leftSideStart);
+		startChooser.addObject("Right Side Start", rightSideStart);
+		SmartDashboard.putData("Start Choices", startChooser);
 	}
 	
 	public void robotPeriodic() {}
@@ -124,8 +132,11 @@ public class Robot extends IterativeRobot {
 	
 	public void disabledPeriodic() {
 		
-		//autonSelected = chooser.getSelected();
-		//SmartDashboard.putString("My Selected Auton is ", autonSelected);
+		autonSelected = autonChooser.getSelected();
+		SmartDashboard.putString("My Selected Auton is ", autonSelected);
+		
+		startSelected = startChooser.getSelected();
+		SmartDashboard.putString("Robot Start Position is ", startSelected);
 	}
 
 	public void autonomousInit() {
@@ -148,17 +159,19 @@ public class Robot extends IterativeRobot {
 		sensors.getPresentAngleNAVX();
 		sensors.getFollowAngleNAVX();
 		sensors.ahrs.getAngle();
+		sensors.analogLiftPot.get();
 		// Gets auto choosen and displays it on SmartDashboard
-		autonSelected = Autonchooser.getSelected();
+		autonSelected = autonChooser.getSelected();
 		SmartDashboard.putString("My Selected Auton is ", autonSelected);
 		
+		startSelected = startChooser.getSelected();
+		SmartDashboard.putString("Robot Start Position is ", startSelected);
+		
 		// If else statement for auton selection
-		if (autonSelected == defaultAuton) {
-			defaultAuton();
-		}else if (autonSelected == driveBaseLine) {
-			driveBaseLine();
-		}else if (autonSelected == turn90Right) {
-			turn90Right();
+		if (autonSelected == doNothingAuton) {
+			DoNothingAuton();
+		}else if (autonSelected == driveBaseLineStraight) {
+			driveBaseLineStraight();
 		}
 		
 		//Puts values on SmartDashboard in Auto
@@ -218,6 +231,7 @@ public class Robot extends IterativeRobot {
 
 		// BEGIN NAVX Gyro Code //
 		// Creates a boolean for enabling or disabling NavX
+		//Move to wolfDrive once created!!!
 		boolean b_EnableGyroNAVX = false;
 
 		// If robot is going forward or back ward with thin certain values, enable NavX drive straight 
@@ -350,26 +364,16 @@ public class Robot extends IterativeRobot {
 	}
 	
 	// When no Auton is called this one will be run, we just sit there
-	public void defaultAuton() {
-		if (autonSelected == defaultAuton) {}
+	public void DoNothingAuton() {
+		if (autonSelected == doNothingAuton) {}
 	}
 
 	// The most basic Auton: Drive forward 10 feet and stop, needs testing and tuning!!!!!
-	public void driveBaseLine() {
+	public void driveBaseLineStraight() {
 		if (drivetrain.getLeftQuadPosition() < 60 && drivetrain.getRightQuadPosition() < 60) {
 			drivetrain.drive.arcadeDrive(0.50, 0);
 		}else {
 			drivetrain.drive.arcadeDrive(0, 0);
 		}
 	}
-
-	//deff needs testing because I have little idea of what it will do!!!
-	public void turn90Right() {
-		if(sensors.ahrs.getAngle() < 90) {
-			drivetrain.drive.arcadeDrive(0, 0.5);
-		}else {
-			drivetrain.drive.arcadeDrive(0, 0);
-		}
-	}
-
 }
