@@ -16,6 +16,7 @@ public class Inputs {
     private boolean isScaleLiftButtonPressed;
     private boolean isPortalLiftButtonPressed;
     private boolean isDefaultLiftButtonPressed;
+    private boolean isSolenoidFiveButtonPressed;
     
     private double throttle;
     private double turn;
@@ -32,6 +33,7 @@ public class Inputs {
     public boolean getIsSolenoidFourButtonPressed() { return isSolenoidFourButtonPressed; }
     public boolean getIsSolenoidTwoButtonPressed() { return isSolenoidTwoButtonPressed; }
     public boolean getIsSolenoidThreeButtonPressed() { return isSolenoidThreeButtonPressed; }
+    public boolean getIsSolenoidFiveButtonPresses() {return isSolenoidFiveButtonPressed; }
     public boolean getIsIntakeButtonPressed() { return isIntakeButtonPressed;  }
     public boolean getIsIntakeOutButtonPressed() { return isIntakeOutButtonPressed; }
     public boolean getisScaleLiftButtonPressed() { return isScaleLiftButtonPressed;}
@@ -52,6 +54,7 @@ public class Inputs {
         isCameraButtonPressed = j_leftStick.getRawButton(5);
         isDualSpeedShifterButtonPressed = j_leftStick.getRawButton(6);
         isIntakeButtonPressed = j_leftStick.getRawButton(4); //moved to drive side
+        isSolenoidFiveButtonPressed = j_leftStick.getRawButton(1);
   
     //Operation Controller       
         // Private booleans

@@ -46,11 +46,11 @@ public class Robot extends IterativeRobot {
 	String autonSelected;
 	SendableChooser<String> autonChooser;
 	
-	final String leftSideStart = "Left Side Start";
-	final String centerStart = "Center Start";
-	final String rightSideStart = "Right Side Start";
-	String startSelected;
-	SendableChooser<String> startChooser;
+//	final String leftSideStart = "Left Side Start";
+//	final String centerStart = "Center Start";
+//	final String rightSideStart = "Right Side Start";
+//	String startSelected;
+//	SendableChooser<String> startChooser;
 	
 	@Override
 	public void robotInit() {
@@ -63,7 +63,7 @@ public class Robot extends IterativeRobot {
 		intake = new Intake(1,2);
 
 		// Calls 4 solenoids in the air class
-		air = new Air(0, 1, 2, 4);
+		air = new Air(0, 1, 2, 4, 5);
 
 		// BEGIN JeVois Code //
 		// Get default camera settings
@@ -119,11 +119,11 @@ public class Robot extends IterativeRobot {
 		autonChooser.addObject("Drive Straight To BaseLine ", driveBaseLineStraight);
 		SmartDashboard.putData("Auton Choices", autonChooser);
 		
-		startChooser = new SendableChooser<String>();
-		startChooser.addObject("Center Start", centerStart);
-		startChooser.addObject("Left Side Start", leftSideStart);
-		startChooser.addObject("Right Side Start", rightSideStart);
-		SmartDashboard.putData("Start Choices", startChooser);
+//		startChooser = new SendableChooser<String>();
+//		startChooser.addObject("Center Start", centerStart);
+//		startChooser.addObject("Left Side Start", leftSideStart);
+//		startChooser.addObject("Right Side Start", rightSideStart);
+//		SmartDashboard.putData("Start Choices", startChooser);
 	}
 	
 	public void robotPeriodic() {}
@@ -134,9 +134,9 @@ public class Robot extends IterativeRobot {
 		
 		autonSelected = autonChooser.getSelected();
 		SmartDashboard.putString("My Selected Auton is ", autonSelected);
-		
-		startSelected = startChooser.getSelected();
-		SmartDashboard.putString("Robot Start Position is ", startSelected);
+//		
+//		startSelected = startChooser.getSelected();
+//		SmartDashboard.putString("Robot Start Position is ", startSelected);
 	}
 
 	public void autonomousInit() {
@@ -164,8 +164,8 @@ public class Robot extends IterativeRobot {
 		autonSelected = autonChooser.getSelected();
 		SmartDashboard.putString("My Selected Auton is ", autonSelected);
 		
-		startSelected = startChooser.getSelected();
-		SmartDashboard.putString("Robot Start Position is ", startSelected);
+//		startSelected = startChooser.getSelected();
+//		SmartDashboard.putString("Robot Start Position is ", startSelected);
 		
 		// If else statement for auton selection
 		if (autonSelected == doNothingAuton) {
@@ -196,6 +196,7 @@ public class Robot extends IterativeRobot {
 		air.s_sol4.set(inputs.getIsSolenoidFourButtonPressed());
 		air.s_sol2.set(inputs.getIsSolenoidTwoButtonPressed());
 		air.s_sol1.set(inputs.getIsSolenoidThreeButtonPressed());
+		air.s_sol5.set(inputs.getIsSolenoidFiveButtonPresses());
 		
 		if(inputs.getIsIntakeButtonPressed() == true) {
 			intakeIn();
