@@ -15,4 +15,7 @@ public class Constants {
 	public final double portalLiftPot = 300;
 	// Scale Lift Position
 	public final double scaleLiftPot = 90;
+	
+	//Auto Turn Kp
+	public final double autoTurnKp = 1.00;
 }

@@ -43,6 +43,8 @@ public class Robot extends IterativeRobot {
 	// Autos, creating string for new auto and has a sendable chooser at the end of it
 	final String doNothingAuton = "Do Nothing!!";
 	final String driveBaseLineStraight = "Drive Straight To BaseLine "; //Needs Testing
+	final String centerDriveBaseLineToLeftOfPile = "Drive To Left Of Pile";
+	final String centerDriveBaseLineToRightOfPile = "Drive To Left Of Pile";
 	String autonSelected;
 	SendableChooser<String> autonChooser;
 	
@@ -117,6 +119,8 @@ public class Robot extends IterativeRobot {
 		autonChooser = new SendableChooser<String>();
 		autonChooser.addDefault("Do Nothing!!", doNothingAuton);
 		autonChooser.addObject("Drive Straight To BaseLine ", driveBaseLineStraight);
+		autonChooser.addObject("Drive To Left Of Pile", centerDriveBaseLineToLeftOfPile);
+		autonChooser.addObject("Drive To Right Of Pile", centerDriveBaseLineToRightOfPile);
 		SmartDashboard.putData("Auton Choices", autonChooser);
 		
 		startChooser = new SendableChooser<String>();
@@ -169,9 +173,14 @@ public class Robot extends IterativeRobot {
 		
 		// If else statement for auton selection
 		if (autonSelected == doNothingAuton) {
-			DoNothingAuton();
 		}else if (autonSelected == driveBaseLineStraight) {
-			driveBaseLineStraight();
+		}else if (autonSelected == centerDriveBaseLineToLeftOfPile) {
+		}else if (autonSelected == centerDriveBaseLineToRightOfPile) {
+		}
+		
+		if (startSelected == centerStart) {
+		}else if (startSelected == rightSideStart) {
+		}else if (startSelected == rightSideStart) {
 		}
 		
 		//Puts values on SmartDashboard in Auto
@@ -363,17 +372,43 @@ public class Robot extends IterativeRobot {
 		intake.mot_rightSideIntake.set(0.0);
 	}
 	
+	public void centerStart() {}
+	
+	public void rightSideStart() {}
+	
+	public void leftSideStart() {}
+	
 	// When no Auton is called this one will be run, we just sit there
 	public void DoNothingAuton() {
 		if (autonSelected == doNothingAuton) {}
 	}
 
-	// The most basic Auton: Drive forward 10 feet and stop, needs testing and tuning!!!!!
+	// The most basic Auton: Drive forward 11 feet and stop, ready testing and tuning!!!!!
 	public void driveBaseLineStraight() {
-		if (drivetrain.getLeftQuadPosition() < 60 && drivetrain.getRightQuadPosition() < 60) {
-			drivetrain.drive.arcadeDrive(0.50, 0);
+		if (drivetrain.getLeftQuadPosition() < 132 && drivetrain.getRightQuadPosition() < 132) {
+			drivetrain.drive.arcadeDrive(0.60,(sensors.getFollowAngleNAVX() - sensors.getPresentAngleNAVX()) * constants.GyroKp);
 		}else {
 			drivetrain.drive.arcadeDrive(0, 0);
 		}
-	}
+	} //ready for testing 
+	
+	public void centerDriveBaseLineToLeftOfPile() {
+		if (drivetrain.getLeftQuadPosition() < 70 && drivetrain.getRightQuadPosition() < 70) {
+			drivetrain.drive.arcadeDrive(0.50, 0);
+		}else if (drivetrain.getLeftQuadPosition() > 70 && drivetrain.getRightQuadPosition() > 70) {
+			if(sensors.getPresentAngleNAVX() < 145) {
+				drivetrain.drive.arcadeDrive(0.50, sensors.getPresentAngleNAVX() * constants.autoTurnKp );
+			}else if (sensors.getPresentAngleNAVX() >= 145) {
+				drivetrain.drive.arcadeDrive(0.50, (sensors.getFollowAngleNAVX() - sensors.getPresentAngleNAVX()) * constants.GyroKp);
+			}
+		}else if (drivetrain.getLeftQuadPosition() >=158 && drivetrain.getRightQuadPosition() >= 158) {
+			if(sensors.getPresentAngleNAVX() > 0) {
+				drivetrain.drive.arcadeDrive(0.50, sensors.getPresentAngleNAVX() * constants.autoTurnKp);
+			}else if(sensors.getPresentAngleNAVX() <= 0) {
+				drivetrain.arcadeDrive(0.0, 0.0);
+			}
+		}	
+	}//Ready for testing and tuning
+	
+	public void centerDriveBaseLineToRightOfPile() {}//will be similar to centerDriveBaseLineToLeftOfPile() just needs testing and tuning first 
 }
