@@ -43,16 +43,17 @@ public class Robot extends IterativeRobot {
 	// Autos, creating string for new auto and has a sendable chooser at the end of it
 	final String doNothingAuton = "Do Nothing!!";
 	final String driveBaseLineStraight = "Drive Straight To BaseLine "; //Needs Testing
-	final String centerDriveBaseLineToLeftOfPile = "Drive To Left Of Pile";
-	final String centerDriveBaseLineToRightOfPile = "Drive To Left Of Pile";
+	final String centerDriveBaseLineToLeftOfPile = "Center Drive To Left Of Pile";
+	final String centerDriveBaseLineToRightOfPile = "Center Drive To Right Of Pile";
+	final String leftDrivetoLeftSideScale = "Left Drive to Left Side Scale";
 	String autonSelected;
-	SendableChooser<String> autonChooser;
+
 	
 	final String leftSideStart = "Left Side Start";
 	final String centerStart = "Center Start";
 	final String rightSideStart = "Right Side Start";
 	String startSelected;
-	SendableChooser<String> startChooser;
+
 	
 	@Override
 	public void robotInit() {
@@ -116,18 +117,19 @@ public class Robot extends IterativeRobot {
 		loopCount = 0;
 		// END JeVois Code // 
 		
-		autonChooser = new SendableChooser<String>();
-		autonChooser.addDefault("Do Nothing!!", doNothingAuton);
-		autonChooser.addObject("Drive Straight To BaseLine ", driveBaseLineStraight);
-		autonChooser.addObject("Drive To Left Of Pile", centerDriveBaseLineToLeftOfPile);
-		autonChooser.addObject("Drive To Right Of Pile", centerDriveBaseLineToRightOfPile);
-		SmartDashboard.putData("Auton Choices", autonChooser);
-		
-		startChooser = new SendableChooser<String>();
-		startChooser.addObject("Center Start", centerStart);
-		startChooser.addObject("Left Side Start", leftSideStart);
-		startChooser.addObject("Right Side Start", rightSideStart);
-		SmartDashboard.putData("Start Choices", startChooser);
+//		autonChooser = new SendableChooser<String>();
+//		autonChooser.addDefault("Do Nothing!!", doNothingAuton);
+//		autonChooser.addObject("Drive Straight To BaseLine ", driveBaseLineStraight);
+//		autonChooser.addObject("Center Drive To Left Of Pile", centerDriveBaseLineToLeftOfPile);
+//		autonChooser.addObject("Center Drive To Right Of Pile", centerDriveBaseLineToRightOfPile);
+//		autonChooser.addObject("Left Drive to Left Side Scale" , leftDrivetoScale);
+//		SmartDashboard.putData("Auton Choices", autonChooser);
+//		
+//		startChooser = new SendableChooser<String>();
+//		startChooser.addObject("Center Start", centerStart);
+//		startChooser.addObject("Left Side Start", leftSideStart);
+//		startChooser.addObject("Right Side Start", rightSideStart);
+//		SmartDashboard.putData("Start Choices", startChooser);
 	}
 	
 	public void robotPeriodic() {}
@@ -136,11 +138,11 @@ public class Robot extends IterativeRobot {
 	
 	public void disabledPeriodic() {
 		
-		autonSelected = autonChooser.getSelected();
-		SmartDashboard.putString("My Selected Auton is ", autonSelected);
-		
-		startSelected = startChooser.getSelected();
-		SmartDashboard.putString("Robot Start Position is ", startSelected);
+//		autonSelected = autonChooser.getSelected();
+//		SmartDashboard.putString("My Selected Auton is ", autonSelected);
+//		
+//		startSelected = startChooser.getSelected();
+//		SmartDashboard.putString("Robot Start Position is ", startSelected);
 	}
 
 	public void autonomousInit() {
@@ -165,17 +167,18 @@ public class Robot extends IterativeRobot {
 		sensors.ahrs.getAngle();
 		sensors.analogLiftPot.get();
 		// Gets auto choosen and displays it on SmartDashboard
-		autonSelected = autonChooser.getSelected();
-		SmartDashboard.putString("My Selected Auton is ", autonSelected);
-		
-		startSelected = startChooser.getSelected();
-		SmartDashboard.putString("Robot Start Position is ", startSelected);
+//		autonSelected = autonChooser.getSelected();
+//		SmartDashboard.putString("My Selected Auton is ", autonSelected);
+//		
+//		startSelected = startChooser.getSelected();
+//		SmartDashboard.putString("Robot Start Position is ", startSelected);
 		
 		// If else statement for auton selection
 		if (autonSelected == doNothingAuton) {
 		}else if (autonSelected == driveBaseLineStraight) {
 		}else if (autonSelected == centerDriveBaseLineToLeftOfPile) {
 		}else if (autonSelected == centerDriveBaseLineToRightOfPile) {
+		}else if (autonSelected == leftDrivetoLeftSideScale) {		
 		}
 		
 		if (startSelected == centerStart) {
@@ -394,7 +397,7 @@ public class Robot extends IterativeRobot {
 	
 	public void centerDriveBaseLineToLeftOfPile() {
 		if (drivetrain.getLeftQuadPosition() < 70 && drivetrain.getRightQuadPosition() < 70) {
-			drivetrain.drive.arcadeDrive(0.50, 0);
+			drivetrain.drive.arcadeDrive(0.50,(sensors.getFollowAngleNAVX() - sensors.getPresentAngleNAVX()) * constants.GyroKp);
 		}else if (drivetrain.getLeftQuadPosition() > 70 && drivetrain.getRightQuadPosition() > 70) {
 			if(sensors.getPresentAngleNAVX() < 145) {
 				drivetrain.drive.arcadeDrive(0.50, sensors.getPresentAngleNAVX() * constants.autoTurnKp );
@@ -405,10 +408,18 @@ public class Robot extends IterativeRobot {
 			if(sensors.getPresentAngleNAVX() > 0) {
 				drivetrain.drive.arcadeDrive(0.50, sensors.getPresentAngleNAVX() * constants.autoTurnKp);
 			}else if(sensors.getPresentAngleNAVX() <= 0) {
-				drivetrain.arcadeDrive(0.0, 0.0);
+				drivetrain.drive.arcadeDrive(0.0, 0.0);
 			}
 		}	
 	}//Ready for testing and tuning
 	
-	public void centerDriveBaseLineToRightOfPile() {}//will be similar to centerDriveBaseLineToLeftOfPile() just needs testing and tuning first 
+	public void centerDriveBaseLineToRightOfPile() {}//will be similar to centerDriveBaseLineToLeftOfPile() just needs testing and tuning first
+	
+	public void leftDrivetoLeftSideScale() {
+		if (drivetrain.getLeftQuadPosition() < 122 && drivetrain.getRightQuadPosition() < 122 ) {
+			drivetrain.drive.arcadeDrive(0.5, (sensors.getFollowAngleNAVX() - sensors.getPresentAngleNAVX()) * constants.GyroKp);
+		}else if (drivetrain.getLeftQuadPosition() >= 122 && drivetrain.getRightQuadPosition() >= 122){
+			
+		}
+	}
 }
