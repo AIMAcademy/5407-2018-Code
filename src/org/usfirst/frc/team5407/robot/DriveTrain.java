@@ -38,7 +38,7 @@ public class DriveTrain {
 		//return  (-frontRightDriveMotor.getSensorCollection().getQuadraturePosition()*1.0 / 3313 * 4 * Math.PI);
 		LeftsideQuadraturePosition = this.frontLeftDriveMotor.getSensorCollection().getQuadraturePosition();
 		// System.out.println("Right side quad position: " + RightsideQuadraturePosition); // Prints position to console
-		return (LeftsideQuadraturePosition / 3613 * 4 * Math.PI);
+		return (LeftsideQuadraturePosition / 3000 * 6 * Math.PI); //needs tuning 
 	}
 
 	// Encoder for right side, gets value from encoder, and returns a value in inches divided by 3313 then multiples by the wheel diameter * Pi 
@@ -46,7 +46,7 @@ public class DriveTrain {
 		//return  (-frontLeftDriveMotor.getSensorCollection().getQuadraturePosition()*1.0 / 3313 * 4 * Math.PI);
 		RightsideQuadraturePosition = this.frontRightDriveMotor.getSensorCollection().getQuadraturePosition();
 		// System.out.println("Left side quad position: " + LeftsideQuadraturePosition);  // Prints position to console
-		return -(RightsideQuadraturePosition / 3313 * 4 * Math.PI);
+		return -(RightsideQuadraturePosition / 3000 * 6 * Math.PI); //needs tuning 
 		//negative 1 added for invert sensor, needs testing!!!
 	}
 
