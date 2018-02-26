@@ -46,22 +46,13 @@ public class Robot extends IterativeRobot {
 	final String centerDriveBaseLineToLeftOfPile = "Center Drive To Left Of Pile";
 	final String centerDriveBaseLineToRightOfPile = "Center Drive To Right Of Pile";
 	final String leftDrivetoLeftSideScale = "Left Drive to Left Side Scale";
-	String autonSelected;
+	String autonChooser;
+	SendableChooser<String> AutonChooser;
 
-	
-<<<<<<< HEAD
-//	final String leftSideStart = "Left Side Start";
-//	final String centerStart = "Center Start";
-//	final String rightSideStart = "Right Side Start";
-//	String startSelected;
-//	SendableChooser<String> startChooser;
-=======
 	final String leftSideStart = "Left Side Start";
 	final String centerStart = "Center Start";
 	final String rightSideStart = "Right Side Start";
 	String startSelected;
-
->>>>>>> e1cb68ee2c22773cb72cf78b895ed10370e641df
 	
 	@Override
 	public void robotInit() {
@@ -124,23 +115,15 @@ public class Robot extends IterativeRobot {
 		}
 		loopCount = 0;
 		// END JeVois Code // 
-		
-<<<<<<< HEAD
-		autonChooser = new SendableChooser<String>();
-		autonChooser.addDefault("Do Nothing!!", doNothingAuton);
-		autonChooser.addObject("Drive Straight To BaseLine ", driveBaseLineStraight);
-		SmartDashboard.putData("Auton Choices", autonChooser);
-		
-=======
-//		autonChooser = new SendableChooser<String>();
-//		autonChooser.addDefault("Do Nothing!!", doNothingAuton);
-//		autonChooser.addObject("Drive Straight To BaseLine ", driveBaseLineStraight);
-//		autonChooser.addObject("Center Drive To Left Of Pile", centerDriveBaseLineToLeftOfPile);
-//		autonChooser.addObject("Center Drive To Right Of Pile", centerDriveBaseLineToRightOfPile);
-//		autonChooser.addObject("Left Drive to Left Side Scale" , leftDrivetoScale);
-//		SmartDashboard.putData("Auton Choices", autonChooser);
-//		
->>>>>>> e1cb68ee2c22773cb72cf78b895ed10370e641df
+
+		AutonChooser = new SendableChooser<String>();
+		AutonChooser.addDefault("Do Nothing!!", doNothingAuton);
+		AutonChooser.addObject("Drive Straight To BaseLine ", driveBaseLineStraight);
+		AutonChooser.addObject("Center Drive To Left Of Pile", centerDriveBaseLineToLeftOfPile);
+		AutonChooser.addObject("Center Drive To Right Of Pile", centerDriveBaseLineToRightOfPile);
+		AutonChooser.addObject("Left Drive to Left Side Scale" , leftDrivetoLeftSideScale);
+		SmartDashboard.putData("Auton Choices", AutonChooser);
+
 //		startChooser = new SendableChooser<String>();
 //		startChooser.addObject("Center Start", centerStart);
 //		startChooser.addObject("Left Side Start", leftSideStart);
@@ -154,14 +137,9 @@ public class Robot extends IterativeRobot {
 	
 	public void disabledPeriodic() {
 		
-<<<<<<< HEAD
-		autonSelected = autonChooser.getSelected();
-		SmartDashboard.putString("My Selected Auton is ", autonSelected);
-=======
-//		autonSelected = autonChooser.getSelected();
-//		SmartDashboard.putString("My Selected Auton is ", autonSelected);
->>>>>>> e1cb68ee2c22773cb72cf78b895ed10370e641df
-//		
+		autonChooser = AutonChooser.getSelected();
+		SmartDashboard.putString("My Selected Auton is ", autonChooser);
+
 //		startSelected = startChooser.getSelected();
 //		SmartDashboard.putString("Robot Start Position is ", startSelected);
 	}
@@ -188,24 +166,19 @@ public class Robot extends IterativeRobot {
 		sensors.ahrs.getAngle();
 		sensors.analogLiftPot.get();
 		// Gets auto choosen and displays it on SmartDashboard
-<<<<<<< HEAD
-		autonSelected = autonChooser.getSelected();
-		SmartDashboard.putString("My Selected Auton is ", autonSelected);
-		
-=======
-//		autonSelected = autonChooser.getSelected();
-//		SmartDashboard.putString("My Selected Auton is ", autonSelected);
-//		
->>>>>>> e1cb68ee2c22773cb72cf78b895ed10370e641df
+
+		autonChooser = AutonChooser.getSelected();
+		SmartDashboard.putString("My Selected Auton is ", autonChooser);
+
 //		startSelected = startChooser.getSelected();
 //		SmartDashboard.putString("Robot Start Position is ", startSelected);
 		
 		// If else statement for auton selection
-		if (autonSelected == doNothingAuton) {
-		}else if (autonSelected == driveBaseLineStraight) {
-		}else if (autonSelected == centerDriveBaseLineToLeftOfPile) {
-		}else if (autonSelected == centerDriveBaseLineToRightOfPile) {
-		}else if (autonSelected == leftDrivetoLeftSideScale) {		
+		if (autonChooser == doNothingAuton) {
+		}else if (autonChooser == driveBaseLineStraight) {
+		}else if (autonChooser == centerDriveBaseLineToLeftOfPile) {
+		}else if (autonChooser == centerDriveBaseLineToRightOfPile) {
+		}else if (autonChooser == leftDrivetoLeftSideScale) {		
 		}
 		
 		if (startSelected == centerStart) {
@@ -411,7 +384,7 @@ public class Robot extends IterativeRobot {
 	
 	// When no Auton is called this one will be run, we just sit there
 	public void DoNothingAuton() {
-		if (autonSelected == doNothingAuton) {}
+		if (autonChooser == doNothingAuton) {}
 	}
 
 	// The most basic Auton: Drive forward 11 feet and stop, ready testing and tuning!!!!!
@@ -431,11 +404,12 @@ public class Robot extends IterativeRobot {
 				drivetrain.drive.arcadeDrive(0.50, sensors.getPresentAngleNAVX() * constants.autoTurnKp );
 			}else if (sensors.getPresentAngleNAVX() >= 145) {
 				drivetrain.drive.arcadeDrive(0.50, (sensors.getFollowAngleNAVX() - sensors.getPresentAngleNAVX()) * constants.GyroKp);
+				sensors.ahrs.reset();
 			}
 		}else if (drivetrain.getLeftQuadPosition() >=158 && drivetrain.getRightQuadPosition() >= 158) {
-			if(sensors.getPresentAngleNAVX() > 0) {
+			if(sensors.getPresentAngleNAVX() < 15) {
 				drivetrain.drive.arcadeDrive(0.50, sensors.getPresentAngleNAVX() * constants.autoTurnKp);
-			}else if(sensors.getPresentAngleNAVX() <= 0) {
+			}else if(sensors.getPresentAngleNAVX() >= 15) {
 				drivetrain.drive.arcadeDrive(0.0, 0.0);
 			}
 		}	
@@ -447,7 +421,48 @@ public class Robot extends IterativeRobot {
 		if (drivetrain.getLeftQuadPosition() < 122 && drivetrain.getRightQuadPosition() < 122 ) {
 			drivetrain.drive.arcadeDrive(0.5, (sensors.getFollowAngleNAVX() - sensors.getPresentAngleNAVX()) * constants.GyroKp);
 		}else if (drivetrain.getLeftQuadPosition() >= 122 && drivetrain.getRightQuadPosition() >= 122){
-			
+			if(sensors.getPresentAngleNAVX() < 345){
+				drivetrain.drive.arcadeDrive(0.50, sensors.getPresentAngleNAVX() * constants.autoTurnKp);
+			}else if (sensors.getPresentAngleNAVX() >= 345){
+				drivetrain.drive.arcadeDrive(0.0, 0.0);
+				sensors.ahrs.reset();
+			}
+		}else if(drivetrain.getLeftQuadPosition() < 156 && drivetrain.getRightQuadPosition() < 156){
+			drivetrain.drive.arcadeDrive(0.5, (sensors.getFollowAngleNAVX() - sensors.getPresentAngleNAVX()) * constants.GyroKp);
+		}else if(drivetrain.getLeftQuadPosition() >= 156 && drivetrain.getRightQuadPosition() >= 156){
+			if(sensors.getPresentAngleNAVX() < 15 ){
+				drivetrain.drive.arcadeDrive(0.50, sensors.getPresentAngleNAVX() * constants.autoTurnKp);
+			}else if(sensors.getPresentAngleNAVX() <= 15){
+				drivetrain.drive.arcadeDrive(0.0, 0.0);
+			}
+		}else if(drivetrain.getLeftQuadPosition() < 289 && drivetrain.getRightQuadPosition() <289){
+			drivetrain.drive.arcadeDrive(0.5, (sensors.getFollowAngleNAVX() - sensors.getPresentAngleNAVX()) * constants.GyroKp);
+		}else if(drivetrain.getLeftQuadPosition() >= 289 && drivetrain.getRightQuadPosition() >= 289){
+			drivetrain.drive.arcadeDrive(0.0, 0.0);
+		}
+	}
+	
+	public void leftFarSideScale(){
+		if (drivetrain.getLeftQuadPosition() < 253 && drivetrain.getRightQuadPosition() < 253 ){
+			drivetrain.drive.arcadeDrive(0.5, (sensors.getFollowAngleNAVX() - sensors.getPresentAngleNAVX()) * constants.GyroKp);
+		}else if (drivetrain.getLeftQuadPosition() >= 253 && drivetrain.getRightQuadPosition() >= 253 ){
+			if (sensors.getPresentAngleNAVX() < 90){
+				drivetrain.drive.arcadeDrive(0.50, sensors.getPresentAngleNAVX() * constants.autoTurnKp);
+			}else if (sensors.getPresentAngleNAVX() >= 90){
+				drivetrain.drive.arcadeDrive(0.5, (sensors.getFollowAngleNAVX() - sensors.getPresentAngleNAVX()) * constants.GyroKp);
+			}
+		}else if (drivetrain.getLeftQuadPosition() < 436 && drivetrain.getRightQuadPosition() < 436 ){
+			drivetrain.drive.arcadeDrive(0.5, (sensors.getFollowAngleNAVX() - sensors.getPresentAngleNAVX()) * constants.GyroKp);
+		}else if (drivetrain.getLeftQuadPosition() >= 436 && drivetrain.getRightQuadPosition() >= 436 ){
+			if(sensors.getPresentAngleNAVX() > 255){
+				drivetrain.drive.arcadeDrive(0.50, sensors.getPresentAngleNAVX() * constants.autoTurnKp);
+			}else if(sensors.getPresentAngleNAVX() <= 255){
+				drivetrain.drive.arcadeDrive(0.5, (sensors.getFollowAngleNAVX() - sensors.getPresentAngleNAVX()) * constants.GyroKp);
+			}
+		}else if (drivetrain.getLeftQuadPosition() < 494 && drivetrain.getRightQuadPosition() < 494 ){
+			drivetrain.drive.arcadeDrive(0.5, (sensors.getFollowAngleNAVX() - sensors.getPresentAngleNAVX()) * constants.GyroKp);	
+		}else if (drivetrain.getLeftQuadPosition() >= 494 && drivetrain.getRightQuadPosition() >= 494 ){
+			drivetrain.drive.arcadeDrive(0.0, 0.0);
 		}
 	}
 }
