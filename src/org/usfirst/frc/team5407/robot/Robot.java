@@ -16,6 +16,7 @@ import edu.wpi.first.wpilibj.SerialPort;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
+
 /**
  * This program contains FRC team 5407's code for the 2018 competition season 
  */
@@ -28,6 +29,7 @@ public class Robot extends IterativeRobot {
 	Lift lift;
 	DriveTrain drivetrain;
 	Intake intake;
+	Winch winch;
 
 	// JeVois Variables
 	private SerialPort jevois = null;
@@ -63,6 +65,7 @@ public class Robot extends IterativeRobot {
 		variables = new Variables();
 		lift = new Lift(0);
 		intake = new Intake(1,2);
+		winch = new Winch(3);
 
 		// Calls 4 solenoids in the air class
 		air = new Air(0, 1, 2, 4, 5);
@@ -211,11 +214,11 @@ public class Robot extends IterativeRobot {
 		air.s_sol5.set(inputs.getIsSolenoidFiveButtonPresses());
 		
 		if(inputs.getIsIntakeButtonPressed() == true) {
-			intakeIn();
+			intake.intakeIn();
 		}else if (inputs.getIsIntakeOutButtonPressed() == true) {
-			intakeOut();
+			intake.intakeOut();
 		}else {
-			intakeStop();
+			intake.intakeStop();
 		}
 		
 		// Lift postion needs testing!!
@@ -358,22 +361,8 @@ public class Robot extends IterativeRobot {
 			lift.mot_liftDart.set(0.75);
 		}else if (sensors.analogLiftPot.get() == variables.defaultLiftPot) {
 			lift.mot_liftDart.set(0.0);
+			
 		}
-	}
-
-	public void intakeIn() {
-		intake.mot_leftSideIntake.set(0.8);
-		intake.mot_rightSideIntake.set(-0.8);
-	}
-	
-	public void intakeOut() {
-		intake.mot_leftSideIntake.set(-0.8);
-		intake.mot_rightSideIntake.set(0.8);
-	}
-	
-	public void intakeStop() {
-		intake.mot_leftSideIntake.set(0.0);
-		intake.mot_rightSideIntake.set(0.0);
 	}
 	
 	public void centerStart() {}

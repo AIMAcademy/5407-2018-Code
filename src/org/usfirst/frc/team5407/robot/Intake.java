@@ -13,5 +13,18 @@ public class Intake {
 		mot_leftSideIntake = new Spark(i_mot_leftSideIntake);
 		mot_leftSideIntake.set(0.0);
 	}
-
+	public void intakeIn() {
+		mot_leftSideIntake.set(0.8);
+		mot_rightSideIntake.set(-0.8);
+	}
+	
+	public void intakeOut() {
+		mot_leftSideIntake.set(-0.8);
+		mot_rightSideIntake.set(0.8);
+	}
+	
+	public void intakeStop() {
+		mot_leftSideIntake.set(0.0);
+		mot_rightSideIntake.set(0.0);
+	}
 }
