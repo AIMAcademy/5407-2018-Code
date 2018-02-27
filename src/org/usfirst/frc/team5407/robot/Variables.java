@@ -1,6 +1,6 @@
 package org.usfirst.frc.team5407.robot;
 
-public class Constants {
+public class Variables {
 	
 	//used to set encoder to 0 before auto
 	public final int encoderpos = 0;

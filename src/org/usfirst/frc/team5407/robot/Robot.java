@@ -24,7 +24,7 @@ public class Robot extends IterativeRobot {
 	Sensors sensors;
 	Air air;
 	Inputs inputs;
-	Constants constants;
+	Variables variables;
 	Lift lift;
 	DriveTrain drivetrain;
 	Intake intake;
@@ -60,7 +60,7 @@ public class Robot extends IterativeRobot {
 		drivetrain = new DriveTrain();
 		sensors = new Sensors();
 		inputs = new Inputs(0, 1); 
-		constants = new Constants();
+		variables = new Variables();
 		lift = new Lift(0);
 		intake = new Intake(1,2);
 
@@ -149,8 +149,8 @@ public class Robot extends IterativeRobot {
 		air.initializeAir();
 		
 		//resets both drive encoders to zero
-		drivetrain.frontLeftDriveMotor.setSelectedSensorPosition(constants.encoderpos, 0, 10);
-		drivetrain.frontRightDriveMotor.setSelectedSensorPosition(constants.encoderpos, 0, 10);
+		drivetrain.frontLeftDriveMotor.setSelectedSensorPosition(variables.encoderpos, 0, 10);
+		drivetrain.frontRightDriveMotor.setSelectedSensorPosition(variables.encoderpos, 0, 10);
 		
 		//resets gyro to zero
 		sensors.ahrs.reset();
@@ -253,7 +253,7 @@ public class Robot extends IterativeRobot {
 				sensors.setFollowAngleNAVX(0);
 			}
 			b_EnableGyroNAVX = true;
-			drivetrain.drive.arcadeDrive(inputs.getThrottle(), (sensors.getFollowAngleNAVX() - sensors.getPresentAngleNAVX()) * constants.GyroKp);
+			drivetrain.drive.arcadeDrive(inputs.getThrottle(), (sensors.getFollowAngleNAVX() - sensors.getPresentAngleNAVX()) * variables.GyroKp);
 		}
 		// If robot is doing anything other than forward or backward turn NavX Drive straight off
 		else {
@@ -336,27 +336,27 @@ public class Robot extends IterativeRobot {
 	//may need to add an else statement
 	//To go up make it negative
 	public void scaleLiftPosition() {
-		if(sensors.analogLiftPot.get() > constants.scaleLiftPot) {
+		if(sensors.analogLiftPot.get() > variables.scaleLiftPot) {
 			lift.mot_liftDart.set(-0.75);
-		}else if (sensors.analogLiftPot.get() == constants.scaleLiftPot) {
+		}else if (sensors.analogLiftPot.get() == variables.scaleLiftPot) {
 			lift.mot_liftDart.set(0.0);
 		}
 	}	
 
 	public void portalLiftPosition() {
-		if(sensors.analogLiftPot.get() > constants.portalLiftPot) {
+		if(sensors.analogLiftPot.get() > variables.portalLiftPot) {
 			lift.mot_liftDart.set(-0.50);
-		}else if (sensors.analogLiftPot.get() < constants.portalLiftPot) {
+		}else if (sensors.analogLiftPot.get() < variables.portalLiftPot) {
 			lift.mot_liftDart.set(0.50);
-		}else if (sensors.analogLiftPot.get() < 10 && constants.portalLiftPot> 10 ){
+		}else if (sensors.analogLiftPot.get() < 10 && variables.portalLiftPot> 10 ){
 			lift.mot_liftDart.set(0.0);
 		}
 	}
 	
 	public void defaultLiftPosition() {
-		if(sensors.analogLiftPot.get() < constants.defaultLiftPot) {
+		if(sensors.analogLiftPot.get() < variables.defaultLiftPot) {
 			lift.mot_liftDart.set(0.75);
-		}else if (sensors.analogLiftPot.get() == constants.defaultLiftPot) {
+		}else if (sensors.analogLiftPot.get() == variables.defaultLiftPot) {
 			lift.mot_liftDart.set(0.0);
 		}
 	}
@@ -390,53 +390,60 @@ public class Robot extends IterativeRobot {
 	// The most basic Auton: Drive forward 11 feet and stop, ready testing and tuning!!!!!
 	public void driveBaseLineStraight() {
 		if (drivetrain.getLeftQuadPosition() < 132 && drivetrain.getRightQuadPosition() < 132) {
-			drivetrain.drive.arcadeDrive(0.60,(sensors.getFollowAngleNAVX() - sensors.getPresentAngleNAVX()) * constants.GyroKp);
+			drivetrain.drive.arcadeDrive(0.60,(sensors.getFollowAngleNAVX() - sensors.getPresentAngleNAVX()) * variables.GyroKp);
 		}else {
 			drivetrain.drive.arcadeDrive(0, 0);
 		}
 	} //ready for testing 
 	
 	public void centerDriveBaseLineToLeftOfPile() {
-		if (drivetrain.getLeftQuadPosition() < 70 && drivetrain.getRightQuadPosition() < 70) {
-			drivetrain.drive.arcadeDrive(0.50,(sensors.getFollowAngleNAVX() - sensors.getPresentAngleNAVX()) * constants.GyroKp);
-		}else if (drivetrain.getLeftQuadPosition() > 70 && drivetrain.getRightQuadPosition() > 70) {
-			if(sensors.getPresentAngleNAVX() < 145) {
-				drivetrain.drive.arcadeDrive(0.50, sensors.getPresentAngleNAVX() * constants.autoTurnKp );
-			}else if (sensors.getPresentAngleNAVX() >= 145) {
-				drivetrain.drive.arcadeDrive(0.50, (sensors.getFollowAngleNAVX() - sensors.getPresentAngleNAVX()) * constants.GyroKp);
+		if (drivetrain.getLeftQuadPosition() < 80 && drivetrain.getRightQuadPosition() < 80) {
+			drivetrain.drive.arcadeDrive(0.50,(sensors.getFollowAngleNAVX() - sensors.getPresentAngleNAVX()) * variables.GyroKp);
+		}else if (drivetrain.getLeftQuadPosition() >= 80 && drivetrain.getRightQuadPosition() >= 80) {
+			if(sensors.getPresentAngleNAVX() < 270) {
+				drivetrain.drive.arcadeDrive(0.50, sensors.getPresentAngleNAVX() * variables.autoTurnKp);
+			}else if (sensors.getPresentAngleNAVX() >= 270) {
+				drivetrain.drive.arcadeDrive(0.50,(sensors.getFollowAngleNAVX() - sensors.getPresentAngleNAVX()) * variables.GyroKp);
 				sensors.ahrs.reset();
 			}
-		}else if (drivetrain.getLeftQuadPosition() >=158 && drivetrain.getRightQuadPosition() >= 158) {
-			if(sensors.getPresentAngleNAVX() < 15) {
-				drivetrain.drive.arcadeDrive(0.50, sensors.getPresentAngleNAVX() * constants.autoTurnKp);
-			}else if(sensors.getPresentAngleNAVX() >= 15) {
-				drivetrain.drive.arcadeDrive(0.0, 0.0);
+		}else if (drivetrain.getLeftQuadPosition() < 130 && drivetrain.getRightQuadPosition() < 130) {
+			drivetrain.drive.arcadeDrive(0.50,(sensors.getFollowAngleNAVX() - sensors.getPresentAngleNAVX()) * variables.GyroKp);
+		}else if (drivetrain.getLeftQuadPosition() >= 130 && drivetrain.getRightQuadPosition() >= 130)	{
+			if(sensors.getPresentAngleNAVX() < 90) {
+				drivetrain.drive.arcadeDrive(0.50, sensors.getPresentAngleNAVX() * variables.autoTurnKp);
+			}else if(sensors.getPresentAngleNAVX() >= 90) {
+				drivetrain.drive.arcadeDrive(0.50,(sensors.getFollowAngleNAVX() - sensors.getPresentAngleNAVX()) * variables.GyroKp);
 			}
-		}	
+		}else if(drivetrain.getLeftQuadPosition() < 185 && drivetrain.getRightQuadPosition() < 185) {
+			drivetrain.drive.arcadeDrive(0.50,(sensors.getFollowAngleNAVX() - sensors.getPresentAngleNAVX()) * variables.GyroKp);
+		}else if(drivetrain.getLeftQuadPosition() >= 185 && drivetrain.getRightQuadPosition() >= 185) {
+			drivetrain.drive.arcadeDrive(0.0, 0.0);
+		}
+		
 	}//Ready for testing and tuning
 	
 	public void centerDriveBaseLineToRightOfPile() {}//will be similar to centerDriveBaseLineToLeftOfPile() just needs testing and tuning first
 	
 	public void leftDrivetoLeftSideScale() {
 		if (drivetrain.getLeftQuadPosition() < 122 && drivetrain.getRightQuadPosition() < 122 ) {
-			drivetrain.drive.arcadeDrive(0.5, (sensors.getFollowAngleNAVX() - sensors.getPresentAngleNAVX()) * constants.GyroKp);
+			drivetrain.drive.arcadeDrive(0.50,(sensors.getFollowAngleNAVX() - sensors.getPresentAngleNAVX()) * variables.GyroKp);
 		}else if (drivetrain.getLeftQuadPosition() >= 122 && drivetrain.getRightQuadPosition() >= 122){
-			if(sensors.getPresentAngleNAVX() < 345){
-				drivetrain.drive.arcadeDrive(0.50, sensors.getPresentAngleNAVX() * constants.autoTurnKp);
-			}else if (sensors.getPresentAngleNAVX() >= 345){
+			if(sensors.getPresentAngleNAVX() > 345){
+				drivetrain.drive.arcadeDrive(0.50, sensors.getPresentAngleNAVX() * variables.autoTurnKp);
+			}else if (sensors.getPresentAngleNAVX() <= 345){
 				drivetrain.drive.arcadeDrive(0.0, 0.0);
 				sensors.ahrs.reset();
 			}
 		}else if(drivetrain.getLeftQuadPosition() < 156 && drivetrain.getRightQuadPosition() < 156){
-			drivetrain.drive.arcadeDrive(0.5, (sensors.getFollowAngleNAVX() - sensors.getPresentAngleNAVX()) * constants.GyroKp);
+			drivetrain.drive.arcadeDrive(0.50,(sensors.getFollowAngleNAVX() - sensors.getPresentAngleNAVX()) * variables.GyroKp);
 		}else if(drivetrain.getLeftQuadPosition() >= 156 && drivetrain.getRightQuadPosition() >= 156){
 			if(sensors.getPresentAngleNAVX() < 15 ){
-				drivetrain.drive.arcadeDrive(0.50, sensors.getPresentAngleNAVX() * constants.autoTurnKp);
+				drivetrain.drive.arcadeDrive(0.50, sensors.getPresentAngleNAVX() * variables.autoTurnKp);
 			}else if(sensors.getPresentAngleNAVX() <= 15){
-				drivetrain.drive.arcadeDrive(0.0, 0.0);
+				drivetrain.drive.arcadeDrive(0.50,(sensors.getFollowAngleNAVX() - sensors.getPresentAngleNAVX()) * variables.GyroKp);
 			}
 		}else if(drivetrain.getLeftQuadPosition() < 289 && drivetrain.getRightQuadPosition() <289){
-			drivetrain.drive.arcadeDrive(0.5, (sensors.getFollowAngleNAVX() - sensors.getPresentAngleNAVX()) * constants.GyroKp);
+			drivetrain.drive.arcadeDrive(0.50,(sensors.getFollowAngleNAVX() - sensors.getPresentAngleNAVX()) * variables.GyroKp);
 		}else if(drivetrain.getLeftQuadPosition() >= 289 && drivetrain.getRightQuadPosition() >= 289){
 			drivetrain.drive.arcadeDrive(0.0, 0.0);
 		}
@@ -444,23 +451,23 @@ public class Robot extends IterativeRobot {
 	
 	public void leftFarSideScale(){
 		if (drivetrain.getLeftQuadPosition() < 253 && drivetrain.getRightQuadPosition() < 253 ){
-			drivetrain.drive.arcadeDrive(0.5, (sensors.getFollowAngleNAVX() - sensors.getPresentAngleNAVX()) * constants.GyroKp);
+			drivetrain.drive.arcadeDrive(0.50,(sensors.getFollowAngleNAVX() - sensors.getPresentAngleNAVX()) * variables.GyroKp);
 		}else if (drivetrain.getLeftQuadPosition() >= 253 && drivetrain.getRightQuadPosition() >= 253 ){
 			if (sensors.getPresentAngleNAVX() < 90){
-				drivetrain.drive.arcadeDrive(0.50, sensors.getPresentAngleNAVX() * constants.autoTurnKp);
+				drivetrain.drive.arcadeDrive(0.50, sensors.getPresentAngleNAVX() * variables.autoTurnKp);
 			}else if (sensors.getPresentAngleNAVX() >= 90){
-				drivetrain.drive.arcadeDrive(0.5, (sensors.getFollowAngleNAVX() - sensors.getPresentAngleNAVX()) * constants.GyroKp);
+				drivetrain.drive.arcadeDrive(0.50,(sensors.getFollowAngleNAVX() - sensors.getPresentAngleNAVX()) * variables.GyroKp);
 			}
 		}else if (drivetrain.getLeftQuadPosition() < 436 && drivetrain.getRightQuadPosition() < 436 ){
-			drivetrain.drive.arcadeDrive(0.5, (sensors.getFollowAngleNAVX() - sensors.getPresentAngleNAVX()) * constants.GyroKp);
+			drivetrain.drive.arcadeDrive(0.50,(sensors.getFollowAngleNAVX() - sensors.getPresentAngleNAVX()) * variables.GyroKp);
 		}else if (drivetrain.getLeftQuadPosition() >= 436 && drivetrain.getRightQuadPosition() >= 436 ){
 			if(sensors.getPresentAngleNAVX() > 255){
-				drivetrain.drive.arcadeDrive(0.50, sensors.getPresentAngleNAVX() * constants.autoTurnKp);
+				drivetrain.drive.arcadeDrive(0.50, sensors.getPresentAngleNAVX() * variables.autoTurnKp);
 			}else if(sensors.getPresentAngleNAVX() <= 255){
-				drivetrain.drive.arcadeDrive(0.5, (sensors.getFollowAngleNAVX() - sensors.getPresentAngleNAVX()) * constants.GyroKp);
+				drivetrain.drive.arcadeDrive(0.50,(sensors.getFollowAngleNAVX() - sensors.getPresentAngleNAVX()) * variables.GyroKp);
 			}
 		}else if (drivetrain.getLeftQuadPosition() < 494 && drivetrain.getRightQuadPosition() < 494 ){
-			drivetrain.drive.arcadeDrive(0.5, (sensors.getFollowAngleNAVX() - sensors.getPresentAngleNAVX()) * constants.GyroKp);	
+			drivetrain.drive.arcadeDrive(0.50,(sensors.getFollowAngleNAVX() - sensors.getPresentAngleNAVX()) * variables.GyroKp);
 		}else if (drivetrain.getLeftQuadPosition() >= 494 && drivetrain.getRightQuadPosition() >= 494 ){
 			drivetrain.drive.arcadeDrive(0.0, 0.0);
 		}
