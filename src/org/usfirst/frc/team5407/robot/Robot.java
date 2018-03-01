@@ -68,7 +68,7 @@ public class Robot extends IterativeRobot {
 		winch = new Winch(3);
 
 		// Calls 4 solenoids in the air class
-		air = new Air(0, 1, 2, 4, 5);
+		air = new Air(0, 1, 2, 3, 4, 5);
 
 		// BEGIN JeVois Code //
 		// Get default camera settings
@@ -178,7 +178,7 @@ public class Robot extends IterativeRobot {
 		
 		// If else statement for auton selection
 		if (autonChooser == doNothingAuton) {
-		}else if (autonChooser == driveBaseLineStraight) {
+		}else if (autonChooser == driveBaseLineStraight) { driveBaseLineStraight();
 		}else if (autonChooser == centerDriveBaseLineToLeftOfPile) {
 		}else if (autonChooser == centerDriveBaseLineToRightOfPile) {
 		}else if (autonChooser == leftDrivetoLeftSideScale) {		
@@ -208,10 +208,11 @@ public class Robot extends IterativeRobot {
 
 		//put all buttons here
 		air.s_DSShifter.set(inputs.getIsDualSpeedShifterButtonPressed());
-		air.s_sol4.set(inputs.getIsSolenoidFourButtonPressed());
-		air.s_sol2.set(inputs.getIsSolenoidTwoButtonPressed());
-		air.s_sol1.set(inputs.getIsSolenoidThreeButtonPressed());
-		air.s_sol5.set(inputs.getIsSolenoidFiveButtonPresses());
+		air.s_sol4.set(inputs.getIsSolenoidFourButtonPressed());  // open intake
+		air.s_sol2.set(inputs.getIsSolenoidTwoButtonPressed());	  // release arm
+		air.s_sol3.set(inputs.getIsSuperButtonPressed());		  // super squeeze
+		air.s_sol1.set(inputs.getIsSolenoidThreeButtonPressed()); // 
+		air.s_sol5.set(inputs.getIsSolenoidFiveButtonPresses());  // 
 		
 		if(inputs.getIsIntakeButtonPressed() == true) {
 			intake.intakeIn();
@@ -379,7 +380,7 @@ public class Robot extends IterativeRobot {
 	// The most basic Auton: Drive forward 11 feet and stop, ready testing and tuning!!!!!
 	public void driveBaseLineStraight() {
 		if (drivetrain.getLeftQuadPosition() < 132 && drivetrain.getRightQuadPosition() < 132) {
-			drivetrain.drive.arcadeDrive(0.60,(sensors.getFollowAngleNAVX() - sensors.getPresentAngleNAVX()) * variables.GyroKp);
+			drivetrain.drive.arcadeDrive(-0.60,(sensors.getFollowAngleNAVX() - sensors.getPresentAngleNAVX()) * variables.GyroKp);
 		}else {
 			drivetrain.drive.arcadeDrive(0, 0);
 		}

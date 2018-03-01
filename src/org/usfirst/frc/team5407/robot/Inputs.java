@@ -10,13 +10,14 @@ public class Inputs {
     private boolean isIntakeButtonPressed;
     private boolean isDualSpeedShifterButtonPressed;
     private boolean isSolenoidFourButtonPressed;
-    private boolean isSolenoidTwoButtonPressed;
+    private boolean isSolenoidTwoButtonPressed;   //x button claw release
     private boolean isSolenoidThreeButtonPressed;
     private boolean isIntakeOutButtonPressed;
     private boolean isScaleLiftButtonPressed;
     private boolean isPortalLiftButtonPressed;
     private boolean isDefaultLiftButtonPressed;
     private boolean isSolenoidFiveButtonPressed;
+    private boolean isSuperButtonPressed;
     
     private double throttle;
     private double turn;
@@ -31,7 +32,7 @@ public class Inputs {
     public boolean getIsCameraButtonPressed() { return isCameraButtonPressed; }
     public boolean getIsDualSpeedShifterButtonPressed() { return isDualSpeedShifterButtonPressed; }
     public boolean getIsSolenoidFourButtonPressed() { return isSolenoidFourButtonPressed; }
-    public boolean getIsSolenoidTwoButtonPressed() { return isSolenoidTwoButtonPressed; }
+    public boolean getIsSolenoidTwoButtonPressed() { return isSolenoidTwoButtonPressed; }  // x button claw release
     public boolean getIsSolenoidThreeButtonPressed() { return isSolenoidThreeButtonPressed; }
     public boolean getIsSolenoidFiveButtonPresses() {return isSolenoidFiveButtonPressed; }
     public boolean getIsIntakeButtonPressed() { return isIntakeButtonPressed;  }
@@ -39,6 +40,7 @@ public class Inputs {
     public boolean getisScaleLiftButtonPressed() { return isScaleLiftButtonPressed;}
     public boolean getisPortalLiftButtonPressed() { return isPortalLiftButtonPressed;}
     public boolean getisDefaultLiftButtonPressed() { return isDefaultLiftButtonPressed;}
+    public boolean getIsSuperButtonPressed() {return isSuperButtonPressed;}
     
     // Public doubles
     public double getThrottle() { return throttle;}
@@ -53,7 +55,6 @@ public class Inputs {
 		// Private booleans
         isCameraButtonPressed = j_leftStick.getRawButton(5);
         isDualSpeedShifterButtonPressed = j_leftStick.getRawButton(6);
-        isIntakeButtonPressed = j_leftStick.getRawButton(4); //moved to drive side
         isSolenoidFiveButtonPressed = j_leftStick.getRawButton(1);
   
     //Operation Controller       
@@ -63,8 +64,11 @@ public class Inputs {
         isScaleLiftButtonPressed = j_rightStick.getRawButton(4);
         isPortalLiftButtonPressed = j_rightStick.getRawButton(2);
         isDefaultLiftButtonPressed = j_rightStick.getRawButton(1);
-        //  isSolenoidTwoButtonPressed = j_rightStick.getRawButton(2);
+        isSuperButtonPressed = j_rightStick.getRawAxis(3)>0.1;
+        isSolenoidTwoButtonPressed = j_rightStick.getRawButton(3); //x button claw release
         //  isSolenoidThreeButtonPressed = j_rightStick.getRawButton(6);
+        isIntakeButtonPressed = j_rightStick.getRawAxis(2)>0.1; //moved to drive side
+
         
 
     }
