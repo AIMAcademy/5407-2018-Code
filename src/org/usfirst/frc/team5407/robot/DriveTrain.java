@@ -49,5 +49,18 @@ public class DriveTrain {
 		return -(RightsideQuadraturePosition / 3000 * 6 * Math.PI); //needs tuning 
 		//negative 1 added for invert sensor, needs testing!!!
 	}
+	
+	public void resetEncoders() {
+		this.frontLeftDriveMotor.getSensorCollection().setQuadraturePosition(0, 10);
+		this.frontRightDriveMotor.getSensorCollection().setQuadraturePosition(0, 10);
+	}
 
+	public void stop(){
+		drive.arcadeDrive(0, 0);
+	}
+	
+	public void autonDrive(double speed, double rotate){
+		drive.arcadeDrive(- Math.sqrt(speed), rotate);
+	}
+	
 }
