@@ -50,17 +50,20 @@ public class Robot extends IterativeRobot {
 	final String centerDriveBaseLineToLeftOfPile = "Center Drive To Left Of Pile";
 	final String centerDriveBaseLineToRightOfPile = "Center Drive To Right Of Pile";
 	final String leftDrivetoLeftSideScale = "Left Drive to Left Side Scale";
-	final String driveTurnDrive = "Drive Turn Drive";
-	final String liftArm = "Lift Arm";
+	final String jordansDriveBaseline = "Jordan's Drive to Baseline";
+	final String testAuton = "Test Auton";
 	String autonChooser;
 	SendableChooser<String> AutonChooser;
 
 	final String leftSideStart = "Left Side Start";
-	final String centerStart = "Center Start";
+	final String centerStartThenRight = "Center Start Then Right";
+	final String centerStartThenLeft = "Center Start Then Left";
 	final String rightSideStart = "Right Side Start";
 	String startSelected;
+	SendableChooser<String> StartChooser;
 
 
+	final double distanceAdjustment = 1.344;
 	int autonCounter;
 
 	@Override
@@ -133,15 +136,18 @@ public class Robot extends IterativeRobot {
 		AutonChooser.addObject("Center Drive To Left Of Pile", centerDriveBaseLineToLeftOfPile);
 		AutonChooser.addObject("Center Drive To Right Of Pile", centerDriveBaseLineToRightOfPile);
 		AutonChooser.addObject("Left Drive to Left Side Scale" , leftDrivetoLeftSideScale);
-		AutonChooser.addObject("Drive Turn Drive", driveTurnDrive);
-		AutonChooser.addObject("Lift Arm", liftArm);
+		AutonChooser.addObject("Jordan's Drive to Baseline", jordansDriveBaseline);
+		AutonChooser.addObject("Test Auton", testAuton);
 		SmartDashboard.putData("Auton Choices", AutonChooser);
 
-		//		startChooser = new SendableChooser<String>();
-		//		startChooser.addObject("Center Start", centerStart);
-		//		startChooser.addObject("Left Side Start", leftSideStart);
-		//		startChooser.addObject("Right Side Start", rightSideStart);
-		//		SmartDashboard.putData("Start Choices", startChooser);
+		StartChooser = new SendableChooser<String>();
+		StartChooser.addObject("Center Start Then Right", centerStartThenRight);
+		StartChooser.addObject("Center Start Then Left", centerStartThenLeft);
+		StartChooser.addObject("Left Side Start", leftSideStart);
+		StartChooser.addObject("Right Side Start", rightSideStart);
+		SmartDashboard.putData("Start Choices", StartChooser);
+		
+		SmartDashboard.updateValues();
 	}
 
 	public void robotPeriodic() {}
@@ -153,8 +159,8 @@ public class Robot extends IterativeRobot {
 		autonChooser = AutonChooser.getSelected();
 		SmartDashboard.putString("My Selected Auton is ", autonChooser);
 
-		//		startSelected = startChooser.getSelected();
-		//		SmartDashboard.putString("Robot Start Position is ", startSelected);
+		/*startSelected = StartChooser.getSelected();
+		SmartDashboard.putString("Robot Start Position is ", startSelected);*/
 	}
 
 	public void autonomousInit() {
@@ -172,7 +178,7 @@ public class Robot extends IterativeRobot {
 		drivetrain.resetEncoders();
 
 		autonCounter = 1;
-		
+
 		timer.reset();
 		timer.start();
 	}
@@ -191,8 +197,8 @@ public class Robot extends IterativeRobot {
 		autonChooser = AutonChooser.getSelected();
 		SmartDashboard.putString("My Selected Auton is ", autonChooser);
 
-		//		startSelected = startChooser.getSelected();
-		//		SmartDashboard.putString("Robot Start Position is ", startSelected);
+		startSelected = StartChooser.getSelected();
+		SmartDashboard.putString("Robot Start Position is ", startSelected);
 
 		// If else statement for auton selection
 		if (autonChooser == doNothingAuton) {
@@ -200,14 +206,15 @@ public class Robot extends IterativeRobot {
 		}else if (autonChooser == centerDriveBaseLineToLeftOfPile) { centerDriveBaseLineToLeftOfPile();
 		}else if (autonChooser == centerDriveBaseLineToRightOfPile) { centerDriveBaseLineToRightOfPile();
 		}else if (autonChooser == leftDrivetoLeftSideScale) { leftFarSideScale();
-		}else if (autonChooser == driveTurnDrive){driveTurnDrive();
-		}else if (autonChooser == liftArm){liftArm();
+		}else if (autonChooser == jordansDriveBaseline){jordansDriveBaseline();
+		}else if (autonChooser == testAuton){testAuton();
 		}
 
-		if (startSelected == centerStart) {
+/*		if (startSelected == centerStartThenRight) {
+		}else if (startSelected == centerStartThenLeft) {
 		}else if (startSelected == rightSideStart) {
-		}else if (startSelected == rightSideStart) {
-		}
+		}else if (startSelected == leftSideStart) {
+		}*/
 
 		//Puts values on SmartDashboard in Auto
 		SmartDashboard.putNumber("Gyro-NAVX", sensors.ahrs.getAngle());
@@ -221,6 +228,17 @@ public class Robot extends IterativeRobot {
 	public void teleopInit() {
 		// Zero and initialize all inputs and sensors for teleop
 		air.initializeAir();
+
+		//resets both drive encoders to zero
+		drivetrain.frontLeftDriveMotor.setSelectedSensorPosition(variables.encoderpos, 0, 10);
+		drivetrain.frontRightDriveMotor.setSelectedSensorPosition(variables.encoderpos, 0, 10);
+
+		//resets gyro to zero
+		sensors.ahrs.reset();
+
+		//Reset encoders
+		drivetrain.resetEncoders();
+
 	}
 
 	public void teleopPeriodic() {
@@ -484,33 +502,62 @@ public class Robot extends IterativeRobot {
 		}
 	}
 
-	public void driveTurnDrive(){
+	public void jordansDriveBaseline(){
 
-		if (autonCounter ==1){
-			liftTo(150,0.5);
+		if (startSelected == leftSideStart || startSelected == rightSideStart) {
+			jordansDriveBaselineSides();
 		}
-		else if (autonCounter ==2){
+		else if (startSelected == centerStartThenRight){
+			jordansDriveBaselineCenterThenRight();
+		}
+
+	}
+	 
+	public void jordansDriveBaselineSides(){
+		
+		if (autonCounter == 1){
+			driveTo(120,0.5);
+		}
+	}
+	
+	public void jordansDriveBaselineCenterThenRight(){
+		
+		if (autonCounter == 1){
+			driveTo(60,0.5);
+		}
+		else if (autonCounter == 2) {
+			turnTo(45,0.5);
+		}
+		else if (autonCounter == 3) {
+			driveTo(85,0.5);
+		}
+		else if (autonCounter == 4) {
+			turnTo(45,-0.5);
+		}
+	}
+	
+	
+	
+	public void testAuton(){
+
+		if (autonCounter == 1){
+			liftTo(150,1);
+		}
+
+		else if (autonCounter == 2){
 			driveTo(72, 0.5);
 		}
 
 		else if (autonCounter == 3){
-			turnTo(30, 0.5);
+			turnTo(180, 0.5);
 		}
 
 		else if (autonCounter == 4){
-			driveTo(180,0.5);
+			driveTo(72,0.5);
 		}
 
 		else if (autonCounter == 5){
 			eject();
-		}
-
-
-	}
-
-	public void liftArm(){
-		if (autonCounter ==1){
-			liftTo(150,0.5);
 		}
 	}
 
@@ -525,34 +572,64 @@ public class Robot extends IterativeRobot {
 		drivetrain.stop();
 		sensors.ahrs.reset();
 		drivetrain.resetEncoders();
-		autonCounter++;
 		timer.reset();
 		timer.start();
+		autonCounter++;
 	}
 
+
 	// drives to distance in inches at given speed.  Then calls nextStep()
+	// IMPORTANT: distance always positive.  Speed determines forward/backward
 	public void driveTo(double distance, double speed){
-		if (drivetrain.getLeftQuadPosition() < distance){
-			drivetrain.autonDrive(speed, 0);
+		distance = distanceAdjustment * Math.abs(distance);
+		
+		if (speed > 0){
+			if (drivetrain.getLeftQuadPosition() < distance){
+				drivetrain.autonDrive(speed, 0);
+			}
+			else {
+				nextStep();
+			}
 		}
 		else {
-			nextStep();
+			if (drivetrain.getLeftQuadPosition() > -distance){
+				drivetrain.autonDrive(speed, 0);
+			}
+			else {
+				nextStep();
+			}
 		}
 	}
 
 
 	// turns to the given angle.  Positive is to the right.  Then calls nextStep()
+	// IMPORTANT: angle always positive.  Speed determines forward/backward
+
 	public void turnTo(double angle, double speed){
-		if(sensors.ahrs.getAngle() < angle){
-			drivetrain.autonDrive(0, speed);
+		angle = Math.abs(angle);
+		if (speed > 0){
+			if(sensors.ahrs.getAngle() < angle){
+				drivetrain.autonDrive(0, speed);
+			}
+			else{
+				nextStep();
+			}
 		}
-		else{
-			nextStep();
+		else {
+			if(sensors.ahrs.getAngle() > -angle){
+				drivetrain.autonDrive(0, speed);
+			}
+			else{
+				nextStep();
+			}
 		}
 	}
 
 
 	public void liftTo(double height, double speed){
+
+		SmartDashboard.putBoolean("Lift Done", false);
+		SmartDashboard.updateValues();
 
 		if (sensors.analogLiftPot.get()< height-20){
 			lift.mot_liftDart.set(speed);
@@ -566,8 +643,10 @@ public class Robot extends IterativeRobot {
 		else if (sensors.analogLiftPot.get()>height+10){
 			lift.mot_liftDart.set(-speed/2);
 		}
-		else if (sensors.analogLiftPot.get() >height-10 && sensors.analogLiftPot.get() < height+10){
+		else if ((sensors.analogLiftPot.get() > (height-10) && sensors.analogLiftPot.get() < (height+10)) || timer.get() > 2){
 			lift.mot_liftDart.set(0);
+			SmartDashboard.putBoolean("Lift Done", true);
+			SmartDashboard.updateValues();
 			nextStep();
 		}
 	}

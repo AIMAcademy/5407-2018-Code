@@ -60,7 +60,7 @@ public class DriveTrain {
 	}
 	
 	public void autonDrive(double speed, double rotate){
-		drive.arcadeDrive(- Math.sqrt(speed), rotate);
+		drive.arcadeDrive(- speed, rotate);
 	}
 	
 }
