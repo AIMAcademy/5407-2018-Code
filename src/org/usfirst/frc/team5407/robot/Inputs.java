@@ -22,7 +22,6 @@ public class Inputs {
     private double throttle;
     private double turn;
 
-
     public Inputs(int leftJoystickPort, int rightJoystickPort) {
         j_leftStick = new Joystick(leftJoystickPort);
         j_rightStick = new Joystick(rightJoystickPort);
@@ -49,8 +48,17 @@ public class Inputs {
     public void ReadValues() {
     	//Driver Controller
 		// Private doubles
-		throttle = j_leftStick.getY(); // xbox left X, positive is forward
-		turn = j_leftStick.getX(); // xbox right X, positive means turn right
+    	if (j_leftStick.getY() < 0.1 && j_leftStick.getY() > 0.1){
+    		throttle = 0.0;
+    	}else {
+    		throttle = j_leftStick.getY(); // xbox left X, positive is forward
+    	}
+		
+    	if (j_leftStick.getX() < 0.1 && j_leftStick.getX() > 0.1 ){
+    		turn = 0.0;
+    	}else {
+    		turn = j_leftStick.getX(); // xbox right X, positive means turn right
+    	}
 
 		// Private booleans
         isCameraButtonPressed = j_leftStick.getRawButton(5);

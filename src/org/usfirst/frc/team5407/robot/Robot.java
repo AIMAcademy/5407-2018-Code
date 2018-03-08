@@ -377,6 +377,7 @@ public class Robot extends IterativeRobot {
 	// Lift Position methods
 	//may need to add an else statement
 	//To go up make it negative
+	
 	public void scaleLiftPosition() {
 		if(sensors.analogLiftPot.get() > variables.scaleLiftPot) {
 			lift.mot_liftDart.set(-0.75);
@@ -502,6 +503,9 @@ public class Robot extends IterativeRobot {
 		}
 	}
 
+	
+	
+	
 	public void jordansDriveBaseline(){
 
 		if (startSelected == leftSideStart || startSelected == rightSideStart) {
@@ -561,9 +565,13 @@ public class Robot extends IterativeRobot {
 		}
 	}
 
-
-
-
+	
+	
+	
+	
+	
+	
+	
 
 
 
@@ -625,11 +633,8 @@ public class Robot extends IterativeRobot {
 		}
 	}
 
-
 	public void liftTo(double height, double speed){
 
-		SmartDashboard.putBoolean("Lift Done", false);
-		SmartDashboard.updateValues();
 
 		if (sensors.analogLiftPot.get()< height-20){
 			lift.mot_liftDart.set(speed);
@@ -645,8 +650,6 @@ public class Robot extends IterativeRobot {
 		}
 		else if ((sensors.analogLiftPot.get() > (height-10) && sensors.analogLiftPot.get() < (height+10)) || timer.get() > 2){
 			lift.mot_liftDart.set(0);
-			SmartDashboard.putBoolean("Lift Done", true);
-			SmartDashboard.updateValues();
 			nextStep();
 		}
 	}
