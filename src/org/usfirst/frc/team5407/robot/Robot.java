@@ -275,9 +275,11 @@ public class Robot extends IterativeRobot {
 		if (setCameraToTrackObjects && _currentCameraSettings.getIsUsingDefaultSettings()) {
 			_currentCameraSettings.setObjectTrackerSettings();
 			setJeVoisVideoMode();
+			setJeVoisConfigParameters();
 		} else if (!setCameraToTrackObjects && !_currentCameraSettings.getIsUsingDefaultSettings()) {
 			_currentCameraSettings.setDefaultSettings();
 			setJeVoisVideoMode();
+			setJeVoisConfigParameters();
 		}
 
 		// Getting the encoder values for the drivetrain and cooking and returning them
@@ -319,6 +321,11 @@ public class Robot extends IterativeRobot {
 		jevoisCam.setVideoMode(PixelFormat.kYUYV, _currentCameraSettings.getWidth(),
 				_currentCameraSettings.getHeight(), _currentCameraSettings.getFps());
 	}
+	
+	public void setJeVoisConfigParameters() {
+		jevois.writeString("setcam " + _currentCameraSettings.getBrightness() + "\n");
+		jevois.writeString("setcam " + _currentCameraSettings.getExposure() + "\n");
+	}
 
 	// Writes to console
 	public void writeJeVois(String cmd) {
@@ -340,6 +347,12 @@ public class Robot extends IterativeRobot {
 		public boolean getIsUsingDefaultSettings();
 		public void setDefaultSettings();
 		public void setObjectTrackerSettings();
+
+		// Additional parameters for sending configuration through serial
+		// Replaces the need for config file edits on the JeVois entirely
+		public int getBrightness();
+		public int getExposure();
+		// needs additional settings - stopping here for testing purposes
 	}
 
 	public class CameraSettings implements ICameraSettings {
@@ -347,6 +360,8 @@ public class Robot extends IterativeRobot {
 		private int height;
 		private int fps;
 		private boolean isUsingDefaultSettings;
+		private int brightness;
+		private int exposure;
 
 		public CameraSettings() {
 			setDefaultSettings();
@@ -356,6 +371,8 @@ public class Robot extends IterativeRobot {
 		public int getHeight() { return height; }
 		public int getFps() { return fps;}
 		public boolean getIsUsingDefaultSettings() { return isUsingDefaultSettings; }
+		public int getBrightness() { return brightness; }
+		public int getExposure() { return exposure; }
 
 		public void setDefaultSettings() {
 			width = 176;
@@ -363,6 +380,9 @@ public class Robot extends IterativeRobot {
 			fps = 60;
 
 			isUsingDefaultSettings = true;
+			
+			brightness = 0;
+			exposure = 0;
 		}
 		public void setObjectTrackerSettings() {
 			width = 320;
@@ -370,6 +390,9 @@ public class Robot extends IterativeRobot {
 			fps = 60;
 
 			isUsingDefaultSettings = false;
+			
+			brightness = -3;
+			exposure = 0;
 		}
 	}
 	// End private camera settings
