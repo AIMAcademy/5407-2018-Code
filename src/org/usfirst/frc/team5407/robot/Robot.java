@@ -11,11 +11,13 @@ import edu.wpi.cscore.UsbCamera;
 import edu.wpi.cscore.VideoMode;
 import edu.wpi.cscore.VideoMode.PixelFormat;
 import edu.wpi.first.wpilibj.CameraServer;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.SerialPort;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.Timer;
+
 
 
 /**
@@ -32,6 +34,7 @@ public class Robot extends IterativeRobot {
 	Intake intake;
 	Winch winch;
 	Timer timer;
+	DriverStation ds;
 
 	// JeVois Variables
 	private SerialPort jevois = null;
@@ -62,7 +65,8 @@ public class Robot extends IterativeRobot {
 	String startSelected;
 	SendableChooser<String> StartChooser;
 
-
+	String ownership;
+	
 	final double distanceAdjustment = 1.344;
 	int autonCounter;
 
@@ -77,6 +81,7 @@ public class Robot extends IterativeRobot {
 		intake = new Intake(1,2);
 		winch = new Winch(3);
 		timer = new Timer();
+		ds = DriverStation.getInstance();
 
 		// Calls 4 solenoids in the air class
 		air = new Air(0, 1, 2, 3, 4, 5);
@@ -181,9 +186,13 @@ public class Robot extends IterativeRobot {
 
 		timer.reset();
 		timer.start();
+		
+		ownership = ds.getGameSpecificMessage();
 	}
 
 	public void autonomousPeriodic() {		
+		ownership = ds.getGameSpecificMessage();
+		
 		// Getting the encoder values for the drivetrain and cooking and returning them
 		drivetrain.getLeftQuadPosition();
 		drivetrain.getRightQuadPosition();
@@ -405,10 +414,11 @@ public class Robot extends IterativeRobot {
 		}
 	}
 
+	// I don't think we need this
 	public void centerStart() {}
-
+	// I don't think we need this
 	public void rightSideStart() {}
-
+	// I don't think we need this
 	public void leftSideStart() {}
 
 	// When no Auton is called this one will be run, we just sit there
@@ -417,6 +427,7 @@ public class Robot extends IterativeRobot {
 	}
 
 	// The most basic Auton: Drive forward 11 feet and stop, ready testing and tuning!!!!!
+	// Replace with jordan's version
 	public void driveBaseLineStraight() {
 		if (drivetrain.getLeftQuadPosition() < 132 && drivetrain.getRightQuadPosition() < 132) {
 			drivetrain.drive.arcadeDrive(-0.60,(sensors.getFollowAngleNAVX() - sensors.getPresentAngleNAVX()) * variables.GyroKp);
@@ -424,7 +435,7 @@ public class Robot extends IterativeRobot {
 			drivetrain.drive.arcadeDrive(0, 0);
 		}
 	} //ready for testing 
-
+	// Replace with jordan's version
 	public void centerDriveBaseLineToLeftOfPile() {
 		if (drivetrain.getLeftQuadPosition() < 80 && drivetrain.getRightQuadPosition() < 80) {
 			drivetrain.drive.arcadeDrive(-0.50,(sensors.getFollowAngleNAVX() - sensors.getPresentAngleNAVX()) * variables.GyroKp);
@@ -450,9 +461,11 @@ public class Robot extends IterativeRobot {
 		}
 
 	}//Ready for testing and tuning
-
+	// Replace with Jordan's version
 	public void centerDriveBaseLineToRightOfPile() {}//will be similar to centerDriveBaseLineToLeftOfPile() just needs testing and tuning first
 
+	
+	// Rewrite this
 	public void leftDrivetoLeftSideScale() {
 		if (drivetrain.getLeftQuadPosition() < 122 && drivetrain.getRightQuadPosition() < 122 ) {
 			drivetrain.drive.arcadeDrive(-0.50,(sensors.getFollowAngleNAVX() - sensors.getPresentAngleNAVX()) * variables.GyroKp);
@@ -477,7 +490,7 @@ public class Robot extends IterativeRobot {
 			drivetrain.drive.arcadeDrive(0.0, 0.0);
 		}
 	}
-
+	// Rewrite this
 	public void leftFarSideScale(){
 
 		if (drivetrain.getLeftQuadPosition() < 253 && drivetrain.getRightQuadPosition() < 253 ){
@@ -514,6 +527,9 @@ public class Robot extends IterativeRobot {
 		else if (startSelected == centerStartThenRight){
 			jordansDriveBaselineCenterThenRight();
 		}
+		else if (startSelected == centerStartThenLeft){
+			jordansDriveBaselineCenterThenLeft();
+		}
 
 	}
 	 
@@ -540,6 +556,21 @@ public class Robot extends IterativeRobot {
 		}
 	}
 	
+	public void jordansDriveBaselineCenterThenLeft(){
+		
+		if (autonCounter == 1){
+			driveTo(60,0.5);
+		}
+		else if (autonCounter == 2) {
+			turnTo(45,-0.5);
+		}
+		else if (autonCounter == 3) {
+			driveTo(85,0.5);
+		}
+		else if (autonCounter == 4) {
+			turnTo(45,0.5);
+		}
+	}
 	
 	
 	public void testAuton(){
@@ -664,6 +695,15 @@ public class Robot extends IterativeRobot {
 		}
 	}
 
+	public void intake (){
+		if (timer.get() <1){
+			intake.intakeIn();
+		}
+		else{
+			intake.intakeStop();
+			nextStep();
+		}
+	}
 
 
 }
