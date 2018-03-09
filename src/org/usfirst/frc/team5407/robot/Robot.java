@@ -114,6 +114,16 @@ public class Robot extends IterativeRobot {
 				jevoisCam.setVideoMode(PixelFormat.kYUYV, _currentCameraSettings.getWidth(),
 						_currentCameraSettings.getHeight(), _currentCameraSettings.getFps());
 				VideoMode vm = jevoisCam.getVideoMode();
+				jevois.writeString("setcam brightness " + _currentCameraSettings.getBrightness() + "\n");
+				jevois.writeString("setcam exposure " + _currentCameraSettings.getExposure() + "\n");
+				jevois.writeString("setcam bluebal" + _currentCameraSettings.getBluebal() + "\n");
+				jevois.writeString("setcam autogain" + _currentCameraSettings.getAutogain() + "\n");
+				jevois.writeString("setcam gain" + _currentCameraSettings.getGain() + "\n");
+				jevois.writeString("setcam saturation" + _currentCameraSettings.getSaturation() + "\n");
+				jevois.writeString("setcam absexp" + _currentCameraSettings.getAbsexp() + "\n");
+				jevois.writeString("setpar hrange" + _currentCameraSettings.getHRange() + "\n");
+				jevois.writeString("setpar srange" + _currentCameraSettings.getSRange() + "\n");
+				jevois.writeString("setpar vrange" + _currentCameraSettings.getVRange() + "\n");
 				System.out.println("jevoisCam pixel: " + vm.pixelFormat);
 				System.out.println("jevoisCam res: " + vm.width + "x" + vm.height);
 				System.out.println("jevoisCam fps: " + vm.fps);
@@ -332,8 +342,28 @@ public class Robot extends IterativeRobot {
 	}
 	
 	public void setJeVoisConfigParameters() {
-		jevois.writeString("setcam " + _currentCameraSettings.getBrightness() + "\n");
-		jevois.writeString("setcam " + _currentCameraSettings.getExposure() + "\n");
+		jevois.writeString("setcam brightness " + _currentCameraSettings.getBrightness() + "\n");
+		jevois.writeString("setcam exposure" + _currentCameraSettings.getExposure() + "\n");
+		jevois.writeString("setcam bluebal" + _currentCameraSettings.getBluebal() + "\n");
+		jevois.writeString("setcam autogain" + _currentCameraSettings.getAutogain() + "\n");
+		jevois.writeString("setcam gain" + _currentCameraSettings.getGain() + "\n");
+		jevois.writeString("setcam saturation" + _currentCameraSettings.getSaturation() + "\n");
+		jevois.writeString("setpar hrange" + _currentCameraSettings.getHRange() + "\n");
+		jevois.writeString("setpar srange" + _currentCameraSettings.getSRange() + "\n");
+		jevois.writeString("setpar vrange" + _currentCameraSettings.getVRange() + "\n");
+
+		
+		System.out.println("wrote setcam brightness " + _currentCameraSettings.getBrightness());
+		System.out.println("wrote setcam exposure " + _currentCameraSettings.getExposure());
+		System.out.println("wrote setcam bluebal " + _currentCameraSettings.getBluebal());
+		System.out.println("wrote setcam autogain " + _currentCameraSettings.getAutogain());
+		System.out.println("wrote setcam gain " + _currentCameraSettings.getGain());
+		System.out.println("wrote setcam saturation " + _currentCameraSettings.getSaturation());
+		System.out.println("wrote setcam absexp " + _currentCameraSettings.getAbsexp());
+		System.out.println("wrote setpar hrange " + _currentCameraSettings.getHRange());
+		System.out.println("wrote setpar srange " + _currentCameraSettings.getSRange());
+		System.out.println("wrote setpar vrange " + _currentCameraSettings.getVRange());
+
 	}
 
 	// Writes to console
@@ -361,6 +391,15 @@ public class Robot extends IterativeRobot {
 		// Replaces the need for config file edits on the JeVois entirely
 		public int getBrightness();
 		public int getExposure();
+		public int getBluebal();
+		public int getAutogain();
+		public int getGain();
+		public int getSaturation();
+		public int getAbsexp();
+		public String getHRange();
+		public String getSRange();
+		public String getVRange();
+		
 		// needs additional settings - stopping here for testing purposes
 	}
 
@@ -371,7 +410,15 @@ public class Robot extends IterativeRobot {
 		private boolean isUsingDefaultSettings;
 		private int brightness;
 		private int exposure;
-
+		private int bluebal;
+		private int autogain;
+		private int gain;
+		private int saturation;
+		private int absexp;
+		private String hrange;
+		private String srange;
+		private String vrange;
+		
 		public CameraSettings() {
 			setDefaultSettings();
 		}
@@ -382,16 +429,37 @@ public class Robot extends IterativeRobot {
 		public boolean getIsUsingDefaultSettings() { return isUsingDefaultSettings; }
 		public int getBrightness() { return brightness; }
 		public int getExposure() { return exposure; }
+		
+		public int getBluebal() { return bluebal; }
+		public int getAutogain() { return autogain; }
+		public int getGain() { return gain; }
+		public int getSaturation() { return saturation; }
+		public int getAbsexp() { return absexp; }
+		
+		public String getHRange() { return hrange; }
+		public String getSRange() { return srange; }
+		public String getVRange() { return vrange; }		
 
+		
 		public void setDefaultSettings() {
-			width = 176;
-			height = 144;
-			fps = 60;
+			width = 352;
+			height = 288;
+			fps = 30;
 
 			isUsingDefaultSettings = true;
 			
-			brightness = 0;
+			brightness = 3;
 			exposure = 0;
+			
+			bluebal = 128;
+			autogain = 1;
+			gain = 16;
+			saturation = 2;
+			absexp = 1000;
+			
+			hrange = "10...245";
+			srange = "10...245";
+			vrange = "10...245";
 		}
 		public void setObjectTrackerSettings() {
 			width = 320;
@@ -402,6 +470,17 @@ public class Robot extends IterativeRobot {
 			
 			brightness = -3;
 			exposure = 0;
+			
+			bluebal = 170;
+			autogain = 0;
+			gain = 16;
+			saturation = 0;
+			absexp = 500;
+			
+			hrange = "60...119";
+			srange = "30...186";
+			vrange = "225...255";
+
 		}
 	}
 	// End private camera settings
