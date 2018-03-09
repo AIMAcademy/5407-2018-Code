@@ -56,7 +56,10 @@ public class Robot extends IterativeRobot {
 	private SendableChooser<String> StartChooser;
 
 	String ownership;
-	
+	String ownership0;
+	String ownership1;
+	String ownership2;
+
 	final double distanceAdjustment = 1.344;
 	int autonCounter;
 
@@ -73,7 +76,7 @@ public class Robot extends IterativeRobot {
 		vision = new Vision();
 		timer = new Timer();
 		ds = DriverStation.getInstance();
-		
+
 		vision.setJeVoisVideoMode();
 
 		// Calls 4 solenoids in the air class
@@ -96,7 +99,7 @@ public class Robot extends IterativeRobot {
 		StartChooser.addObject("Right Side Start", rightSideStart);
 		SmartDashboard.putData("Start Choices", StartChooser);
 
-//		SmartDashboard.updateValues();
+		//		SmartDashboard.updateValues();
 	}
 
 	public void robotPeriodic() {}
@@ -130,12 +133,13 @@ public class Robot extends IterativeRobot {
 
 		timer.reset();
 		timer.start();
-		
-		ownership = ds.getGameSpecificMessage();
+
+		getGameData();
+
 	}
 
 	public void autonomousPeriodic() {		
-		ownership = ds.getGameSpecificMessage();
+		getGameData();
 		
 		// Getting the encoder values for the drivetrain and cooking and returning them
 		drivetrain.getLeftQuadPosition();
@@ -163,7 +167,7 @@ public class Robot extends IterativeRobot {
 		}else if (autonChooser == testAuton){testAuton();
 		}
 
-/*		if (startSelected == centerStartThenRight) {
+		/*		if (startSelected == centerStartThenRight) {
 		}else if (startSelected == centerStartThenLeft) {
 		}else if (startSelected == rightSideStart) {
 		}else if (startSelected == leftSideStart) {
@@ -216,20 +220,20 @@ public class Robot extends IterativeRobot {
 		air.s_sol1.set(inputs.getIsSolenoidThreeButtonPressed()); // 
 		air.s_sol5.set(inputs.getIsSolenoidFiveButtonPresses());  // 
 
-		
+
 		if(inputs.getIsSolenoidTwoButtonPressed() && inputs.getIsemJoyButtonPressed()){
 			air.s_sol2.set(inputs.getIsSolenoidTwoButtonPressed());	  // release arm
 		}else{
 			air.s_sol2.set(false);
 		}
-		
+
 		// NOTE: May have to make direction negative
 		if(inputs.getIsemJoyButtonPressed() && inputs.getWinchSpeed()<0){
 			winch.mot_Winch.set(inputs.getWinchSpeed());
 		}else{
 			winch.mot_Winch.set(0.0);
 		}
-		
+
 		if(inputs.getIsIntakeButtonPressed()) {
 			intake.intakeIn();
 		}else if (inputs.getIsIntakeOutButtonPressed()) {
@@ -289,7 +293,7 @@ public class Robot extends IterativeRobot {
 	// Lift Position methods
 	//may need to add an else statement
 	//To go up make it negative
-	
+
 	public void scaleLiftPosition() {
 		if(sensors.analogLiftPot.get() > variables.scaleLiftPot) {
 			lift.mot_liftDart.set(-0.75);
@@ -367,7 +371,7 @@ public class Robot extends IterativeRobot {
 	// Replace with Jordan's version
 	public void centerDriveBaseLineToRightOfPile() {}//will be similar to centerDriveBaseLineToLeftOfPile() just needs testing and tuning first
 
-	
+
 	// Rewrite this
 	public void leftDrivetoLeftSideScale() {
 		if (drivetrain.getLeftQuadPosition() < 122 && drivetrain.getRightQuadPosition() < 122 ) {
@@ -419,9 +423,9 @@ public class Robot extends IterativeRobot {
 		}
 	}
 
-	
-	
-	
+
+
+
 	public void jordansDriveBaseline(){
 
 		if (startSelected == leftSideStart || startSelected == rightSideStart) {
@@ -435,16 +439,16 @@ public class Robot extends IterativeRobot {
 		}
 
 	}
-	 
+
 	public void jordansDriveBaselineSides(){
-		
+
 		if (autonCounter == 1){
 			driveTo(120,0.5);
 		}
 	}
-	
+
 	public void jordansDriveBaselineCenterThenRight(){
-		
+
 		if (autonCounter == 1){
 			driveTo(60,0.5);
 		}
@@ -458,9 +462,9 @@ public class Robot extends IterativeRobot {
 			turnTo(45,-0.5);
 		}
 	}
-	
+
 	public void jordansDriveBaselineCenterThenLeft(){
-		
+
 		if (autonCounter == 1){
 			driveTo(60,0.5);
 		}
@@ -474,8 +478,8 @@ public class Robot extends IterativeRobot {
 			turnTo(45,0.5);
 		}
 	}
-	
-	
+
+
 	public void testAuton(){
 
 		if (autonCounter == 1){
@@ -499,13 +503,39 @@ public class Robot extends IterativeRobot {
 		}
 	}
 
-	
-	
-	
-	
-	
-	
-	
+
+
+
+
+
+
+
+	public void getGameData(){
+		ownership = ds.getGameSpecificMessage();
+
+		if (ownership.length()>0){
+			if (ownership.charAt(0)=='L'){
+				ownership0 = "L";
+			}
+			else{
+				ownership0 = "R";
+			}
+			if (ownership.charAt(1)=='L'){
+				ownership1 = "L";
+			}
+			else{
+				ownership1 = "R";
+			}
+			if (ownership.charAt(2)=='L'){
+				ownership2 = "L";
+			}
+			else{
+				ownership2 = "R";
+			}
+			System.out.println(ownership0 + ownership1 + ownership2);
+		}
+	}
+
 
 
 
@@ -524,7 +554,7 @@ public class Robot extends IterativeRobot {
 	// IMPORTANT: distance always positive.  Speed determines forward/backward
 	public void driveTo(double distance, double speed){
 		distance = distanceAdjustment * Math.abs(distance);
-		
+
 		if (speed > 0){
 			if (drivetrain.getLeftQuadPosition() < distance){
 				drivetrain.autonDrive(speed, 0);
