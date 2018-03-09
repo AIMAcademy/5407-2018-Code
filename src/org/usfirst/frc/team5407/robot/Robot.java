@@ -36,6 +36,7 @@ public class Robot extends IterativeRobot {
 	Timer timer;
 	DriverStation ds;
 
+	
 	// JeVois Variables
 	private SerialPort jevois = null;
 	private int loopCount;
@@ -75,7 +76,7 @@ public class Robot extends IterativeRobot {
 		// Makes classes recognized in program and execute
 		drivetrain = new DriveTrain();
 		sensors = new Sensors();
-		inputs = new Inputs(0, 1); 
+		inputs = new Inputs(0, 1, 2); 
 		variables = new Variables();
 		lift = new Lift(0);
 		intake = new Intake(1,2);
@@ -265,14 +266,27 @@ public class Robot extends IterativeRobot {
 		//put all buttons here
 		air.s_DSShifter.set(inputs.getIsDualSpeedShifterButtonPressed());
 		air.s_sol4.set(inputs.getIsSolenoidFourButtonPressed());  // open intake
-		air.s_sol2.set(inputs.getIsSolenoidTwoButtonPressed());	  // release arm
 		air.s_sol3.set(inputs.getIsSuperButtonPressed());		  // super squeeze
 		air.s_sol1.set(inputs.getIsSolenoidThreeButtonPressed()); // 
 		air.s_sol5.set(inputs.getIsSolenoidFiveButtonPresses());  // 
 
-		if(inputs.getIsIntakeButtonPressed() == true) {
+		
+		if(inputs.getIsSolenoidTwoButtonPressed() && inputs.getIsemJoyButtonPressed()){
+			air.s_sol2.set(inputs.getIsSolenoidTwoButtonPressed());	  // release arm
+		}else{
+			air.s_sol2.set(false);
+		}
+		
+		// NOTE: May have to make direction negative
+		if(inputs.getIsemJoyButtonPressed() && inputs.getWinchSpeed()<0){
+			winch.mot_Winch.set(inputs.getWinchSpeed());
+		}else{
+			winch.mot_Winch.set(0.0);
+		}
+		
+		if(inputs.getIsIntakeButtonPressed()) {
 			intake.intakeIn();
-		}else if (inputs.getIsIntakeOutButtonPressed() == true) {
+		}else if (inputs.getIsIntakeOutButtonPressed()) {
 			intake.intakeOut();
 		}else {
 			intake.intakeStop();
