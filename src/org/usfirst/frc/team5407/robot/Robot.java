@@ -55,15 +55,15 @@ public class Robot extends IterativeRobot {
 	final String leftDrivetoLeftSideScale = "Left Drive to Left Side Scale";
 	final String jordansDriveBaseline = "Jordan's Drive to Baseline";
 	final String testAuton = "Test Auton";
-	String autonChooser;
-	SendableChooser<String> AutonChooser;
+	private String autonChooser;
+	private SendableChooser<String> AutonChooser;
 
 	final String leftSideStart = "Left Side Start";
 	final String centerStartThenRight = "Center Start Then Right";
 	final String centerStartThenLeft = "Center Start Then Left";
 	final String rightSideStart = "Right Side Start";
-	String startSelected;
-	SendableChooser<String> StartChooser;
+	private String startSelected;
+	private SendableChooser<String> StartChooser;
 
 	String ownership;
 	
@@ -156,13 +156,13 @@ public class Robot extends IterativeRobot {
 		SmartDashboard.putData("Auton Choices", AutonChooser);
 
 		StartChooser = new SendableChooser<String>();
-		StartChooser.addObject("Center Start Then Right", centerStartThenRight);
+		StartChooser.addDefault("Center Start Then Right", centerStartThenRight);
 		StartChooser.addObject("Center Start Then Left", centerStartThenLeft);
 		StartChooser.addObject("Left Side Start", leftSideStart);
 		StartChooser.addObject("Right Side Start", rightSideStart);
 		SmartDashboard.putData("Start Choices", StartChooser);
-		
-		SmartDashboard.updateValues();
+
+//		SmartDashboard.updateValues();
 	}
 
 	public void robotPeriodic() {}
@@ -174,12 +174,12 @@ public class Robot extends IterativeRobot {
 		autonChooser = AutonChooser.getSelected();
 		SmartDashboard.putString("My Selected Auton is ", autonChooser);
 
-		/*startSelected = StartChooser.getSelected();
-		SmartDashboard.putString("Robot Start Position is ", startSelected);*/
+		startSelected = StartChooser.getSelected();
+		SmartDashboard.putString("Robot Start Position is ", startSelected);
 	}
 
 	public void autonomousInit() {
-		// Zero and initalize values for auton 
+		// Zero and initialize values for auton 
 		air.initializeAir();
 
 		//resets both drive encoders to zero
