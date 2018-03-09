@@ -115,7 +115,6 @@ public class Robot extends IterativeRobot {
 						_currentCameraSettings.getHeight(), _currentCameraSettings.getFps());
 				VideoMode vm = jevoisCam.getVideoMode();
 				jevois.writeString("setcam brightness " + _currentCameraSettings.getBrightness() + "\n");
-				jevois.writeString("setcam exposure " + _currentCameraSettings.getExposure() + "\n");
 				jevois.writeString("setcam bluebal" + _currentCameraSettings.getBluebal() + "\n");
 				jevois.writeString("setcam autogain" + _currentCameraSettings.getAutogain() + "\n");
 				jevois.writeString("setcam gain" + _currentCameraSettings.getGain() + "\n");
@@ -343,7 +342,6 @@ public class Robot extends IterativeRobot {
 	
 	public void setJeVoisConfigParameters() {
 		jevois.writeString("setcam brightness " + _currentCameraSettings.getBrightness() + "\n");
-		jevois.writeString("setcam exposure" + _currentCameraSettings.getExposure() + "\n");
 		jevois.writeString("setcam bluebal" + _currentCameraSettings.getBluebal() + "\n");
 		jevois.writeString("setcam autogain" + _currentCameraSettings.getAutogain() + "\n");
 		jevois.writeString("setcam gain" + _currentCameraSettings.getGain() + "\n");
@@ -352,9 +350,7 @@ public class Robot extends IterativeRobot {
 		jevois.writeString("setpar srange" + _currentCameraSettings.getSRange() + "\n");
 		jevois.writeString("setpar vrange" + _currentCameraSettings.getVRange() + "\n");
 
-		
 		System.out.println("wrote setcam brightness " + _currentCameraSettings.getBrightness());
-		System.out.println("wrote setcam exposure " + _currentCameraSettings.getExposure());
 		System.out.println("wrote setcam bluebal " + _currentCameraSettings.getBluebal());
 		System.out.println("wrote setcam autogain " + _currentCameraSettings.getAutogain());
 		System.out.println("wrote setcam gain " + _currentCameraSettings.getGain());
@@ -390,7 +386,6 @@ public class Robot extends IterativeRobot {
 		// Additional parameters for sending configuration through serial
 		// Replaces the need for config file edits on the JeVois entirely
 		public int getBrightness();
-		public int getExposure();
 		public int getBluebal();
 		public int getAutogain();
 		public int getGain();
@@ -409,7 +404,6 @@ public class Robot extends IterativeRobot {
 		private int fps;
 		private boolean isUsingDefaultSettings;
 		private int brightness;
-		private int exposure;
 		private int bluebal;
 		private int autogain;
 		private int gain;
@@ -428,7 +422,6 @@ public class Robot extends IterativeRobot {
 		public int getFps() { return fps;}
 		public boolean getIsUsingDefaultSettings() { return isUsingDefaultSettings; }
 		public int getBrightness() { return brightness; }
-		public int getExposure() { return exposure; }
 		
 		public int getBluebal() { return bluebal; }
 		public int getAutogain() { return autogain; }
@@ -448,9 +441,7 @@ public class Robot extends IterativeRobot {
 
 			isUsingDefaultSettings = true;
 			
-			brightness = 3;
-			exposure = 0;
-			
+			brightness = 3;			
 			bluebal = 128;
 			autogain = 1;
 			gain = 16;
@@ -468,9 +459,7 @@ public class Robot extends IterativeRobot {
 
 			isUsingDefaultSettings = false;
 			
-			brightness = -3;
-			exposure = 0;
-			
+			brightness = -3;			
 			bluebal = 170;
 			autogain = 0;
 			gain = 16;
