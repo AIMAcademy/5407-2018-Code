@@ -80,7 +80,7 @@ public class Robot extends IterativeRobot {
 		vision.setJeVoisVideoMode();
 
 		// Calls 4 solenoids in the air class
-		air = new Air(0, 1, 2, 3, 4, 5);
+		air = new Air(0, 1, 2, 3, 4, 5, 6);
 
 		AutonChooser = new SendableChooser<String>();
 		AutonChooser.addDefault("Do Nothing!!", doNothingAuton);
@@ -118,6 +118,8 @@ public class Robot extends IterativeRobot {
 	public void autonomousInit() {
 		// Zero and initialize values for auton 
 		air.initializeAir();
+		
+		air.s_sol6.set(true);
 
 		//resets both drive encoders to zero
 		drivetrain.frontLeftDriveMotor.setSelectedSensorPosition(variables.encoderpos, 0, 10);
@@ -227,7 +229,6 @@ public class Robot extends IterativeRobot {
 			air.s_sol2.set(false);
 		}
 
-		// NOTE: May have to make direction negative
 		if(inputs.getIsemJoyButtonPressed() && inputs.getWinchSpeed()<0){
 			winch.mot_Winch.set(inputs.getWinchSpeed());
 		}else{
@@ -242,7 +243,7 @@ public class Robot extends IterativeRobot {
 			intake.intakeStop();
 		}
 
-		// Lift postion needs testing!!
+		// Lift posiition needs testing!!
 		if(inputs.getisScaleLiftButtonPressed() == true) {
 			scaleLiftPosition();
 		} else if(inputs.getisPortalLiftButtonPressed() == true) {
@@ -250,7 +251,7 @@ public class Robot extends IterativeRobot {
 		} else if(inputs.getisDefaultLiftButtonPressed() == true) {
 			defaultLiftPosition();
 		}else	{
-			lift.mot_liftDart.set(-inputs.j_rightStick.getY());
+			lift.mot_liftDart.set(inputs.j_rightStick.getY());
 		}
 
 		// Getting the encoder values for the drivetrain and cooking and returning them
@@ -480,6 +481,40 @@ public class Robot extends IterativeRobot {
 	}
 
 
+	
+	
+	public void closeScale(){
+		if (startSelected == "Left Side Start" && ownership0 == "L"){
+			
+		}
+		else if (startSelected == "Left Side Start" && ownership0 == "R"){
+			
+		}
+		else if (startSelected == "Right Side Start" && ownership0 == "L"){
+			
+		}
+		else if (startSelected == "Right Side Start" && ownership0 == "R"){
+			
+		}
+		else if (startSelected == "Center Start Then Left" && ownership0 == "L"){
+			
+		}
+		else if (startSelected == "Center Start Then Left" && ownership0 == "R"){
+			
+		}
+		else if (startSelected == "Center Start Then Right" && ownership0 == "L"){
+			
+		}
+		else if (startSelected == "Center Start Then Right" && ownership0 == "R"){
+			
+		}
+	}
+	
+	
+	
+	
+	
+	
 	public void testAuton(){
 
 		if (autonCounter == 1){
