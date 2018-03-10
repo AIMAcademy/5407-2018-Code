@@ -80,14 +80,14 @@ public class Inputs {
     //Operation Controller       
         // Private booleans
         isSolenoidFourButtonPressed = j_rightStick.getRawButton(6);
-        isIntakeOutButtonPressed = j_rightStick.getRawButton(5);
+        isIntakeButtonPressed = j_rightStick.getRawButton(5);
         isScaleLiftButtonPressed = j_rightStick.getRawButton(4);
         isPortalLiftButtonPressed = j_rightStick.getRawButton(2);
         isDefaultLiftButtonPressed = j_rightStick.getRawButton(1);
         isSuperButtonPressed = j_rightStick.getRawAxis(3)>0.1;
         isSolenoidTwoButtonPressed = j_rightStick.getRawButton(3); //x button claw release
         //  isSolenoidThreeButtonPressed = j_rightStick.getRawButton(6);
-        isIntakeButtonPressed = j_rightStick.getRawAxis(2)>0.1; //moved to drive side
+        isIntakeOutButtonPressed = j_rightStick.getRawAxis(2)>0.1; //moved to drive side
         
         //em joystick 
         isemJoyButtonPressed = j_emJoy.getRawButton(12);
