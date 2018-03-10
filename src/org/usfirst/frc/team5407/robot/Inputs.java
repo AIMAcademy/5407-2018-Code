@@ -20,6 +20,7 @@ public class Inputs {
     private boolean isSolenoidFiveButtonPressed;
     private boolean isSuperButtonPressed;
     private boolean isemJoyButtonPressed;
+    private boolean isBackButtonPressed;
     
     private double throttle;
     private double turn;
@@ -45,6 +46,7 @@ public class Inputs {
     public boolean getisDefaultLiftButtonPressed() { return isDefaultLiftButtonPressed;}
     public boolean getIsSuperButtonPressed() {return isSuperButtonPressed;}
     public boolean getIsemJoyButtonPressed() {return isemJoyButtonPressed;}
+    public boolean getIsBackButtonPressed() {return isBackButtonPressed;}
     
     // Public doubles
     public double getThrottle() { return throttle;}
@@ -76,6 +78,7 @@ public class Inputs {
         isCameraButtonPressed = j_leftStick.getRawButton(5);
         isDualSpeedShifterButtonPressed = j_leftStick.getRawButton(6);
         isSolenoidFiveButtonPressed = j_leftStick.getRawButton(1);
+        isSolenoidTwoButtonPressed = j_leftStick.getRawButton(3); //x button claw release
   
     //Operation Controller       
         // Private booleans
@@ -85,9 +88,9 @@ public class Inputs {
         isPortalLiftButtonPressed = j_rightStick.getRawButton(2);
         isDefaultLiftButtonPressed = j_rightStick.getRawButton(1);
         isSuperButtonPressed = j_rightStick.getRawAxis(3)>0.1;
-        isSolenoidTwoButtonPressed = j_rightStick.getRawButton(3); //x button claw release
         //  isSolenoidThreeButtonPressed = j_rightStick.getRawButton(6);
         isIntakeOutButtonPressed = j_rightStick.getRawAxis(2)>0.1; //moved to drive side
+        isBackButtonPressed= j_rightStick.getRawButton(7);
         
         //em joystick 
         isemJoyButtonPressed = j_emJoy.getRawButton(12);
