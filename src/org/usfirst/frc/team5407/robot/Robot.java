@@ -210,7 +210,7 @@ public class Robot extends IterativeRobot {
 		}
 
 		// put all buttons here
-		air.s_DSShifter.set(inputs.getIsDualSpeedShifterButtonPressed());
+	//	air.s_DSShifter.set(inputs.getIsDualSpeedShifterButtonPressed());
 		air.s_sol4.set(inputs.getIsSolenoidFourButtonPressed()); // open intake
 		air.s_sol3.set(inputs.getIsSuperButtonPressed()); // super squeeze
 		air.s_sol1.set(inputs.getIsSolenoidThreeButtonPressed()); //
@@ -239,8 +239,19 @@ public class Robot extends IterativeRobot {
 			intake.intakeStop();
 		}
 
-		lift.mot_liftDart.set(inputs.j_rightStick.getY());
-
+		lift.mot_liftDart.set(inputs.getLiftSpeed());
+		
+		if (drivetrain.getAverageVelocity() > 400){
+			air.s_DSShifter.set(true);
+		}else if(drivetrain.getAverageVelocity() < 400) {
+			if (inputs.getIsDualSpeedShifterButtonPressed()){
+				air.s_DSShifter.set(inputs.getIsDualSpeedShifterButtonPressed());
+			}else {
+			air.s_DSShifter.set(false);
+			}
+		}
+		
+		
 		// Getting the encoder values for the drivetrain and cooking and
 		// returning them
 		drivetrain.getLeftQuadPosition();
@@ -440,9 +451,8 @@ public class Robot extends IterativeRobot {
 		else if (autonCounter == 7){
 			eject();
 		}
-	}
-	
-		
+	}	
+
 	public void closeScale() {
 		if (startSelected == "Left Side Start" && ownership0 == "L") {
 

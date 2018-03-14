@@ -21,6 +21,7 @@ public class Inputs {
     private double throttle;//for drivetrain
     private double turn;//for drivetrain 
     private double winchSpeed;//end game lift winch 
+    private double liftSpeed;
 
     public Inputs(int leftJoystickPort, int rightJoystickPort, int emJoy) {
         j_leftStick = new Joystick(leftJoystickPort);
@@ -41,44 +42,52 @@ public class Inputs {
     public boolean getIsemJoyButtonPressed() {return isemJoyButtonPressed;}
     
     // Public doubles
-    public double getThrottle() { return throttle;}
-    public double getTurn() { return turn;}
+    public double getThrottle() {return throttle;}
+    public double getTurn() {return turn;}
     public double getWinchSpeed() {return winchSpeed;}
+    public double getLiftSpeed() {return liftSpeed;}
 
     public void ReadValues() {
     	//Driver Controller
 		// Private doubles
-    	if (j_leftStick.getY() < 0.1 && j_leftStick.getY() > 0.1){
+    	if (j_rightStick.getY() < 0.1 && j_rightStick.getY() > 0.1){
     		throttle = 0.0;
     	}else {
-    		throttle = j_leftStick.getY(); // xbox left X, positive is forward
+    		throttle = j_rightStick.getY(); // xbox left X, positive is forward
     	}
 		
-    	if (j_leftStick.getX() < 0.1 && j_leftStick.getX() > 0.1 ){
+    	if (j_rightStick.getX() < 0.1 && j_rightStick.getX() > 0.1 ){
     		turn = 0.0;
     	}else {
-    		turn = j_leftStick.getX(); // xbox right X, positive means turn right
+    		turn = j_rightStick.getX(); // xbox right X, positive means turn right
     	}
     	
-    	if (j_leftStick.getRawAxis(5) < 0.1 && j_leftStick.getRawAxis(5) > 0.1){
+    	if (j_rightStick.getRawAxis(5) < 0.1 && j_rightStick.getRawAxis(5) > 0.1){
     		winchSpeed = 0.0;
     	}else {
-    		winchSpeed = j_leftStick.getRawAxis(5); // xbox left X, positive is forward
+    		winchSpeed = j_rightStick.getRawAxis(5); // xbox left X, positive is forward
     	}
 
 		// Private booleans
-        isCameraButtonPressed = j_leftStick.getRawButton(5);
-        isDualSpeedShifterButtonPressed = j_leftStick.getRawButton(6);
-        isSolenoidFiveButtonPressed = j_leftStick.getRawButton(1);
+        isCameraButtonPressed = j_rightStick.getRawButton(5);
+        isDualSpeedShifterButtonPressed = j_rightStick.getRawButton(6);
+        isSolenoidFiveButtonPressed = j_rightStick.getRawButton(1);
   
     //Operation Controller       
+        // Private doubles
+        if(j_leftStick.getRawAxis(1) < 0.05 && j_leftStick.getRawAxis(1) > -0.05){
+        	liftSpeed = 0.0;
+        }else{
+        	liftSpeed = j_leftStick.getRawAxis(1);
+        }
+        
         // Private booleans
-        isSolenoidFourButtonPressed = j_rightStick.getRawButton(6);
-        isIntakeButtonPressed = j_rightStick.getRawButton(5);
-        isSuperButtonPressed = j_rightStick.getRawAxis(3)>0.1;//super closes intake
+        isSolenoidFourButtonPressed = j_leftStick.getRawButton(6);
+        isIntakeButtonPressed = j_leftStick.getRawButton(5);
+        isSuperButtonPressed = j_leftStick.getRawAxis(3)>0.1;//super closes intake
         //  isSolenoidThreeButtonPressed = j_rightStick.getRawButton(6);
-        isIntakeOutButtonPressed = j_rightStick.getRawAxis(2)>0.1; //moved to drive side
-        isSolenoidTwoButtonPressed = j_rightStick.getRawButton(3); //x button claw release
+        isIntakeOutButtonPressed = j_leftStick.getRawAxis(2)>0.1; //moved to drive side
+        isSolenoidTwoButtonPressed = j_leftStick.getRawButton(3); //x button claw release
         
         //em joystick 
         isemJoyButtonPressed = j_emJoy.getRawButton(12);//end game switch
