@@ -242,12 +242,18 @@ public class Robot extends IterativeRobot {
 		lift.mot_liftDart.set(inputs.getLiftSpeed());
 		
 		if (drivetrain.getAverageVelocity() > 1200){
-			air.s_DSShifter.set(true);
+			timer.reset();
+			timer.start();
+			if (timer.get() > 2){
+				air.s_DSShifter.set(false);
+			}else if (timer.get() <= 2){
+				air.s_DSShifter.set(true);
+			}
 		}else if(drivetrain.getAverageVelocity() < 1200) {
 			if (inputs.getIsDualSpeedShifterButtonPressed()){
 				air.s_DSShifter.set(inputs.getIsDualSpeedShifterButtonPressed());
 			}else {
-			air.s_DSShifter.set(false);
+				air.s_DSShifter.set(false);
 			}
 		}
 		
