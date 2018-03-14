@@ -65,8 +65,9 @@ public class Robot extends IterativeRobot {
 	// Lift goes to this height at the beginning of each match to avoid cube hitting floor
 	final double autonLiftStart = 200;
 
-	final double distanceAdjustment = 1.344;
+	final double distanceAdjustment = 1.344 / 1.042;  //REMOVE THE 1.042 when we switch to the real robot
 	int autonCounter;
+	
 
 	@Override
 	public void robotInit() {
@@ -266,26 +267,8 @@ public class Robot extends IterativeRobot {
 			intake.intakeStop();
 		}
 
-		if (inputs.getIsBackButtonPressed()){
-			if (inputs.getisScaleLiftButtonPressed()) {
-				liftTo(138,0.71);
-			} else if (inputs.getisPortalLiftButtonPressed()) {
-				liftTo(118,0.71);
-			} else if (inputs.getisDefaultLiftButtonPressed()) {
-				liftTo(75, 0.60);
-			}
-		} else {
-			// Lift posiition needs testing!!
-			if (inputs.getisScaleLiftButtonPressed() == true) {
-				liftTo(317, 0.60);
-			} else if (inputs.getisPortalLiftButtonPressed() == true) {
-				liftTo(125, 0.60);
-			} else if (inputs.getisDefaultLiftButtonPressed() == true) {
-				liftTo(75, 0.60);
-			} else {
-				lift.mot_liftDart.set(inputs.j_rightStick.getY());
-			}
-		}
+		lift.mot_liftDart.set(inputs.j_rightStick.getY());
+
 
 		// Getting the encoder values for the drivetrain and cooking and
 		// returning them
@@ -320,45 +303,15 @@ public class Robot extends IterativeRobot {
 		SmartDashboard.putNumber("left side inches", drivetrain.getLeftQuadPosition());
 		SmartDashboard.putNumber("right side inches", drivetrain.getRightQuadPosition());
 		SmartDashboard.putNumber("Lift Pot", sensors.analogLiftPot.get());
-
+		SmartDashboard.putNumber("AverageVelocity", drivetrain.getAverageVelocity());
+		
 		// Updating the values put on SmartDashboard
 		SmartDashboard.updateValues();
 	}
 
 	// Called during periodic, if it sees jevois it tells you how long it took
 	// to connect and if it does not connect it tries to reconnect
-
-	// Lift Position methods
-	// may need to add an else statement
-	// To go up make it negative
-
-	public void scaleLiftPosition() {
-		if (sensors.analogLiftPot.get() > variables.scaleLiftPot) {
-			lift.mot_liftDart.set(-0.75);
-		} else if (sensors.analogLiftPot.get() == variables.scaleLiftPot) {
-			lift.mot_liftDart.set(0.0);
-		}
-	}
-
-	public void portalLiftPosition() {
-		if (sensors.analogLiftPot.get() > variables.portalLiftPot) {
-			lift.mot_liftDart.set(-0.50);
-		} else if (sensors.analogLiftPot.get() < variables.portalLiftPot) {
-			lift.mot_liftDart.set(0.50);
-		} else if (sensors.analogLiftPot.get() < 10 && variables.portalLiftPot > 10) {
-			lift.mot_liftDart.set(0.0);
-		}
-	}
-
-	public void defaultLiftPosition() {
-		if (sensors.analogLiftPot.get() < variables.defaultLiftPot) {
-			lift.mot_liftDart.set(0.75);
-		} else if (sensors.analogLiftPot.get() == variables.defaultLiftPot) {
-			lift.mot_liftDart.set(0.0);
-
-		}
-	}
-
+	
 	// I don't think we need this
 	public void centerStart() {
 	}
@@ -665,7 +618,7 @@ public class Robot extends IterativeRobot {
 	public void testAuton() {
 
 		if (autonCounter == 1) {
-			eject();;
+			turnTo(90,1);
 		}
 
 	}
@@ -732,32 +685,41 @@ public class Robot extends IterativeRobot {
 			if (sensors.ahrs.getAngle() < angle) {
 				drivetrain.autonDrive(0, speed);
 			} else {
-				nextStep();
+				straightenOut(angle);
 			}
 		} else {
 			if (sensors.ahrs.getAngle() > -angle) {
 				drivetrain.autonDrive(0, speed);
 			} else {
-				nextStep();
+				straightenOut(angle);
 			}
 		}
 	}
 
+	public void straightenOut(double angle){
+		if (timer.get() < 10){
+			drivetrain.autonDrive(0, (angle -(sensors.getPresentAngleNAVX()))* 0.03) ;
+		}
+		else {
+			nextStep();
+		}
+	}
+	
 	public void liftTo(double height, double speed) {
 
 		if (timer.get() > 2){
 			lift.mot_liftDart.set(0);
 			nextStep();
 		}
-		else if (sensors.analogLiftPot.get() < height - 20) {
+		else if (sensors.analogLiftPot.get() < height - 15) {
 			lift.mot_liftDart.set(speed);
-		} else if (sensors.analogLiftPot.get() < height - 10) {
-			lift.mot_liftDart.set(speed / 2);
-		} else if (sensors.analogLiftPot.get() > height + 20) {
+		} else if (sensors.analogLiftPot.get() < height - 5) {
+			lift.mot_liftDart.set(speed / 1.414);
+		} else if (sensors.analogLiftPot.get() > height + 15) {
 			lift.mot_liftDart.set(-speed);
-		} else if (sensors.analogLiftPot.get() > height + 10) {
-			lift.mot_liftDart.set(-speed / 2);
-		} else if (sensors.analogLiftPot.get() > (height - 10) && sensors.analogLiftPot.get() < (height + 10)) {
+		} else if (sensors.analogLiftPot.get() > height + 5) {
+			lift.mot_liftDart.set(-speed / 1.414);
+		} else if (sensors.analogLiftPot.get() > (height - 5) && sensors.analogLiftPot.get() < (height + 5)) {
 			lift.mot_liftDart.set(0);
 			nextStep();
 		}

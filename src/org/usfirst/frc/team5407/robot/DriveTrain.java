@@ -14,6 +14,12 @@ public class DriveTrain {
 	// Creating doubles for getting encoder quad positioning and setting them to equal 0 at beginning
 	double RightsideQuadraturePosition = 0.0;
 	double LeftsideQuadraturePosition = 0.0;
+	double leftSideVeloctiy = 0.0;
+	double rightSideVelocity = 0.0;
+	double getLeftSideVelocity = 0.0;
+	double getRightSideVelocity = 0.0;
+	double getAverageVelocity = 0.0;
+	
 	
 	public DriveTrain(){	
 
@@ -48,6 +54,18 @@ public class DriveTrain {
 		// System.out.println("Left side quad position: " + LeftsideQuadraturePosition);  // Prints position to console
 		return -(RightsideQuadraturePosition / 3000 * 6 * Math.PI); //needs tuning 
 		//negative 1 added for invert sensor, needs testing!!!
+	}
+	
+	public double getAverageVelocity(){
+		//gets each sides velocity
+		leftSideVeloctiy = frontLeftDriveMotor.getSelectedSensorVelocity(0);
+		rightSideVelocity = frontRightDriveMotor.getSelectedSensorVelocity(0);
+		
+		//adds the two sides together and divides them to get an average
+		getAverageVelocity =(Math.abs(leftSideVeloctiy) + (Math.abs(rightSideVelocity))/2);
+
+		//returns velocity and does the math to get the average
+		return (getAverageVelocity);
 	}
 	
 	public void resetEncoders() {

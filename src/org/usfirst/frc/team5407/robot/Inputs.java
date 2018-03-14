@@ -20,7 +20,6 @@ public class Inputs {
     private boolean isSolenoidFiveButtonPressed;
     private boolean isSuperButtonPressed;
     private boolean isemJoyButtonPressed;
-    private boolean isBackButtonPressed;
     
     private double throttle;
     private double turn;
@@ -46,7 +45,6 @@ public class Inputs {
     public boolean getisDefaultLiftButtonPressed() { return isDefaultLiftButtonPressed;}
     public boolean getIsSuperButtonPressed() {return isSuperButtonPressed;}
     public boolean getIsemJoyButtonPressed() {return isemJoyButtonPressed;}
-    public boolean getIsBackButtonPressed() {return isBackButtonPressed;}
     
     // Public doubles
     public double getThrottle() { return throttle;}
@@ -90,7 +88,6 @@ public class Inputs {
         isSuperButtonPressed = j_rightStick.getRawAxis(3)>0.1;
         //  isSolenoidThreeButtonPressed = j_rightStick.getRawButton(6);
         isIntakeOutButtonPressed = j_rightStick.getRawAxis(2)>0.1; //moved to drive side
-        isBackButtonPressed= j_rightStick.getRawButton(7);
         
         //em joystick 
         isemJoyButtonPressed = j_emJoy.getRawButton(12);
