@@ -64,5 +64,4 @@ public class Sensors{
 	}
 	// END NAVX Code
 	
-	
 }

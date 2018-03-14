@@ -14,16 +14,13 @@ public class Inputs {
     private boolean isSolenoidTwoButtonPressed;   //x button claw release
     private boolean isSolenoidThreeButtonPressed;
     private boolean isIntakeOutButtonPressed;
-    private boolean isScaleLiftButtonPressed;
-    private boolean isPortalLiftButtonPressed;
-    private boolean isDefaultLiftButtonPressed;
     private boolean isSolenoidFiveButtonPressed;
     private boolean isSuperButtonPressed;
-    private boolean isemJoyButtonPressed;
+    private boolean isemJoyButtonPressed;// end game button
     
-    private double throttle;
-    private double turn;
-    private double winchSpeed;
+    private double throttle;//for drivetrain
+    private double turn;//for drivetrain 
+    private double winchSpeed;//end game lift winch 
 
     public Inputs(int leftJoystickPort, int rightJoystickPort, int emJoy) {
         j_leftStick = new Joystick(leftJoystickPort);
@@ -40,9 +37,6 @@ public class Inputs {
     public boolean getIsSolenoidFiveButtonPresses() {return isSolenoidFiveButtonPressed; }
     public boolean getIsIntakeButtonPressed() { return isIntakeButtonPressed;  }
     public boolean getIsIntakeOutButtonPressed() { return isIntakeOutButtonPressed; }
-    public boolean getisScaleLiftButtonPressed() { return isScaleLiftButtonPressed;}
-    public boolean getisPortalLiftButtonPressed() { return isPortalLiftButtonPressed;}
-    public boolean getisDefaultLiftButtonPressed() { return isDefaultLiftButtonPressed;}
     public boolean getIsSuperButtonPressed() {return isSuperButtonPressed;}
     public boolean getIsemJoyButtonPressed() {return isemJoyButtonPressed;}
     
@@ -76,21 +70,18 @@ public class Inputs {
         isCameraButtonPressed = j_leftStick.getRawButton(5);
         isDualSpeedShifterButtonPressed = j_leftStick.getRawButton(6);
         isSolenoidFiveButtonPressed = j_leftStick.getRawButton(1);
-        isSolenoidTwoButtonPressed = j_leftStick.getRawButton(3); //x button claw release
   
     //Operation Controller       
         // Private booleans
         isSolenoidFourButtonPressed = j_rightStick.getRawButton(6);
         isIntakeButtonPressed = j_rightStick.getRawButton(5);
-        isScaleLiftButtonPressed = j_rightStick.getRawButton(4);
-        isPortalLiftButtonPressed = j_rightStick.getRawButton(2);
-        isDefaultLiftButtonPressed = j_rightStick.getRawButton(1);
-        isSuperButtonPressed = j_rightStick.getRawAxis(3)>0.1;
+        isSuperButtonPressed = j_rightStick.getRawAxis(3)>0.1;//super closes intake
         //  isSolenoidThreeButtonPressed = j_rightStick.getRawButton(6);
         isIntakeOutButtonPressed = j_rightStick.getRawAxis(2)>0.1; //moved to drive side
+        isSolenoidTwoButtonPressed = j_rightStick.getRawButton(3); //x button claw release
         
         //em joystick 
-        isemJoyButtonPressed = j_emJoy.getRawButton(12);
+        isemJoyButtonPressed = j_emJoy.getRawButton(12);//end game switch
 
         
 

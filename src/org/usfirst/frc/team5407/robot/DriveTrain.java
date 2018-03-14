@@ -20,7 +20,6 @@ public class DriveTrain {
 	double getRightSideVelocity = 0.0;
 	double getAverageVelocity = 0.0;
 	
-	
 	public DriveTrain(){	
 
 		/* talons for arcade drive */

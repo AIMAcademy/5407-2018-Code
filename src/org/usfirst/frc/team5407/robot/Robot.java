@@ -7,13 +7,8 @@
 
 package org.usfirst.frc.team5407.robot;
 
-import edu.wpi.cscore.UsbCamera;
-import edu.wpi.cscore.VideoMode;
-import edu.wpi.cscore.VideoMode.PixelFormat;
-import edu.wpi.first.wpilibj.CameraServer;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.IterativeRobot;
-import edu.wpi.first.wpilibj.SerialPort;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.Timer;
@@ -40,9 +35,6 @@ public class Robot extends IterativeRobot {
 	final String doNothingAuton = "Do Nothing!!";
 	final String driveBaseLineStraight = "Drive Straight To BaseLine "; // Needs
 																		// Testing
-	final String centerDriveBaseLineToLeftOfPile = "Center Drive To Left Of Pile";
-	final String centerDriveBaseLineToRightOfPile = "Center Drive To Right Of Pile";
-	final String leftDrivetoLeftSideScale = "Left Drive to Left Side Scale";
 	final String driveBaseline = "Drive to Baseline";
 	final String baseLineAndSwitch = "Base Line And Switch";
 	final String testAuton = "Test Auton";
@@ -68,7 +60,6 @@ public class Robot extends IterativeRobot {
 	final double distanceAdjustment = 1.344 / 1.042;  //REMOVE THE 1.042 when we switch to the real robot
 	int autonCounter;
 	
-
 	@Override
 	public void robotInit() {
 		// Makes classes recognized in program and execute
@@ -110,12 +101,9 @@ public class Robot extends IterativeRobot {
 		// SmartDashboard.updateValues();
 	}
 
-	public void robotPeriodic() {
-	}
+	public void robotPeriodic() {}
 
-	public void disabledInit() {
-
-	}
+	public void disabledInit() {}
 
 	public void disabledPeriodic() {
 
@@ -132,7 +120,6 @@ public class Robot extends IterativeRobot {
 
 		air.s_sol6.set(true);
 
-		
 		// resets both drive encoders to zero
 		drivetrain.frontLeftDriveMotor.setSelectedSensorPosition(variables.encoderpos, 0, 10);
 		drivetrain.frontRightDriveMotor.setSelectedSensorPosition(variables.encoderpos, 0, 10);
@@ -149,7 +136,6 @@ public class Robot extends IterativeRobot {
 		timer.start();
 
 		getGameData();
-
 	}
 
 	public void autonomousPeriodic() {
@@ -174,14 +160,6 @@ public class Robot extends IterativeRobot {
 
 		// If else statement for auton selection
 		if (autonChooser == doNothingAuton) {
-		} else if (autonChooser == driveBaseLineStraight) {
-			driveBaseLineStraight();
-		} else if (autonChooser == centerDriveBaseLineToLeftOfPile) {
-			centerDriveBaseLineToLeftOfPile();
-		} else if (autonChooser == centerDriveBaseLineToRightOfPile) {
-			centerDriveBaseLineToRightOfPile();
-		} else if (autonChooser == leftDrivetoLeftSideScale) {
-			leftFarSideScale();
 		} else if (autonChooser == driveBaseline) {
 			driveBaseline();
 		} else if (autonChooser == baseLineAndSwitch){
@@ -190,12 +168,6 @@ public class Robot extends IterativeRobot {
 		else if (autonChooser == testAuton) {
 			testAuton();
 		}
-
-		/*
-		 * if (startSelected == centerStartThenRight) { }else if (startSelected
-		 * == centerStartThenLeft) { }else if (startSelected == rightSideStart)
-		 * { }else if (startSelected == leftSideStart) { }
-		 */
 
 		// Puts values on SmartDashboard in Auto
 		SmartDashboard.putNumber("Gyro-NAVX", sensors.ahrs.getAngle());
@@ -269,7 +241,6 @@ public class Robot extends IterativeRobot {
 
 		lift.mot_liftDart.set(inputs.j_rightStick.getY());
 
-
 		// Getting the encoder values for the drivetrain and cooking and
 		// returning them
 		drivetrain.getLeftQuadPosition();
@@ -312,18 +283,6 @@ public class Robot extends IterativeRobot {
 	// Called during periodic, if it sees jevois it tells you how long it took
 	// to connect and if it does not connect it tries to reconnect
 	
-	// I don't think we need this
-	public void centerStart() {
-	}
-
-	// I don't think we need this
-	public void rightSideStart() {
-	}
-
-	// I don't think we need this
-	public void leftSideStart() {
-	}
-
 	// When no Auton is called this one will be run, we just sit there
 	public void DoNothingAuton() {
 		if (autonChooser == doNothingAuton) {
@@ -333,50 +292,7 @@ public class Robot extends IterativeRobot {
 	// The most basic Auton: Drive forward 11 feet and stop, ready testing and
 	// tuning!!!!!
 	// Replace with jordan's version
-	public void driveBaseLineStraight() {
-		if (drivetrain.getLeftQuadPosition() < 132 && drivetrain.getRightQuadPosition() < 132) {
-			drivetrain.drive.arcadeDrive(-0.60,
-					(sensors.getFollowAngleNAVX() - sensors.getPresentAngleNAVX()) * variables.GyroKp);
-		} else {
-			drivetrain.drive.arcadeDrive(0, 0);
-		}
-	} // ready for testing
-		// Replace with jordan's version
 
-	public void centerDriveBaseLineToLeftOfPile() {
-		if (drivetrain.getLeftQuadPosition() < 80 && drivetrain.getRightQuadPosition() < 80) {
-			drivetrain.drive.arcadeDrive(-0.50,
-					(sensors.getFollowAngleNAVX() - sensors.getPresentAngleNAVX()) * variables.GyroKp);
-		} else if (drivetrain.getLeftQuadPosition() >= 80 && drivetrain.getRightQuadPosition() >= 80) {
-			if (sensors.getPresentAngleNAVX() < 270) {
-				drivetrain.drive.arcadeDrive(-0.50, sensors.getPresentAngleNAVX() * variables.autoTurnKp);
-			} else if (sensors.getPresentAngleNAVX() >= 270) {
-				drivetrain.drive.arcadeDrive(-0.50,
-						(sensors.getFollowAngleNAVX() - sensors.getPresentAngleNAVX()) * variables.GyroKp);
-				sensors.ahrs.reset();
-			}
-		} else if (drivetrain.getLeftQuadPosition() < 130 && drivetrain.getRightQuadPosition() < 130) {
-			drivetrain.drive.arcadeDrive(-0.50,
-					(sensors.getFollowAngleNAVX() - sensors.getPresentAngleNAVX()) * variables.GyroKp);
-		} else if (drivetrain.getLeftQuadPosition() >= 130 && drivetrain.getRightQuadPosition() >= 130) {
-			if (sensors.getPresentAngleNAVX() < 90) {
-				drivetrain.drive.arcadeDrive(-0.50, sensors.getPresentAngleNAVX() * variables.autoTurnKp);
-			} else if (sensors.getPresentAngleNAVX() >= 90) {
-				drivetrain.drive.arcadeDrive(-0.50,
-						(sensors.getFollowAngleNAVX() - sensors.getPresentAngleNAVX()) * variables.GyroKp);
-			}
-		} else if (drivetrain.getLeftQuadPosition() < 185 && drivetrain.getRightQuadPosition() < 185) {
-			drivetrain.drive.arcadeDrive(-0.50,
-					(sensors.getFollowAngleNAVX() - sensors.getPresentAngleNAVX()) * variables.GyroKp);
-		} else if (drivetrain.getLeftQuadPosition() >= 185 && drivetrain.getRightQuadPosition() >= 185) {
-			drivetrain.drive.arcadeDrive(0.0, 0.0);
-		}
-
-	}// Ready for testing and tuning
-		// Replace with Jordan's version
-
-	public void centerDriveBaseLineToRightOfPile() {
-	}// will be similar to centerDriveBaseLineToLeftOfPile() just needs testing
 		// and tuning first
 
 	public void baseLineAndSwitch() {
@@ -401,69 +317,8 @@ public class Robot extends IterativeRobot {
 		}
 	}
 	
-	
-	
-	
-	// Rewrite this
-	public void leftDrivetoLeftSideScale() {
-		if (drivetrain.getLeftQuadPosition() < 122 && drivetrain.getRightQuadPosition() < 122) {
-			drivetrain.drive.arcadeDrive(-0.50,
-					(sensors.getFollowAngleNAVX() - sensors.getPresentAngleNAVX()) * variables.GyroKp);
-		} else if (drivetrain.getLeftQuadPosition() >= 122 && drivetrain.getRightQuadPosition() >= 122) {
-			if (sensors.getPresentAngleNAVX() > 345) {
-				drivetrain.drive.arcadeDrive(-0.50, sensors.getPresentAngleNAVX() * variables.autoTurnKp);
-			} else if (sensors.getPresentAngleNAVX() <= 345) {
-				drivetrain.drive.arcadeDrive(0.0, 0.0);
-				sensors.ahrs.reset();
-			}
-		} else if (drivetrain.getLeftQuadPosition() < 156 && drivetrain.getRightQuadPosition() < 156) {
-			drivetrain.drive.arcadeDrive(-0.50,
-					(sensors.getFollowAngleNAVX() - sensors.getPresentAngleNAVX()) * variables.GyroKp);
-		} else if (drivetrain.getLeftQuadPosition() >= 156 && drivetrain.getRightQuadPosition() >= 156) {
-			if (sensors.getPresentAngleNAVX() < 15) {
-				drivetrain.drive.arcadeDrive(-0.50, sensors.getPresentAngleNAVX() * variables.autoTurnKp);
-			} else if (sensors.getPresentAngleNAVX() <= 15) {
-				drivetrain.drive.arcadeDrive(-0.50,
-						(sensors.getFollowAngleNAVX() - sensors.getPresentAngleNAVX()) * variables.GyroKp);
-			}
-		} else if (drivetrain.getLeftQuadPosition() < 289 && drivetrain.getRightQuadPosition() < 289) {
-			drivetrain.drive.arcadeDrive(-0.50,
-					(sensors.getFollowAngleNAVX() - sensors.getPresentAngleNAVX()) * variables.GyroKp);
-		} else if (drivetrain.getLeftQuadPosition() >= 289 && drivetrain.getRightQuadPosition() >= 289) {
-			drivetrain.drive.arcadeDrive(0.0, 0.0);
-		}
-	}
+		// Rewrite this
 
-	// Rewrite this
-	public void leftFarSideScale() {
-
-		if (drivetrain.getLeftQuadPosition() < 253 && drivetrain.getRightQuadPosition() < 253) {
-			drivetrain.drive.arcadeDrive(-0.50,
-					(sensors.getFollowAngleNAVX() - sensors.getPresentAngleNAVX()) * variables.GyroKp);
-		} else if (drivetrain.getLeftQuadPosition() >= 253 && drivetrain.getRightQuadPosition() >= 253) {
-			if (sensors.getPresentAngleNAVX() < 90) {
-				drivetrain.drive.arcadeDrive(-0.50, sensors.getPresentAngleNAVX() * variables.autoTurnKp);
-			} else if (sensors.getPresentAngleNAVX() >= 90) {
-				drivetrain.drive.arcadeDrive(-0.50,
-						(sensors.getFollowAngleNAVX() - sensors.getPresentAngleNAVX()) * variables.GyroKp);
-			}
-		} else if (drivetrain.getLeftQuadPosition() < 436 && drivetrain.getRightQuadPosition() < 436) {
-			drivetrain.drive.arcadeDrive(-0.50,
-					(sensors.getFollowAngleNAVX() - sensors.getPresentAngleNAVX()) * variables.GyroKp);
-		} else if (drivetrain.getLeftQuadPosition() >= 436 && drivetrain.getRightQuadPosition() >= 436) {
-			if (sensors.getPresentAngleNAVX() > 255) {
-				drivetrain.drive.arcadeDrive(-0.50, sensors.getPresentAngleNAVX() * variables.autoTurnKp);
-			} else if (sensors.getPresentAngleNAVX() <= 255) {
-				drivetrain.drive.arcadeDrive(-0.50,
-						(sensors.getFollowAngleNAVX() - sensors.getPresentAngleNAVX()) * variables.GyroKp);
-			}
-		} else if (drivetrain.getLeftQuadPosition() < 494 && drivetrain.getRightQuadPosition() < 494) {
-			drivetrain.drive.arcadeDrive(-0.50,
-					(sensors.getFollowAngleNAVX() - sensors.getPresentAngleNAVX()) * variables.GyroKp);
-		} else if (drivetrain.getLeftQuadPosition() >= 494 && drivetrain.getRightQuadPosition() >= 494) {
-			drivetrain.drive.arcadeDrive(0.0, 0.0);
-		}
-	}
 
 	public void driveBaseline() {
 
@@ -587,14 +442,7 @@ public class Robot extends IterativeRobot {
 		}
 	}
 	
-	
-	
-	
-	
-	
-	
-	
-	
+		
 	public void closeScale() {
 		if (startSelected == "Left Side Start" && ownership0 == "L") {
 
@@ -623,6 +471,8 @@ public class Robot extends IterativeRobot {
 
 	}
 
+	
+	//Auton Steps to create autos
 	public void getGameData() {
 		ownership = ds.getGameSpecificMessage();
 

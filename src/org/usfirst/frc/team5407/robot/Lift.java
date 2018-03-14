@@ -9,7 +9,6 @@ public class Lift {
 	public Lift(int i_PWM_LiftSpark) {
 		mot_liftDart = new Spark(i_PWM_LiftSpark);
 		mot_liftDart.set(0.0);
-
 	}
 
 }
