@@ -77,7 +77,15 @@ public class DriveTrain {
 	}
 	
 	public void autonDrive(double speed, double rotate){
-		drive.arcadeDrive(- speed, rotate);
+		drive.arcadeDrive(- root(speed), rotate);
 	}
 	
+	public double root(double num){
+		if (num >= 0){
+			return Math.sqrt(num);
+		}
+		else {
+			return -1*Math.sqrt(Math.abs(num));
+		}
+	}
 }
