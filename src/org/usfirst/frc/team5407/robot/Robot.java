@@ -56,6 +56,9 @@ public class Robot extends IterativeRobot {
 	
 	// Lift goes to this height at the beginning of each match to avoid cube hitting floor
 	final double autonLiftStart = 200;
+	
+	//test and change this number
+	final double maxLiftHeight = 300;
 
 	final double distanceAdjustment = 1.344 / 1.042;  //REMOVE THE 1.042 when we switch to the real robot
 	int autonCounter;
@@ -333,8 +336,6 @@ public class Robot extends IterativeRobot {
 			driveBaseline();
 		}
 	}
-	
-		// Rewrite this
 
 
 	public void driveBaseline() {
@@ -425,7 +426,6 @@ public class Robot extends IterativeRobot {
 		}
 	}
 
-	
 	public void aroundTheBack(){
 		if (autonCounter == 1) {
 			liftTo(autonLiftStart,0.5);
@@ -495,6 +495,21 @@ public class Robot extends IterativeRobot {
 	}
 
 	public void farScale(){
+		if (autonCounter == 1){
+			driveTo(240, 100);
+		}else if (autonCounter == 2){
+			turnTo(90, 80);
+		}else if (autonCounter == 3){
+			driveTo(208, 90);
+		}else if (autonCounter == 4){
+			turnTo(15, -75);
+		}else if (autonCounter == 5){
+			liftTo(maxLiftHeight, 75);
+		}else if (autonCounter == 6){
+			driveTo(40, 70);
+		}else if (autonCounter == 7){
+			eject();
+		}
 	}
 	
 
@@ -547,13 +562,13 @@ public class Robot extends IterativeRobot {
 		distance = distanceAdjustment * Math.abs(distance);
 
 		if (speed > 0) {
-			if (drivetrain.getLeftQuadPosition() < distance) {
+			if (drivetrain.getAveragePosition() < distance) {
 				drivetrain.autonDrive(speed, -(sensors.getPresentAngleNAVX() * variables.GyroKp));
 			} else {
 				nextStep();
 			}
 		} else {
-			if (drivetrain.getLeftQuadPosition() > -distance) {
+			if (drivetrain.getAveragePosition() > -distance) {
 				drivetrain.autonDrive(speed, -(sensors.getPresentAngleNAVX() * variables.GyroKp));
 			} else {
 				nextStep();

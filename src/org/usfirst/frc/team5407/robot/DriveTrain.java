@@ -55,6 +55,11 @@ public class DriveTrain {
 		//negative 1 added for invert sensor, needs testing!!!
 	}
 	
+	public double getAveragePosition(){
+		
+		return ((getRightQuadPosition() + getLeftQuadPosition())/2);
+	}
+	
 	public double getAverageVelocity(){
 		//gets each sides velocity
 		leftSideVeloctiy = frontLeftDriveMotor.getSelectedSensorVelocity(0);
