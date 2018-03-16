@@ -10,4 +10,6 @@ public class Variables {
 	
 	//Auto Turn Kp
 	public final double autoTurnKp = 1.00;
+	
+	public final double autoDriveStraightKp = 0.1;
 }

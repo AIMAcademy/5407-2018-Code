@@ -7,6 +7,8 @@
 
 package org.usfirst.frc.team5407.robot;
 
+import com.ctre.phoenix.motorcontrol.NeutralMode;
+
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -58,9 +60,9 @@ public class Robot extends IterativeRobot {
 	final double autonLiftStart = 200;
 	
 	//test and change this number
-	final double maxLiftHeight = 300;
+	final double maxLiftHeight = 313;
 
-	final double distanceAdjustment = 1.344 / 1.042;  //REMOVE THE 1.042 when we switch to the real robot
+	final double distanceAdjustment = 1.376;  //REMOVE THE 1.042 when we switch to the real robot
 	int autonCounter;
 	
 	@Override
@@ -120,6 +122,8 @@ public class Robot extends IterativeRobot {
 	public void autonomousInit() {
 		// Zero and initialize values for auton
 		air.initializeAir();
+		drivetrain.frontLeftDriveMotor.setNeutralMode(NeutralMode.Brake);
+		drivetrain.backRightDriveSlave.setNeutralMode(NeutralMode.Brake);
 
 		air.s_sol6.set(true);
 
@@ -184,6 +188,9 @@ public class Robot extends IterativeRobot {
 	public void teleopInit() {
 		// Zero and initialize all inputs and sensors for teleop
 		air.initializeAir();
+		
+		drivetrain.frontLeftDriveMotor.setNeutralMode(NeutralMode.Coast);
+		drivetrain.backRightDriveSlave.setNeutralMode(NeutralMode.Coast);
 
 		// resets both drive encoders to zero
 		drivetrain.frontLeftDriveMotor.setSelectedSensorPosition(variables.encoderpos, 0, 10);
@@ -295,6 +302,7 @@ public class Robot extends IterativeRobot {
 		SmartDashboard.putNumber("right side inches", drivetrain.getRightQuadPosition());
 		SmartDashboard.putNumber("Lift Pot", sensors.analogLiftPot.get());
 		SmartDashboard.putNumber("AverageVelocity", drivetrain.getAverageVelocity());
+		SmartDashboard.putNumber("Average Positon", drivetrain.getAveragePosition());
 		
 		// Updating the values put on SmartDashboard
 		SmartDashboard.updateValues();
@@ -309,11 +317,8 @@ public class Robot extends IterativeRobot {
 		}
 	}
 
-	// The most basic Auton: Drive forward 11 feet and stop, ready testing and
-	// tuning!!!!!
-	// Replace with jordan's version
-
-		// and tuning first
+	
+	//subtract 5 from any angle you want to go to
 
 	public void baseLineAndSwitch() {
 		if (startSelected == leftSideStart && ownership0 == "L"){
@@ -484,7 +489,7 @@ public class Robot extends IterativeRobot {
 			liftTo(autonLiftStart,0.50);
 		}
 		else if (autonCounter == 2){
-			driveTo(232, 75);
+			driveTo(232, 0.75);
 		}
 		else if (autonCounter == 3){
 			liftTo(300,0.5);
@@ -496,30 +501,31 @@ public class Robot extends IterativeRobot {
 
 	public void farScale(){
 		if (autonCounter == 1){
-			driveTo(240, 100);
+			driveTo(240, 1);
 		}else if (autonCounter == 2){
-			turnTo(90, 80);
+			turnTo(90, .80);
 		}else if (autonCounter == 3){
-			driveTo(208, 90);
+			driveTo(208, .90);
 		}else if (autonCounter == 4){
-			turnTo(15, -75);
+			turnTo(15, -.75);
 		}else if (autonCounter == 5){
-			liftTo(maxLiftHeight, 75);
+			liftTo(maxLiftHeight, .75);
 		}else if (autonCounter == 6){
-			driveTo(40, 70);
+			driveTo(40, .70);
 		}else if (autonCounter == 7){
 			eject();
 		}
 	}
 	
-
 	public void testAuton() {
 
 		if (autonCounter == 1) {
-			turnTo(90,1);
+			turnTo(85, .80);
 		}
 
 	}
+	
+	
 
 	
 	//Auton Steps to create autos
@@ -561,18 +567,20 @@ public class Robot extends IterativeRobot {
 	public void driveTo(double distance, double speed) {
 		distance = distanceAdjustment * Math.abs(distance);
 
-		if (speed > 0) {
-			if (drivetrain.getAveragePosition() < distance) {
-				drivetrain.autonDrive(speed, -(sensors.getPresentAngleNAVX() * variables.GyroKp));
-			} else {
-				nextStep();
-			}
-		} else {
-			if (drivetrain.getAveragePosition() > -distance) {
-				drivetrain.autonDrive(speed, -(sensors.getPresentAngleNAVX() * variables.GyroKp));
-			} else {
-				nextStep();
-			}
+		if (timer.get() > 5){
+			drivetrain.autonDrive(0,0);
+			nextStep();
+		}else if (drivetrain.getAveragePosition() < distance - 24){
+			drivetrain.autonDrive(speed, -(sensors.getPresentAngleNAVX() * variables.autoDriveStraightKp));
+		}else if (drivetrain.getAveragePosition() < distance - 12){
+			drivetrain.autonDrive((speed / 2), -(sensors.getPresentAngleNAVX() * variables.autoDriveStraightKp));
+		}else if (drivetrain.getAveragePosition() > distance + 24){
+			drivetrain.autonDrive(-speed, -(sensors.getPresentAngleNAVX() * variables.autoDriveStraightKp));
+		}else if (drivetrain.getAveragePosition() > distance + 12){
+			drivetrain.autonDrive(-(speed / 2), -(sensors.getPresentAngleNAVX() * variables.autoDriveStraightKp));
+		}else if (drivetrain.getAveragePosition() > (distance - 2) && drivetrain.getAveragePosition() < (distance + 2)){
+			drivetrain.autonDrive(0.0, 0.0);
+			nextStep();
 		}
 	}
 
@@ -581,24 +589,32 @@ public class Robot extends IterativeRobot {
 
 	public void turnTo(double angle, double speed) {
 		angle = Math.abs(angle);
-		if (speed > 0) {
-			if (sensors.ahrs.getAngle() < angle) {
-				drivetrain.autonDrive(0, speed);
+		
+		if (timer.get() >3){
+			drivetrain.autonDrive(0,0);
+			nextStep();
+		}else if (sensors.ahrs.getAngle() < (angle - 5) && sensors.ahrs.getAngle() < (angle + 5)){
+			if (speed > 0) {
+				if (sensors.ahrs.getAngle() < angle) {
+					drivetrain.autonDrive(0, speed);
+				} else {
+					straightenOut(angle);
+				}
 			} else {
-				straightenOut(angle);
-			}
-		} else {
-			if (sensors.ahrs.getAngle() > -angle) {
-				drivetrain.autonDrive(0, speed);
-			} else {
-				straightenOut(angle);
-			}
+				if (sensors.ahrs.getAngle() > -angle) {
+					drivetrain.autonDrive(0, speed);
+				} else {
+					straightenOut(angle);
+				}
+	}	} else if  (sensors.ahrs.getAngle() > (angle - 5) && sensors.ahrs.getAngle() > (angle + 5)){
+		drivetrain.autonDrive(0, 0);
+		nextStep();
 		}
-	}
+	}	
 
 	public void straightenOut(double angle){
-		if (timer.get() < 1){
-			drivetrain.autonDrive(0, (angle -(sensors.getPresentAngleNAVX()))* 0.015) ;
+		if (timer.get() < 3){
+			drivetrain.autonDrive(0, (angle -(sensors.getPresentAngleNAVX()))* 0.038) ;
 		}
 		else {
 			nextStep();
@@ -614,11 +630,11 @@ public class Robot extends IterativeRobot {
 		else if (sensors.analogLiftPot.get() < height - 15) {
 			lift.mot_liftDart.set(speed);
 		} else if (sensors.analogLiftPot.get() < height - 5) {
-			lift.mot_liftDart.set(speed / 1.414);
+			lift.mot_liftDart.set(speed / 2);
 		} else if (sensors.analogLiftPot.get() > height + 15) {
 			lift.mot_liftDart.set(-speed);
 		} else if (sensors.analogLiftPot.get() > height + 5) {
-			lift.mot_liftDart.set(-speed / 1.414);
+			lift.mot_liftDart.set(-speed / 2);
 		} else if (sensors.analogLiftPot.get() > (height - 5) && sensors.analogLiftPot.get() < (height + 5)) {
 			lift.mot_liftDart.set(0);
 			nextStep();
