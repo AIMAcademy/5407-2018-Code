@@ -57,7 +57,7 @@ public class Robot extends IterativeRobot {
 	String ownership2;
 	
 	// Lift goes to this height at the beginning of each match to avoid cube hitting floor
-	final double autonLiftStart = 200;
+	final double autonLiftStart = 180;
 	
 	//test and change this number
 	final double maxLiftHeight = 313;
@@ -146,7 +146,7 @@ public class Robot extends IterativeRobot {
 	}
 
 	public void autonomousPeriodic() {
-		getGameData();
+		//getGameData();
 
 		// Getting the encoder values for the drivetrain and cooking and
 		// returning them
@@ -359,25 +359,25 @@ public class Robot extends IterativeRobot {
 
 		
 		if (autonCounter == 1) {
-			liftTo(autonLiftStart,0.50);
+			liftTo(autonLiftStart,.75);
 		}
 		else if (autonCounter == 2) {
-			driveTo(140, 0.65);
+			driveTo(160, 0.80);
 			if ((startSelected == leftSideStart && ownership0 == "R")
 				|| (startSelected == rightSideStart && ownership0 == "L")){
-				autonCounter = 0;
+				//autonCounter = 0;
 			}
 		}
 		else if (autonCounter == 3){
 			if (startSelected == leftSideStart){
-				turnTo(75, 0.50);
+				turnTo(85, 0.50);
 			}
 			else {
-				turnTo(75, -0.50);
+				turnTo(85, -0.50);
 			}
 		}
 		else if (autonCounter == 4){
-			driveTo(30, 0.65);
+			driveTo(30, 0.80);
 			}
 		else if (autonCounter == 5){
 			if ((startSelected == leftSideStart && ownership0 == "L")
@@ -390,18 +390,18 @@ public class Robot extends IterativeRobot {
 	public void driveBaselineCenterThenRight() {
 
 		if (autonCounter == 1) {
-			liftTo(autonLiftStart,0.50);
+			liftTo(autonLiftStart,1);
 		}
 		else if (autonCounter == 2) {
-			driveTo(12, 0.50);
+			driveTo(12, .90);
 		} else if (autonCounter == 3) {
-			turnTo(40, 0.50);
+			turnTo(40, 0.80);
 		} else if (autonCounter == 4) {
-			driveTo(95, 0.65);
+			driveTo(40, .90);
 		} else if (autonCounter == 5) {
-			turnTo(80, -0.50);
+			turnTo(60, -0.60);
 		} else if (autonCounter == 6){
-			driveTo(30,0.65);
+			driveTo(85,0.80);
 		} else if (autonCounter == 7){
 			if (ownership0 == "R"){
 				eject();
@@ -412,21 +412,21 @@ public class Robot extends IterativeRobot {
 	public void driveBaselineCenterThenLeft() {
 
 		if (autonCounter == 1) {
-			liftTo(autonLiftStart,0.50);
+			liftTo(autonLiftStart,1);
 		}
 		else if (autonCounter == 2) {
-			driveTo(12, 0.50);
+			driveTo(12, 1);
 		} else if (autonCounter == 3) {
-			turnTo(40, -0.50);
+			turnTo(50, -0.65);
 		} else if (autonCounter == 4) {
-			driveTo(85, 0.65);
+			driveTo(110, 0.90);
 		} else if (autonCounter == 5) {
-			turnTo(40, 0.50);
+			turnTo(25, 0.65);
 		} else if (autonCounter == 6){
-			driveTo(14,0.65);
+			driveTo(15,0.75);
 		} else if (autonCounter == 7){
 			if (ownership0 == "L"){
-				eject();
+				air.s_sol4.set(true);
 			}
 		}
 	}
@@ -520,7 +520,7 @@ public class Robot extends IterativeRobot {
 	public void testAuton() {
 
 		if (autonCounter == 1) {
-			turnTo(85, .80);
+			driveTo(100,1);
 		}
 
 	}
@@ -560,6 +560,7 @@ public class Robot extends IterativeRobot {
 		timer.reset();
 		timer.start();
 		autonCounter++;
+		System.out.println("Next Step "+ autonCounter);
 	}
 
 	// drives to distance in inches at given speed. Then calls nextStep()
@@ -567,7 +568,7 @@ public class Robot extends IterativeRobot {
 	public void driveTo(double distance, double speed) {
 		distance = distanceAdjustment * Math.abs(distance);
 
-		if (timer.get() > 5){
+		if (timer.get() > 4){
 			drivetrain.autonDrive(0,0);
 			nextStep();
 		}else if (drivetrain.getAveragePosition() < distance - 24){
@@ -590,7 +591,7 @@ public class Robot extends IterativeRobot {
 	public void turnTo(double angle, double speed) {
 		angle = Math.abs(angle);
 		
-		if (timer.get() >3){
+		if (timer.get() >2){
 			drivetrain.autonDrive(0,0);
 			nextStep();
 		}else if (sensors.ahrs.getAngle() < (angle - 5) && sensors.ahrs.getAngle() < (angle + 5)){
