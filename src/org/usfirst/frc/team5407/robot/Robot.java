@@ -39,6 +39,8 @@ public class Robot extends IterativeRobot {
 																		// Testing
 	final String driveBaseline = "Drive to Baseline";
 	final String baseLineAndSwitch = "Base Line And Switch";
+	final String scaleAndSwitch = "Switch or Scale";
+	final String scaleThenSwitch = "Scale Then Switch";
 	final String testAuton = "Test Auton";
 	private String autonChooser;
 	private SendableChooser<String> AutonChooser;
@@ -92,6 +94,8 @@ public class Robot extends IterativeRobot {
 		AutonChooser.addObject("Left Drive to Left Side Scale", leftDrivetoLeftSideScale);*/
 		AutonChooser.addObject("Drive to Baseline", driveBaseline);
 		AutonChooser.addObject("Test Auton", testAuton);
+		AutonChooser.addObject("Scale and Switch", scaleAndSwitch);
+		AutonChooser.addObject("Scale Then Switch", scaleThenSwitch);
 		AutonChooser.addDefault("Base Line And Switch", baseLineAndSwitch);
 		SmartDashboard.putData("Auton Choices", AutonChooser);
 
@@ -146,7 +150,7 @@ public class Robot extends IterativeRobot {
 	}
 
 	public void autonomousPeriodic() {
-		//getGameData();
+		getGameData();
 
 		// Getting the encoder values for the drivetrain and cooking and
 		// returning them
@@ -171,6 +175,10 @@ public class Robot extends IterativeRobot {
 			driveBaseline();
 		} else if (autonChooser == baseLineAndSwitch){
 			baseLineAndSwitch();
+		}else if (autonChooser == scaleAndSwitch){
+			scaleAndSwitch();
+		}else if (autonChooser == scaleThenSwitch){
+			scaleThenSwitch();
 		}
 		else if (autonChooser == testAuton) {
 			testAuton();
@@ -362,7 +370,7 @@ public class Robot extends IterativeRobot {
 			liftTo(autonLiftStart,.75);
 		}
 		else if (autonCounter == 2) {
-			driveTo(160, 0.80);
+			driveTo(150, 1, 5);
 			if ((startSelected == leftSideStart && ownership0 == "R")
 				|| (startSelected == rightSideStart && ownership0 == "L")){
 				//autonCounter = 0;
@@ -370,14 +378,14 @@ public class Robot extends IterativeRobot {
 		}
 		else if (autonCounter == 3){
 			if (startSelected == leftSideStart){
-				turnTo(85, 0.50);
+				turnTo(80, 0.60);
 			}
 			else {
-				turnTo(85, -0.50);
+				turnTo(80, -0.60);
 			}
 		}
 		else if (autonCounter == 4){
-			driveTo(30, 0.80);
+			driveTo(25, 0.80, 2);
 			}
 		else if (autonCounter == 5){
 			if ((startSelected == leftSideStart && ownership0 == "L")
@@ -393,15 +401,15 @@ public class Robot extends IterativeRobot {
 			liftTo(autonLiftStart,1);
 		}
 		else if (autonCounter == 2) {
-			driveTo(12, .90);
+			driveTo(12, .90, 1);
 		} else if (autonCounter == 3) {
 			turnTo(40, 0.80);
 		} else if (autonCounter == 4) {
-			driveTo(40, .90);
+			driveTo(40, .90, 2);
 		} else if (autonCounter == 5) {
-			turnTo(60, -0.60);
+			turnTo(60, -0.75);
 		} else if (autonCounter == 6){
-			driveTo(85,0.80);
+			driveTo(85,0.80, 3);
 		} else if (autonCounter == 7){
 			if (ownership0 == "R"){
 				eject();
@@ -415,18 +423,18 @@ public class Robot extends IterativeRobot {
 			liftTo(autonLiftStart,1);
 		}
 		else if (autonCounter == 2) {
-			driveTo(12, 1);
+			driveTo(12, 1, 1);
 		} else if (autonCounter == 3) {
 			turnTo(50, -0.65);
 		} else if (autonCounter == 4) {
-			driveTo(110, 0.90);
+			driveTo(85, 0.90, 4);
 		} else if (autonCounter == 5) {
 			turnTo(25, 0.65);
 		} else if (autonCounter == 6){
-			driveTo(15,0.75);
+			driveTo(15,0.75, 2);
 		} else if (autonCounter == 7){
 			if (ownership0 == "L"){
-				air.s_sol4.set(true);
+				eject();
 			}
 		}
 	}
@@ -435,7 +443,7 @@ public class Robot extends IterativeRobot {
 		if (autonCounter == 1) {
 			liftTo(autonLiftStart,0.5);
 		}else if (autonCounter == 2) {
-			driveTo(200, 0.90);
+			driveTo(200, 0.90, 5);
 		}
 		else if (autonCounter == 3){
 			if (startSelected == leftSideStart){
@@ -446,7 +454,7 @@ public class Robot extends IterativeRobot {
 			}
 		}
 		else if (autonCounter == 4){
-			driveTo(135, 0.90);
+			driveTo(135, 0.90, 4);
 		}
 		else if (autonCounter == 5){
 			if (startSelected == leftSideStart){
@@ -457,7 +465,7 @@ public class Robot extends IterativeRobot {
 			}
 		}
 		else if (autonCounter == 6){
-			driveTo(12,0.90);
+			driveTo(12,0.90, 2);
 		}
 		else if (autonCounter == 7){
 			eject();
@@ -486,32 +494,37 @@ public class Robot extends IterativeRobot {
 	
 	public void closeScale(){
 		if (autonCounter == 1){
-			liftTo(autonLiftStart,0.50);
+			liftTo(autonLiftStart,1);
 		}
 		else if (autonCounter == 2){
-			driveTo(232, 0.75);
+			driveTo(240, 1, 7);
 		}
 		else if (autonCounter == 3){
-			liftTo(300,0.5);
+			liftTo(300, 1);
 		}
 		else if (autonCounter == 4){
+			driveTo(20, 1,1);
+		}else if (autonCounter == 5){
+			turnTo(15, .75);
+		}
+		else if (autonCounter == 5){
 			eject();
 		}
 	}
 
 	public void farScale(){
 		if (autonCounter == 1){
-			driveTo(240, 1);
+			driveTo(240, 1, 5);
 		}else if (autonCounter == 2){
 			turnTo(90, .80);
 		}else if (autonCounter == 3){
-			driveTo(208, .90);
+			driveTo(208, .90, 5);
 		}else if (autonCounter == 4){
 			turnTo(15, -.75);
 		}else if (autonCounter == 5){
 			liftTo(maxLiftHeight, .75);
 		}else if (autonCounter == 6){
-			driveTo(40, .70);
+			driveTo(40, .80, 4);
 		}else if (autonCounter == 7){
 			eject();
 		}
@@ -520,14 +533,144 @@ public class Robot extends IterativeRobot {
 	public void testAuton() {
 
 		if (autonCounter == 1) {
-			driveTo(100,1);
+			driveTo(100,1, 3);
 		}
 
 	}
 	
-	
+	public void scaleAndSwitch(){
+		if(startSelected == leftSideStart && ownership0 == "L"  || startSelected == leftSideStart && ownership1 == "L" ){
+			if(startSelected == leftSideStart && ownership0 == "L"){
+				if (autonCounter == 1) {
+					liftTo(autonLiftStart,.75);
+				}
+				else if (autonCounter == 2) {
+					driveTo(150, 1, 5);
+				}
+				else if (autonCounter == 3){
+						turnTo(80, 0.60);
+				}
+				else if (autonCounter == 4){
+					driveTo(25, 0.80, 2);
+					}
+				else if (autonCounter == 5){
+					if ((startSelected == leftSideStart && ownership0 == "L")){
+						eject();
+					}
+				}
+			}else if (startSelected == leftSideStart && ownership1 == "L"){
+				if (autonCounter == 1){
+					liftTo(autonLiftStart,1);
+				}
+				else if (autonCounter == 2){
+					driveTo(240, 1, 7);
+				}
+				else if (autonCounter == 3){
+					liftTo(300, 1);
+				}
+				else if (autonCounter == 4){
+					driveTo(20, 1,1);
+				}else if (autonCounter == 5){
+					turnTo(15, .75);
+				}
+				else if (autonCounter == 5){
+					eject();
+				}
+			}
+		
+		}else if (startSelected == rightSideStart && ownership0 == "R"  || startSelected == rightSideStart && ownership1 == "R" ){
+			if (startSelected == rightSideStart && ownership0 == "R"){
+				if (autonCounter == 1) {
+					liftTo(autonLiftStart,.75);
+				}
+				else if (autonCounter == 2) {
+					driveTo(150, 1, 5);
+					if ((startSelected == leftSideStart && ownership0 == "R")){
+					}
+				}
+				else if (autonCounter == 3){
+					if (startSelected == rightSideStart){
+						turnTo(80, -0.60);
+					}
+				}
+				else if (autonCounter == 4){
+					driveTo(25, 0.80, 2);
+					}
+				else if (autonCounter == 5){
+					if ((startSelected == rightSideStart && ownership0 == "R")){
+						eject();
+					}
+				}
+			}else if (startSelected == rightSideStart && ownership1 == "R"){
+				if (autonCounter == 1){
+					liftTo(autonLiftStart,1);
+				}
+				else if (autonCounter == 2){
+					driveTo(240, 1, 7);
+				}
+				else if (autonCounter == 3){
+					liftTo(300, 1);
+				}
+				else if (autonCounter == 4){
+					turnTo(15, -.75);
+				}else if (autonCounter == 5){
+					driveTo(20, 1,1);
+				}
+				else if (autonCounter == 5){
+					eject();
+				}
+			}
+					}else if  ((startSelected == rightSideStart && ownership0 == "L"  && startSelected == rightSideStart && ownership1 == "L") || (startSelected == leftSideStart && ownership0 == "R"  && startSelected == leftSideStart && ownership1 == "R") ){
+						driveTo(150, 1, 4);
+					} 
+	}
 
-	
+	public void scaleThenSwitch(){
+		if (startSelected == leftSideStart && ownership1 == "L" ){
+			if (autonCounter == 1){
+				liftTo(autonLiftStart,1);
+			}
+			else if (autonCounter == 2){
+				driveTo(240, 1, 7);
+			}
+			else if (autonCounter == 3){
+				liftTo(300, 1);
+			}
+			else if (autonCounter == 4){
+				driveTo(20, 1,1);
+			}else if (autonCounter == 5){
+				turnTo(15, .75);
+			}
+			else if (autonCounter == 5){
+				eject();
+			}
+		}else if (startSelected == leftSideStart && ownership1 == "R" && startSelected == leftSideStart && ownership0 == "L" ){
+			if (autonCounter == 1) {
+				liftTo(autonLiftStart,.75);
+			}
+			else if (autonCounter == 2) {
+				driveTo(150, 1, 5);
+			}
+			else if (autonCounter == 3){
+				turnTo(80, -0.60);
+			}
+			else if (autonCounter == 4){
+				driveTo(25, 0.80, 2);
+			}
+			else if (autonCounter == 5){
+				eject();
+			}
+		}else if (startSelected == leftSideStart && ownership1 == "R" && startSelected == leftSideStart && ownership0 == "R" ) {
+			if(autonCounter == 1){
+				liftTo(autonLiftStart,0.75);
+			}else if (autonCounter == 2){
+				driveTo(140, 0.75, 4);
+			}else if (autonCounter == 3){
+				driveTo(0,0,1);
+			}	
+		}
+	}
+
 	//Auton Steps to create autos
 	public void getGameData() {
 		ownership = ds.getGameSpecificMessage();
@@ -565,10 +708,10 @@ public class Robot extends IterativeRobot {
 
 	// drives to distance in inches at given speed. Then calls nextStep()
 	// IMPORTANT: distance always positive. Speed determines forward/backward
-	public void driveTo(double distance, double speed) {
+	public void driveTo(double distance, double speed, double time) {
 		distance = distanceAdjustment * Math.abs(distance);
 
-		if (timer.get() > 4){
+		if (timer.get() > time){
 			drivetrain.autonDrive(0,0);
 			nextStep();
 		}else if (drivetrain.getAveragePosition() < distance - 24){
