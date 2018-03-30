@@ -89,24 +89,25 @@ public class Vision {
 	}
 	
 	public void setJeVoisConfigParameters() {
-		jevois.writeString("setcam brightness " + _currentCameraSettings.getBrightness() + "\n");
-		jevois.writeString("setcam bluebal" + _currentCameraSettings.getBluebal() + "\n");
-		jevois.writeString("setcam autogain" + _currentCameraSettings.getAutogain() + "\n");
-		jevois.writeString("setcam gain" + _currentCameraSettings.getGain() + "\n");
-		jevois.writeString("setcam saturation" + _currentCameraSettings.getSaturation() + "\n");
-		jevois.writeString("setpar hrange" + _currentCameraSettings.getHRange() + "\n");
-		jevois.writeString("setpar srange" + _currentCameraSettings.getSRange() + "\n");
-		jevois.writeString("setpar vrange" + _currentCameraSettings.getVRange() + "\n");
+		if (jevois == null) return;
+			jevois.writeString("setcam brightness " + _currentCameraSettings.getBrightness() + "\n");
+			jevois.writeString("setcam bluebal" + _currentCameraSettings.getBluebal() + "\n");
+			jevois.writeString("setcam autogain" + _currentCameraSettings.getAutogain() + "\n");
+			jevois.writeString("setcam gain" + _currentCameraSettings.getGain() + "\n");
+			jevois.writeString("setcam saturation" + _currentCameraSettings.getSaturation() + "\n");
+			jevois.writeString("setpar hrange" + _currentCameraSettings.getHRange() + "\n");
+			jevois.writeString("setpar srange" + _currentCameraSettings.getSRange() + "\n");
+			jevois.writeString("setpar vrange" + _currentCameraSettings.getVRange() + "\n");
 
-		System.out.println("wrote setcam brightness " + _currentCameraSettings.getBrightness());
-		System.out.println("wrote setcam bluebal " + _currentCameraSettings.getBluebal());
-		System.out.println("wrote setcam autogain " + _currentCameraSettings.getAutogain());
-		System.out.println("wrote setcam gain " + _currentCameraSettings.getGain());
-		System.out.println("wrote setcam saturation " + _currentCameraSettings.getSaturation());
-		System.out.println("wrote setcam absexp " + _currentCameraSettings.getAbsexp());
-		System.out.println("wrote setpar hrange " + _currentCameraSettings.getHRange());
-		System.out.println("wrote setpar srange " + _currentCameraSettings.getSRange());
-		System.out.println("wrote setpar vrange " + _currentCameraSettings.getVRange());
+			System.out.println("wrote setcam brightness " + _currentCameraSettings.getBrightness());
+			System.out.println("wrote setcam bluebal " + _currentCameraSettings.getBluebal());
+			System.out.println("wrote setcam autogain " + _currentCameraSettings.getAutogain());
+			System.out.println("wrote setcam gain " + _currentCameraSettings.getGain());
+			System.out.println("wrote setcam saturation " + _currentCameraSettings.getSaturation());
+			System.out.println("wrote setcam absexp " + _currentCameraSettings.getAbsexp());
+			System.out.println("wrote setpar hrange " + _currentCameraSettings.getHRange());
+			System.out.println("wrote setpar srange " + _currentCameraSettings.getSRange());
+			System.out.println("wrote setpar vrange " + _currentCameraSettings.getVRange());
 
 	}
 

@@ -50,19 +50,19 @@ public class Inputs {
     public void ReadValues() {
     	//Driver Controller
 		// Private doubles
-    	if (j_rightStick.getY() < 0.1 && j_rightStick.getY() > 0.1){
+    	if (j_rightStick.getY() < 0.1 && j_rightStick.getY() > -0.1){
     		throttle = 0.0;
     	}else {
     		throttle = j_rightStick.getY(); // xbox left X, positive is forward
     	}
 		
-    	if (j_rightStick.getX() < 0.1 && j_rightStick.getX() > 0.1 ){
+    	if (j_rightStick.getX() < 0.2 && j_rightStick.getX() > -0.2 ){
     		turn = 0.0;
     	}else {
     		turn = j_rightStick.getX(); // xbox right X, positive means turn right
     	}
     	
-    	if (j_rightStick.getRawAxis(5) < 0.1 && j_rightStick.getRawAxis(5) > 0.1){
+    	if (j_rightStick.getRawAxis(5) < 0.1 && j_rightStick.getRawAxis(5) > -0.1){
     		winchSpeed = 0.0;
     	}else {
     		winchSpeed = j_rightStick.getRawAxis(5); // xbox left X, positive is forward
@@ -75,7 +75,7 @@ public class Inputs {
   
     //Operation Controller       
         // Private doubles
-        if(j_leftStick.getRawAxis(1) < 0.05 && j_leftStick.getRawAxis(1) > -0.05){
+        if(j_leftStick.getRawAxis(1) < 0.2 && j_leftStick.getRawAxis(1) > -0.2){
         	liftSpeed = 0.0;
         }else{
         	liftSpeed = j_leftStick.getRawAxis(1);
