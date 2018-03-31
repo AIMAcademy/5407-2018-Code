@@ -44,6 +44,8 @@ public class Robot extends IterativeRobot {
 	final String scaleThenSwitch = "Scale Then Switch";
 	final String eitherScale = "Either Scale";
 	final String testAuton = "Test Auton";
+	final String sameSideSwitchAndScale = "Same Side Switch And Scale";
+	final String sameSideScaleAndSwitch = "Same Side Scale And Switch";
 	private String autonChooser;
 	private SendableChooser<String> AutonChooser;
 
@@ -61,10 +63,10 @@ public class Robot extends IterativeRobot {
 	String ownership2;
 
 	// Lift goes to this height at the beginning of each match to avoid cube hitting floor
-	final double autonLiftStart = 180;
+	final double autonLiftStart = 287;
 
 	//test and change this number
-	final double maxLiftHeight = 315;
+	final double maxLiftHeight = 104;
 
 	final double distanceAdjustment = 1.376;  //REMOVE THE 1.042 when we switch to the real robot
 	int autonCounter;
@@ -101,6 +103,8 @@ public class Robot extends IterativeRobot {
 		AutonChooser.addObject("Scale Then Switch", scaleThenSwitch);
 		AutonChooser.addObject("Either Scale", eitherScale);
 		AutonChooser.addDefault("Base Line And Switch", baseLineAndSwitch);
+		AutonChooser.addObject("Same Side Switch And Scale", sameSideSwitchAndScale);
+		AutonChooser.addObject("Same Side Scale And Switch", sameSideScaleAndSwitch);
 		SmartDashboard.putData("Auton Choices", AutonChooser);
 
 		StartChooser = new SendableChooser<String>();
@@ -162,8 +166,10 @@ public class Robot extends IterativeRobot {
 	}
 
 	public void autonomousPeriodic() {
+		
 
-		getGameData();
+
+		//getGameData();
 
 		// Gets auto choosen and displays it on SmartDashboard
 
@@ -191,6 +197,12 @@ public class Robot extends IterativeRobot {
 		}
 		else if (autonChooser == eitherScale){
 			eitherScale();
+		}
+		else if (autonChooser == sameSideSwitchAndScale){
+			sameSideSwitchAndScale();
+		}
+		else if (autonChooser == sameSideScaleAndSwitch){
+			sameSideScaleAndSwitch();
 		}
 		else if (autonChooser == testAuton) {
 			testAuton();
@@ -440,7 +452,7 @@ public class Robot extends IterativeRobot {
 			driveBaseline();
 		}
 
-		else if ((startSelected == leftSideStart && ownership0 == "R")||
+		else if ((startSelected == leftSideStart && ownership0 == "R")||    //uncomment after match 48
 				(startSelected == rightSideStart && ownership0 == "L")){
 			aroundTheBack();
 		}
@@ -483,7 +495,67 @@ public class Robot extends IterativeRobot {
 		}
 	}
 
+	
+	public void sameSideSwitchAndScale(){
+		if ((startSelected == leftSideStart && ownership0 == "L")||(startSelected == rightSideStart && ownership0 == "R")){
+			driveBaseline();
+		}
 
+		else if ((startSelected == leftSideStart && ownership1 == "L")||(startSelected == rightSideStart && ownership1 == "R")){
+			closeScale();
+		}
+
+
+		else if ((startSelected == leftSideStart && ownership0 == "R")||
+				(startSelected == rightSideStart && ownership0 == "L")){
+			driveBaseline();
+		}
+		else if (startSelected == centerStart){
+
+			// determines if it should go right or left around the pile
+			// and changes the startSelcted from centerStart to centerStartThenLeft or centerStartThenRight
+			if (ownership0 == "L"){
+				startSelected = centerStartThenLeft;
+			}
+			else {
+				startSelected = centerStartThenRight;
+			}
+
+			// then runs the appropriate version of driveBaseline
+			driveBaseline();
+		}
+	}
+	
+
+	public void sameSideScaleAndSwitch(){
+
+		if ((startSelected == leftSideStart && ownership1 == "L")||(startSelected == rightSideStart && ownership1 == "R")){
+			closeScale();
+		}
+		else if ((startSelected == leftSideStart && ownership0 == "L")||(startSelected == rightSideStart && ownership0 == "R")){
+			driveBaseline();
+		}
+
+		else if ((startSelected == leftSideStart && ownership0 == "R")||    //uncomment after match 48
+				(startSelected == rightSideStart && ownership0 == "L")){
+			driveBaseline();
+		}
+		else if (startSelected == centerStart){
+
+			// determines if it should go right or left around the pile
+			// and changes the startSelcted from centerStart to centerStartThenLeft or centerStartThenRight
+			if (ownership0 == "L"){
+				startSelected = centerStartThenLeft;
+			}
+			else {
+				startSelected = centerStartThenRight;
+			}
+
+			// then runs the appropriate version of driveBaseline
+			driveBaseline();
+		}
+	}
+	
 	// When no Auton is called this one will be run, we just sit there
 
 	public void DoNothingAuton() {
@@ -494,25 +566,20 @@ public class Robot extends IterativeRobot {
 
 	public void driveBaselineSides() {
 
-		if (autonCounter == 1){
-			liftAndDrive(autonLiftStart, 1, 150, 1, 5);
-		}
-
-		/*
+		
 		if (autonCounter == 1) {
-			liftTo(autonLiftStart,.75);
+			liftTo(autonLiftStart, 1);
 		}
 
 		else if (autonCounter == 2) {
 			driveTo(150, 1, 5);
 			if ((startSelected == leftSideStart && ownership0 == "R")
 					|| (startSelected == rightSideStart && ownership0 == "L")){
-				//autonCounter = 0;
 			}
 		}
-		 */
+		 
 
-		else if (autonCounter == 2){
+		else if (autonCounter == 3){
 			if ((startSelected == leftSideStart && ownership0 == "L")
 					|| (startSelected == rightSideStart && ownership0 == "R")){
 				if (startSelected == leftSideStart){
@@ -525,7 +592,7 @@ public class Robot extends IterativeRobot {
 			
 			
 		}
-		else if (autonCounter == 3){
+		else if (autonCounter == 4){
 			
 			if ((startSelected == leftSideStart && ownership0 == "L")
 					|| (startSelected == rightSideStart && ownership0 == "R")){
@@ -533,7 +600,7 @@ public class Robot extends IterativeRobot {
 			}
 			
 		}
-		else if (autonCounter == 4){
+		else if (autonCounter == 5){
 			if ((startSelected == leftSideStart && ownership0 == "L")
 					|| (startSelected == rightSideStart && ownership0 == "R")){
 				eject();
@@ -551,7 +618,6 @@ public class Robot extends IterativeRobot {
 		else if (autonCounter == 2) {
 			driveTo(12, 1, 1);
 		} 
-
 		else if (autonCounter == 3) {
 			turnTo(50, 0.65);
 		} 
@@ -580,8 +646,6 @@ public class Robot extends IterativeRobot {
 		else if (autonCounter == 2) {
 			driveTo(12, 1, 1);
 		} 
-		
-
 		else if (autonCounter == 3) {
 			turnTo(50, -0.65);
 		} 
@@ -603,20 +667,13 @@ public class Robot extends IterativeRobot {
 
 	public void aroundTheBack(){
 
-		if (autonCounter == 1){
-			liftAndDrive(autonLiftStart, 1, 212, 1, 5);
-		}
-
-		/*
 		if (autonCounter == 1) {
-			liftTo(autonLiftStart,0.5);
-		}else if (autonCounter == 2) {
-			driveTo(200, 0.90, 5);
+			liftTo(autonLiftStart, 1);
 		}
-		 */
-
-
-		else if (autonCounter == 2){
+		else if (autonCounter == 2) {
+			driveTo(212, 1, 5);
+		}
+		else if (autonCounter == 3){
 			if (startSelected == leftSideStart){
 				turnTo(70,0.80);
 			}
@@ -624,10 +681,10 @@ public class Robot extends IterativeRobot {
 				turnTo(85,-0.80);
 			}
 		}
-		else if (autonCounter == 3){
+		else if (autonCounter == 4){
 			driveTo(168, 0.90, 6);
 		}
-		else if (autonCounter == 4){
+		else if (autonCounter == 5){
 			if (startSelected == leftSideStart){
 				turnTo(80,0.80);
 			}
@@ -635,10 +692,10 @@ public class Robot extends IterativeRobot {
 				turnTo(75,-0.80);
 			}
 		}
-		else if (autonCounter == 5){
+		else if (autonCounter == 6){
 			driveTo(24, .90, 2);
 		}
-		else if (autonCounter == 6){
+		else if (autonCounter == 7){
 			eject();
 		}
 	}	
@@ -652,35 +709,20 @@ public class Robot extends IterativeRobot {
 		}
 
 
-		if (autonCounter == 1){
-			liftAndDrive(autonLiftStart, 1, 284, 1, 7);
-		}
-
-		/*
+		
 		if (autonCounter == 1){
 			liftTo(autonLiftStart,1);
 		}
 		else if (autonCounter == 2){
-			driveTo(240, 1, 7);
-		}
-
-
-		else if (autonCounter == 2){
-			liftTo(300, 1);
+			driveTo(284, 1, 7);
 		}
 		else if (autonCounter == 3){
-			driveTo(20, 1, 1);
-		}
-		 */
-
-		else if (autonCounter == 2){
-			liftAndDrive(maxLiftHeight, 1, 0, 1, 1);
-		}
-
-		else if (autonCounter == 3){
-			turnTo(75, turnDirection * .75); //85
+			liftTo(maxLiftHeight, 1);
 		}
 		else if (autonCounter == 4){
+			turnTo(55, turnDirection * .75); //85
+		}
+		else if (autonCounter == 5){
 			eject();
 		}
 	}
@@ -695,31 +737,37 @@ public class Robot extends IterativeRobot {
 		}
 
 
+		
 		if (autonCounter == 1){
-			liftAndDrive(autonLiftStart, 1, 212, 1, 5);
+			liftTo(autonLiftStart, 1);
 		}
 		else if (autonCounter == 2){
-			turnTo(70, turnDirection * .80);
+			driveTo(212, 1, 5);
 		}
 		else if (autonCounter == 3){
-			driveTo(205, 1, 5);
+			turnTo(70, turnDirection * .80);
 		}
 		else if (autonCounter == 4){
-			liftAndTurn(maxLiftHeight, 1, 90, turnDirection * -.85);
+			driveTo(205, 1, 5);
 		}
 		else if (autonCounter == 5){
-			driveTo(30, .80, 1);
+			liftAndTurn(maxLiftHeight, 1, 90, turnDirection * -.85);
 		}
 		else if (autonCounter == 6){
+			driveTo(30, .80, 1);
+		}
+		else if (autonCounter == 7){
 			eject();
 		}
 	}
 
 	public void testAuton() {
 
-		if (autonCounter == 1){
-			driveTo(500, 0.75, 2);
+
+		if (autonCounter == 1) {
+			liftTo(autonLiftStart,1);
 		}
+
 
 	}
 
@@ -832,19 +880,22 @@ public class Robot extends IterativeRobot {
 
 	public void liftTo(double height, double speed) {
 
+		System.out.println(sensors.analogLiftPot.get());
+		System.out.println(speed);
+		
 		if (timer.get() > 2){
 			lift.mot_liftDart.set(0);
 			nextStep();
 		}
-		else if (sensors.analogLiftPot.get() < height - 15) {
+		else if (sensors.analogLiftPot.get() > height - 15) {
 			lift.mot_liftDart.set(speed);
-		} else if (sensors.analogLiftPot.get() < height - 8) {
+		} else if (sensors.analogLiftPot.get() > height - 8) {
 			lift.mot_liftDart.set(speed / 2);
-		} else if (sensors.analogLiftPot.get() > height + 15) {
+		} else if (sensors.analogLiftPot.get() < height + 15) {
 			lift.mot_liftDart.set(-speed);
-		} else if (sensors.analogLiftPot.get() > height + 8) {
+		} else if (sensors.analogLiftPot.get() < height + 8) {
 			lift.mot_liftDart.set(-speed / 2);
-		} else if (sensors.analogLiftPot.get() >= (height - 8) && sensors.analogLiftPot.get() <= (height + 8)) {
+		} else if (sensors.analogLiftPot.get() <= (height - 8) && sensors.analogLiftPot.get() >= (height + 8)) {
 			lift.mot_liftDart.set(0);
 			nextStep();
 		}
@@ -853,7 +904,7 @@ public class Robot extends IterativeRobot {
 	public void liftPlus(double height, double speed) {
 
 		if (timer.get() > 2){
-			lift.mot_liftDart.set(0);;
+			lift.mot_liftDart.set(0);
 		}
 		else if (sensors.analogLiftPot.get() < height - 15) {
 			lift.mot_liftDart.set(speed);
