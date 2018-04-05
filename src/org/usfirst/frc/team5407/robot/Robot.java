@@ -63,10 +63,12 @@ public class Robot extends IterativeRobot {
 	String ownership2;
 
 	// Lift goes to this height at the beginning of each match to avoid cube hitting floor
-	final double autonLiftStart = 287;
+	final double autonLiftStart = 150;
 
 	//test and change this number
-	final double maxLiftHeight = 104;
+	final double maxLiftHeight = 320;
+	
+	final double minLiftHeight = 75;
 
 	final double distanceAdjustment = 1.376;  //REMOVE THE 1.042 when we switch to the real robot
 	int autonCounter;
@@ -279,7 +281,8 @@ public class Robot extends IterativeRobot {
 		if (inputs.getIsIntakeButtonPressed()) {
 			intake.intakeIn();
 		} else if (inputs.getIsIntakeOutButtonPressed()) {
-			intake.intakeOut();
+			intake.mot_rightSideIntake.set(-inputs.shootSpeed);
+			intake.mot_leftSideIntake.set(inputs.shootSpeed);
 		} else {
 			intake.intakeStop();
 		}
@@ -393,26 +396,6 @@ public class Robot extends IterativeRobot {
 		}
 	}
 
-	public void switchOrScale() {
-		if (startSelected == "Left Side Start" && ownership0 == "L") {
-
-		} else if (startSelected == "Left Side Start" && ownership0 == "R") {
-
-		} else if (startSelected == "Right Side Start" && ownership0 == "L") {
-
-		} else if (startSelected == "Right Side Start" && ownership0 == "R") {
-
-		} else if (startSelected == "Center Start Then Left" && ownership0 == "L") {
-
-		} else if (startSelected == "Center Start Then Left" && ownership0 == "R") {
-
-		} else if (startSelected == "Center Start Then Right" && ownership0 == "L") {
-
-		} else if (startSelected == "Center Start Then Right" && ownership0 == "R") {
-
-		}
-	}
-
 	public void switchThenScale(){
 		if ((startSelected == leftSideStart && ownership0 == "L")||(startSelected == rightSideStart && ownership0 == "R")){
 			driveBaseline();
@@ -476,8 +459,11 @@ public class Robot extends IterativeRobot {
 		if ((startSelected == leftSideStart && ownership1 == "L")||(startSelected == rightSideStart && ownership1 == "R")){
 			closeScale();
 		}
-		else if ((startSelected == leftSideStart && ownership1 == "R")||(startSelected == rightSideStart && ownership1 == "L")){
-			farScale();
+		else if ((startSelected == leftSideStart && ownership1 == "R")){
+			farScaleLeftStart();
+		}
+		else if ((startSelected == rightSideStart && ownership1 == "L")){
+			farScaleRightStart();
 		}
 		else if (startSelected == centerStart){
 
@@ -495,7 +481,6 @@ public class Robot extends IterativeRobot {
 		}
 	}
 
-	
 	public void sameSideSwitchAndScale(){
 		if ((startSelected == leftSideStart && ownership0 == "L")||(startSelected == rightSideStart && ownership0 == "R")){
 			driveBaseline();
@@ -526,7 +511,6 @@ public class Robot extends IterativeRobot {
 		}
 	}
 	
-
 	public void sameSideScaleAndSwitch(){
 
 		if ((startSelected == leftSideStart && ownership1 == "L")||(startSelected == rightSideStart && ownership1 == "R")){
@@ -596,7 +580,7 @@ public class Robot extends IterativeRobot {
 			
 			if ((startSelected == leftSideStart && ownership0 == "L")
 					|| (startSelected == rightSideStart && ownership0 == "R")){
-				driveTo(30, 0.80, 2);
+				driveTo(30, 0.90, 2);
 			}
 			
 		}
@@ -628,7 +612,7 @@ public class Robot extends IterativeRobot {
 			turnTo(65, -0.65);
 		} 
 		else if (autonCounter == 6){
-			driveTo(74,1, 2);
+			driveTo(78,1, 2);
 		} 
 		else if (autonCounter == 7){
 			if (ownership0 == "R"){
@@ -650,13 +634,13 @@ public class Robot extends IterativeRobot {
 			turnTo(50, -0.65);
 		} 
 		else if (autonCounter == 4) {
-			driveTo(80, 0.90, 4);
+			driveTo(90, 0.90, 4);
 		} 
 		else if (autonCounter == 5) {
-			turnTo(45, 0.65);
+			turnTo(40, 0.65);
 		} 
 		else if (autonCounter == 6){
-			driveTo(50,1, 2);
+			driveTo(55,1, 2);
 		} 
 		else if (autonCounter == 7){
 			if (ownership0 == "L"){
@@ -720,14 +704,52 @@ public class Robot extends IterativeRobot {
 			liftTo(maxLiftHeight, 1);
 		}
 		else if (autonCounter == 4){
-			turnTo(55, turnDirection * .75); //85
+			turnTo(60, turnDirection * .75); //85
 		}
 		else if (autonCounter == 5){
 			eject();
 		}
 	}
 
-	public void farScale(){
+	public void farScaleLeftStart(){
+
+		if (startSelected == leftSideStart){
+			turnDirection = 1;
+		}
+	/*
+	 	else {
+	 		turnDirection = -1;
+	 	}
+	*/
+		
+		if (autonCounter == 1){
+			liftTo(autonLiftStart, 1);
+		}
+		else if (autonCounter == 2){
+			driveTo(215, 1, 5);
+		}
+		else if (autonCounter == 3){
+			turnTo(75, turnDirection * .80);
+		}
+		else if (autonCounter == 4){
+			driveTo(188, 1, 5);
+		}
+		else if (autonCounter ==5){
+			liftTo(maxLiftHeight, 1);
+		}
+		else if (autonCounter == 6){
+			turnTo(95, turnDirection * -.85);
+		}
+		else if (autonCounter == 7){
+			driveTo(40, .80, 1);
+		}
+		else if (autonCounter == 8){
+			drop();
+		}
+	}
+	
+	//change was for left side before
+	public void farScaleRightStart(){
 
 		if (startSelected == leftSideStart){
 			turnDirection = 1;
@@ -735,38 +757,100 @@ public class Robot extends IterativeRobot {
 		else {
 			turnDirection = -1;
 		}
-
-
+		
 		
 		if (autonCounter == 1){
 			liftTo(autonLiftStart, 1);
 		}
 		else if (autonCounter == 2){
-			driveTo(212, 1, 5);
+			driveTo(205, 1, 5);
 		}
 		else if (autonCounter == 3){
 			turnTo(70, turnDirection * .80);
 		}
 		else if (autonCounter == 4){
-			driveTo(205, 1, 5);
+			driveTo(200, 1, 5);
 		}
-		else if (autonCounter == 5){
-			liftAndTurn(maxLiftHeight, 1, 90, turnDirection * -.85);
+		else if (autonCounter ==5){
+			liftTo(maxLiftHeight, 1);
 		}
 		else if (autonCounter == 6){
-			driveTo(30, .80, 1);
+			turnTo(85, turnDirection * -.85);
 		}
 		else if (autonCounter == 7){
-			eject();
+			driveTo(35, .80, 1);
+		}
+		else if (autonCounter == 8){
+			drop();
+		}
+		else if (autonCounter == 9){
+			driveTo(24, -.80, 2);
 		}
 	}
+	
+	public void centerRightDouble(){
 
-	public void testAuton() {
-
-
+		
 		if (autonCounter == 1) {
 			liftTo(autonLiftStart,1);
 		}
+		else if (autonCounter == 2) {
+			driveTo(12, 1, 1);
+		} 
+		else if (autonCounter == 3) {
+			turnTo(50, 0.65);
+		} 
+		else if (autonCounter == 4) {
+			driveTo(48, .90, 4);
+		} 
+		else if (autonCounter == 5) {
+			turnTo(65, -0.65);
+		} 
+		else if (autonCounter == 6){
+			driveTo(78,1, 2);
+		} 
+		else if (autonCounter == 7){
+			if (ownership0 == "R"){
+				eject();
+			}
+		}
+		else if (autonCounter == 8){
+			driveTo(36, -1, 2);
+		}
+		else if (autonCounter == 9){
+			liftTo(minLiftHeight, 1);
+		}
+		else if (autonCounter == 10){
+			turnTo(45, -1);
+		}
+		else if (autonCounter == 11){
+			driveTo(36, 1, 2);
+			intake();
+		}
+		else if (autonCounter == 12){
+			driveTo(-36, -1, 2);
+		}
+		else if (autonCounter == 13){
+			turnTo(45, 1);
+		}
+		else if (autonCounter == 14){
+			liftTo(autonLiftStart, 1);
+		}
+		else if (autonCounter == 15){
+			driveTo(36, 1, 2);
+		}
+		else if (autonCounter == 16){
+			eject();
+		}
+	}
+	
+	
+	
+	
+	public void testAuton() {
+
+			liftTo(maxLiftHeight, 1);
+		
 
 
 	}
@@ -808,6 +892,8 @@ public class Robot extends IterativeRobot {
 		drivetrain.resetEncoders();
 		timer.reset();
 		timer.start();
+		air.s_sol4.set(false);
+		intake.intakeStop();
 		autonCounter++;
 		System.out.println("Next Step "+ autonCounter);
 	}
@@ -887,35 +973,45 @@ public class Robot extends IterativeRobot {
 			lift.mot_liftDart.set(0);
 			nextStep();
 		}
-		else if (sensors.analogLiftPot.get() > height - 15) {
-			lift.mot_liftDart.set(speed);
-		} else if (sensors.analogLiftPot.get() > height - 8) {
-			lift.mot_liftDart.set(speed / 2);
-		} else if (sensors.analogLiftPot.get() < height + 15) {
-			lift.mot_liftDart.set(-speed);
-		} else if (sensors.analogLiftPot.get() < height + 8) {
-			lift.mot_liftDart.set(-speed / 2);
-		} else if (sensors.analogLiftPot.get() <= (height - 8) && sensors.analogLiftPot.get() >= (height + 8)) {
-			lift.mot_liftDart.set(0);
-			nextStep();
+		else {
+			if ((sensors.analogLiftPot.get() >= (height - 10)) && (sensors.analogLiftPot.get() <= (height + 10))) {
+				lift.mot_liftDart.set(0);
+				nextStep();
+			}
+			else if (sensors.analogLiftPot.get() < height - 20) {
+				lift.mot_liftDart.set(speed);
+			} else if (sensors.analogLiftPot.get() < height - 10) {
+				lift.mot_liftDart.set(speed / 2);
+			} else if (sensors.analogLiftPot.get() > height + 20) {
+				lift.mot_liftDart.set(-speed);
+			} else if (sensors.analogLiftPot.get() > height + 10) {
+				lift.mot_liftDart.set(-speed / 2);
+			} 
 		}
 	}
 
 	public void liftPlus(double height, double speed) {
 
+
+		System.out.println(sensors.analogLiftPot.get());
+		System.out.println(speed);
+		
 		if (timer.get() > 2){
 			lift.mot_liftDart.set(0);
 		}
-		else if (sensors.analogLiftPot.get() < height - 15) {
-			lift.mot_liftDart.set(speed);
-		} else if (sensors.analogLiftPot.get() < height - 8) {
-			lift.mot_liftDart.set(speed / 2);
-		} else if (sensors.analogLiftPot.get() > height + 15) {
-			lift.mot_liftDart.set(-speed);
-		} else if (sensors.analogLiftPot.get() > height + 8) {
-			lift.mot_liftDart.set(-speed / 2);
-		} else if (sensors.analogLiftPot.get() >= (height - 8) && sensors.analogLiftPot.get() <= (height + 8)) {
-			lift.mot_liftDart.set(0);
+		else {
+			if ((sensors.analogLiftPot.get() >= (height - 10)) && (sensors.analogLiftPot.get() <= (height + 10))) {
+				lift.mot_liftDart.set(0);
+			}
+			else if (sensors.analogLiftPot.get() < height - 20) {
+				lift.mot_liftDart.set(speed);
+			} else if (sensors.analogLiftPot.get() < height - 10) {
+				lift.mot_liftDart.set(speed / 2);
+			} else if (sensors.analogLiftPot.get() > height + 20) {
+				lift.mot_liftDart.set(-speed);
+			} else if (sensors.analogLiftPot.get() > height + 10) {
+				lift.mot_liftDart.set(-speed / 2);
+			} 
 		}
 	}
 
@@ -940,17 +1036,17 @@ public class Robot extends IterativeRobot {
 	}
 
 	public void intake() {
-		if (timer.get() < 1) {
 			intake.intakeIn();
-		} else {
-			intake.intakeStop();
-			nextStep();
-		}
+			air.s_sol4.set(true);
 	}
-
 	
 	public void drop() {
-		
+		if (timer.get() <0.5){
+			air.s_sol4.set(true);
+		}
+		else {
+			air.s_sol4.set(false);
+		}
 	}
 
 }

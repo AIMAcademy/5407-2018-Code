@@ -6,6 +6,8 @@ public class Inputs {
     public Joystick j_leftStick;
     public Joystick j_rightStick;
     public Joystick j_emJoy;
+    
+    public double shootSpeed;
 
     private boolean isCameraButtonPressed;
     private boolean isIntakeButtonPressed;
@@ -92,7 +94,7 @@ public class Inputs {
         //em joystick 
         isemJoyButtonPressed = j_emJoy.getRawButton(12);//end game switch
 
-        
+        shootSpeed = j_leftStick.getRawAxis(2);
 
     }
 }
