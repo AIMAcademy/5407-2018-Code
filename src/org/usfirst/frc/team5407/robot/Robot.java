@@ -43,6 +43,7 @@ public class Robot extends IterativeRobot {
 	final String switchThenScale = "Switch Then Scale";
 	final String scaleThenSwitch = "Scale Then Switch";
 	final String eitherScale = "Either Scale";
+	final String finals = "Finals";
 	final String testAuton = "Test Auton";
 	final String sameSideSwitchAndScale = "Same Side Switch And Scale";
 	final String sameSideScaleAndSwitch = "Same Side Scale And Switch";
@@ -71,7 +72,7 @@ public class Robot extends IterativeRobot {
 	final double minLiftHeight = 75;
 
 	final double distanceAdjustment = 1.376;  //REMOVE THE 1.042 when we switch to the real robot
-	int autonCounter;
+	int autonCounter = 1;
 	double turnDirection;
 
 	@Override
@@ -104,6 +105,7 @@ public class Robot extends IterativeRobot {
 		AutonChooser.addObject("Switch Then Scale", switchThenScale);
 		AutonChooser.addObject("Scale Then Switch", scaleThenSwitch);
 		AutonChooser.addObject("Either Scale", eitherScale);
+		AutonChooser.addObject("Finals", finals);
 		AutonChooser.addDefault("Base Line And Switch", baseLineAndSwitch);
 		AutonChooser.addObject("Same Side Switch And Scale", sameSideSwitchAndScale);
 		AutonChooser.addObject("Same Side Scale And Switch", sameSideScaleAndSwitch);
@@ -206,6 +208,9 @@ public class Robot extends IterativeRobot {
 		else if (autonChooser == sameSideScaleAndSwitch){
 			sameSideScaleAndSwitch();
 		}
+		else if (autonChooser == finals){
+			finals();
+		}
 		else if (autonChooser == testAuton) {
 			testAuton();
 		}
@@ -289,21 +294,21 @@ public class Robot extends IterativeRobot {
 
 		lift.mot_liftDart.set(inputs.getLiftSpeed());
 
-		if (drivetrain.getAverageVelocity() > 1200){
-			timer.reset();
-			timer.start();
-			if (timer.get() > 2){
+//		if (drivetrain.getAverageVelocity() > 1200){
+//			timer.reset();
+//			timer.start();
+//			if (timer.get() > 2){
+//				air.s_DSShifter.set(false);
+//			}else if (timer.get() <= 2){
+//				air.s_DSShifter.set(true);
+//			}
+//		}else if(drivetrain.getAverageVelocity() < 1200) {
+			if (inputs.getIsDualSpeedShifterButtonPressed()){
 				air.s_DSShifter.set(false);
-			}else if (timer.get() <= 2){
+			}else {
 				air.s_DSShifter.set(true);
 			}
-		}else if(drivetrain.getAverageVelocity() < 1200) {
-			if (inputs.getIsDualSpeedShifterButtonPressed()){
-				air.s_DSShifter.set(inputs.getIsDualSpeedShifterButtonPressed());
-			}else {
-				air.s_DSShifter.set(false);
-			}
-		}
+		
 
 
 		// Getting the encoder values for the drivetrain and cooking and
@@ -367,7 +372,7 @@ public class Robot extends IterativeRobot {
 			centerRightDouble();
 		} 
 		else if (startSelected == centerStartThenLeft) {
-			driveBaselineCenterThenLeft();
+			centerLeftDouble();
 		}
 
 	}
@@ -437,14 +442,20 @@ public class Robot extends IterativeRobot {
 				closeScaleLeft();
 			}else 
 				closeScaleRight();
+				SmartDashboard.putString("My Selected Auton is ", "Close Scale");
+				SmartDashboard.updateValues();
 		}
 		else if ((startSelected == leftSideStart && ownership0 == "L")||(startSelected == rightSideStart && ownership0 == "R")){
 			driveBaseline();
+			SmartDashboard.putString("My Selected Auton is ", "Close Switch");
+			SmartDashboard.updateValues();
 		}
 
 		else if ((startSelected == leftSideStart && ownership0 == "R")||    //uncomment after match 48
 				(startSelected == rightSideStart && ownership0 == "L")){
 			aroundTheBack();
+			SmartDashboard.putString("My Selected Auton is ", "Around The Back");
+			SmartDashboard.updateValues();
 		}
 		else if (startSelected == centerStart){
 
@@ -524,7 +535,7 @@ public class Robot extends IterativeRobot {
 		}
 	}
 		
-public void sameSideScaleAndSwitch(){
+	public void sameSideScaleAndSwitch(){
 
 		if ((startSelected == leftSideStart && ownership1 == "L")||(startSelected == rightSideStart && ownership1 == "R")){
 			if(startSelected == leftSideStart && ownership1 == "L"){
@@ -553,6 +564,21 @@ public void sameSideScaleAndSwitch(){
 
 			// then runs the appropriate version of driveBaseline
 			driveBaseline();
+		}
+	}
+	
+	public void finals(){
+		if (ownership1 == "R"){
+			closeScaleRight();
+			SmartDashboard.putString("My Selected Auton is ", "Close Scale");
+		}
+		else if (ownership0 == "R"){
+			driveBaseline();
+			SmartDashboard.putString("My Selected Auton is " , "Close Switch");
+		}
+		else {
+			SmartDashboard.putString("My Selected Auton is ", "Far Switch");
+			aroundTheBack();
 		}
 	}
 	
@@ -686,14 +712,14 @@ public void sameSideScaleAndSwitch(){
 		}
 		else if (autonCounter == 5){
 			if (startSelected == leftSideStart){
-				turnTo(80,0.80);
+				turnTo(85,0.80);
 			}
 			else {
-				turnTo(75,-0.80);
+				turnTo(85,-0.80);
 			}
 		}
 		else if (autonCounter == 6){
-			driveTo(24, .90, 2);
+			driveTo(30, .90, 1.5);
 		}
 		else if (autonCounter == 7){
 			eject();
@@ -840,11 +866,14 @@ public void sameSideScaleAndSwitch(){
 	
 	public void centerRightDouble(){
 		
+		System.out.println(autonCounter);
+		
 		if (autonCounter == 1) {
+			air.s_DSShifter.set(true);
 			driveTo(12, 1, 1);
 		} 
 		else if (autonCounter == 2){
-			liftTo(autonLiftStart,.90);
+			liftTo(autonLiftStart,1);
 		}
 		else if (autonCounter == 3) {
 			turnTo(50, 0.65);
@@ -861,9 +890,10 @@ public void sameSideScaleAndSwitch(){
 		else if (autonCounter == 7){
 			if (ownership0 == "R"){
 				eject();
+				air.s_DSShifter.set(true);
 			}
 		}
-		//start of second cube
+		//start of second cube routine 
 		// Drive backwards away from switch 
 		else if (autonCounter == 8){
 			driveTo(36, -1, 2);
@@ -874,42 +904,42 @@ public void sameSideScaleAndSwitch(){
 		}
 		// Turns towards the cube pile
 		else if (autonCounter == 10){
-			turnTo(40, -.5);
+			turnTo(25, -1);
 		}
 		// Drives towards cube pile
 		else if (autonCounter == 11){
-			driveTo(100, .5, 2);
+			driveTo(70, 1, 2);
+			intake();
 		}
-		// Turns towards front cube and intakes
 		else if (autonCounter == 12){
-			turnTo(20, 1);
-			intake();
-		}
-		// Drives into front cube, intakes and then closes
-		else if (autonCounter == 13){
-			driveTo(40, .5, 1);
-			intake();
-		}
-		else if (autonCounter == 14){
 			closeAndIntake();
 		}
 		// Drives backwards away from cubes
+		else if (autonCounter == 13){
+			//closeAndIntake();
+			driveTo(70, -1, 1);
+		}
+		// Turns towards switch 
+		else if (autonCounter == 14){
+			
+			liftTo(autonLiftStart, 1);
+		}
 		else if (autonCounter == 15){
-			driveTo(40, -.5, 3);
+			turnTo(25, 1);
 		}
+		// Drives towards switch
 		else if (autonCounter == 16){
-			turnTo(40, -.5);
+			driveTo(74, 1, 2);
 		}
+		// Ejects cube into Switch
 		else if (autonCounter == 17){
-			driveTo(60, -.5, 3);
-		}
-		else if (autonCounter == 18){
 			eject();
 		}  
 	}
 	
 	public void centerLeftDouble(){
 		if (autonCounter == 1) {
+			//air.s_DSShifter.set(true);
 			liftTo(autonLiftStart,1);
 		}
 		else if (autonCounter == 2) {
@@ -932,26 +962,50 @@ public void sameSideScaleAndSwitch(){
 				eject();
 			}
 		}
+		//start of second cube routine 
+		// Drive backwards away from switch 
 		else if (autonCounter == 8){
-			driveTo(30, -.5, 2);
+			driveTo(36, -1, 2);
 		}
+		// Goes to lowest arm height 
 		else if (autonCounter == 9){
-			turnTo(45, .5);
+			liftTo(minLiftHeight, 1);
 		}
+		// Turns towards the cube pile
 		else if (autonCounter == 10){
-			driveTo(36, .5, 2);
+			turnTo(25, 1);
 		}
+		// Drives towards cube pile
 		else if (autonCounter == 11){
-			turnTo(45, -.5);
+			driveTo(74, 1, 2);
 			intake();
-			closeAndIntake();
 		}
 		else if (autonCounter == 12){
-			driveTo(30, -.5, 2);
+			closeAndIntake();
 		}
+		// Drives backwards away from cubes
+		else if (autonCounter == 13){
+			//closeAndIntake();
+			driveTo(74, -1, 1);
+		}
+		// Turns towards switch 
+		else if (autonCounter == 14){
+			liftTo(autonLiftStart, 1);
+		}
+		else if (autonCounter == 15){
+			
+			turnTo(25, -1);
+		}
+		// Drives towards switch
+		else if (autonCounter == 16){
+			driveTo(74, 1, 2);
+		}
+		// Ejects cube into Switch
+		else if (autonCounter == 17){
+			eject();
+		}  
 		
 	}
-	
 	
 	
 	public void testAuton() {
@@ -1132,7 +1186,7 @@ public void sameSideScaleAndSwitch(){
 	}
 
 	public void eject() {
-		if (timer.get() < 2) {
+		if (timer.get() < 1) {
 			intake.mot_leftSideIntake.set(0.6);
 			intake.mot_rightSideIntake.set(-0.6);
 		} else {
@@ -1160,10 +1214,8 @@ public void sameSideScaleAndSwitch(){
 		air.s_sol4.set(false);
 		intake.intakeIn();
 		}
-		else {
-			air.s_sol4.set(false);
-			intake.mot_leftSideIntake.set(0.0);
-			intake.mot_rightSideIntake.set(0.0);
+		else if (timer.get() > 1) {
+			nextStep();
 		}
 	}
 	
