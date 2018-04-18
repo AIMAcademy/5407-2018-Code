@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.PowerDistributionPanel;
 
 /**
  * This program contains FRC team 5407's code for the 2018 competition season
@@ -32,6 +33,7 @@ public class Robot extends IterativeRobot {
 	Vision vision;
 	Timer timer;
 	DriverStation ds;
+	//PowerDistributionPanel pdp;
 
 	// Autos, creating string for new auto and has a sendable chooser at the end
 	// of it
@@ -72,7 +74,7 @@ public class Robot extends IterativeRobot {
 	final double minLiftHeight = 75;
 
 	final double distanceAdjustment = 1.376;  //REMOVE THE 1.042 when we switch to the real robot
-	int autonCounter = 1;
+	int autonStep = 1;
 	double turnDirection;
 
 	@Override
@@ -88,6 +90,8 @@ public class Robot extends IterativeRobot {
 		vision = new Vision();
 		timer = new Timer();
 		ds = DriverStation.getInstance();
+	//	pdp = new PowerDistributionPanel();
+	//	pdp.clearStickyFaults();
 
 		vision.setJeVoisVideoMode();
 
@@ -161,7 +165,7 @@ public class Robot extends IterativeRobot {
 		// Reset encoders
 		drivetrain.resetEncoders();
 
-		autonCounter = 1;
+		autonStep = 1;
 
 		timer.reset();
 		timer.start();
@@ -593,11 +597,11 @@ public class Robot extends IterativeRobot {
 	public void driveBaselineSides() {
 
 		
-		if (autonCounter == 1) {
+		if (autonStep == 1) {
 			liftTo(autonLiftStart, 1);
 		}
 
-		else if (autonCounter == 2) {
+		else if (autonStep == 2) {
 			driveTo(150, 1, 5);
 			if ((startSelected == leftSideStart && ownership0 == "R")
 					|| (startSelected == rightSideStart && ownership0 == "L")){
@@ -605,7 +609,7 @@ public class Robot extends IterativeRobot {
 		}
 		 
 
-		else if (autonCounter == 3){
+		else if (autonStep == 3){
 			if ((startSelected == leftSideStart && ownership0 == "L")
 					|| (startSelected == rightSideStart && ownership0 == "R")){
 				if (startSelected == leftSideStart){
@@ -618,7 +622,7 @@ public class Robot extends IterativeRobot {
 			
 			
 		}
-		else if (autonCounter == 4){
+		else if (autonStep == 4){
 			
 			if ((startSelected == leftSideStart && ownership0 == "L")
 					|| (startSelected == rightSideStart && ownership0 == "R")){
@@ -626,7 +630,7 @@ public class Robot extends IterativeRobot {
 			}
 			
 		}
-		else if (autonCounter == 5){
+		else if (autonStep == 5){
 			if ((startSelected == leftSideStart && ownership0 == "L")
 					|| (startSelected == rightSideStart && ownership0 == "R")){
 				eject();
@@ -638,25 +642,25 @@ public class Robot extends IterativeRobot {
 
 
 	
-		if (autonCounter == 1) {
+		if (autonStep == 1) {
 			liftTo(autonLiftStart,1);
 		}
-		else if (autonCounter == 2) {
+		else if (autonStep == 2) {
 			driveTo(12, 1, 1);
 		} 
-		else if (autonCounter == 3) {
+		else if (autonStep == 3) {
 			turnTo(50, 0.65);
 		} 
-		else if (autonCounter == 4) {
+		else if (autonStep == 4) {
 			driveTo(48, .90, 4);
 		} 
-		else if (autonCounter == 5) {
+		else if (autonStep == 5) {
 			turnTo(65, -0.65);
 		} 
-		else if (autonCounter == 6){
+		else if (autonStep == 6){
 			driveTo(78,1, 2);
 		} 
-		else if (autonCounter == 7){
+		else if (autonStep == 7){
 			if (ownership0 == "R"){
 				eject();
 			}
@@ -666,25 +670,25 @@ public class Robot extends IterativeRobot {
 	public void driveBaselineCenterThenLeft() {
 
 		
-		if (autonCounter == 1) {
+		if (autonStep == 1) {
 			liftTo(autonLiftStart,1);
 		}
-		else if (autonCounter == 2) {
+		else if (autonStep == 2) {
 			driveTo(12, 1, 1);
 		} 
-		else if (autonCounter == 3) {
+		else if (autonStep == 3) {
 			turnTo(50, -0.65);
 		} 
-		else if (autonCounter == 4) {
+		else if (autonStep == 4) {
 			driveTo(90, 0.90, 4);
 		} 
-		else if (autonCounter == 5) {
+		else if (autonStep == 5) {
 			turnTo(40, 0.65);
 		} 
-		else if (autonCounter == 6){
+		else if (autonStep == 6){
 			driveTo(55,1, 2);
 		} 
-		else if (autonCounter == 7){
+		else if (autonStep == 7){
 			if (ownership0 == "L"){
 				eject();
 			}
@@ -693,13 +697,13 @@ public class Robot extends IterativeRobot {
 
 	public void aroundTheBack(){
 
-		if (autonCounter == 1) {
+		if (autonStep == 1) {
 			liftTo(autonLiftStart, 1);
 		}
-		else if (autonCounter == 2) {
+		else if (autonStep == 2) {
 			driveTo(212, 1, 5);
 		}
-		else if (autonCounter == 3){
+		else if (autonStep == 3){
 			if (startSelected == leftSideStart){
 				turnTo(70,0.80);
 			}
@@ -707,10 +711,10 @@ public class Robot extends IterativeRobot {
 				turnTo(85,-0.80);
 			}
 		}
-		else if (autonCounter == 4){
+		else if (autonStep == 4){
 			driveTo(168, 0.90, 6);
 		}
-		else if (autonCounter == 5){
+		else if (autonStep == 5){
 			if (startSelected == leftSideStart){
 				turnTo(85,0.80);
 			}
@@ -718,10 +722,10 @@ public class Robot extends IterativeRobot {
 				turnTo(85,-0.80);
 			}
 		}
-		else if (autonCounter == 6){
+		else if (autonStep == 6){
 			driveTo(30, .90, 1.5);
 		}
-		else if (autonCounter == 7){
+		else if (autonStep == 7){
 			eject();
 		}
 	}	
@@ -733,19 +737,19 @@ public class Robot extends IterativeRobot {
 		else {
 			turnDirection = -1;
 		}
-		if (autonCounter == 1){
+		if (autonStep == 1){
 			liftTo(autonLiftStart,1);
 		}
-		else if (autonCounter == 2){
+		else if (autonStep == 2){
 			driveTo(290, 1, 7);
 		}
-		else if (autonCounter == 3){
+		else if (autonStep == 3){
 			liftTo(maxLiftHeight, 1);
 		}
-		else if (autonCounter == 4){
+		else if (autonStep == 4){
 			turnTo(60, turnDirection * .75); //85
 		}
-		else if (autonCounter == 5){
+		else if (autonStep == 5){
 			eject();
 		}
 	}
@@ -759,28 +763,28 @@ public class Robot extends IterativeRobot {
 		else {
 			turnDirection = -1;
 		}
-		if (autonCounter == 1){
+		if (autonStep == 1){
 			liftTo(autonLiftStart,1);
 		}
-		else if (autonCounter == 2){
+		else if (autonStep == 2){
 			driveTo(284, 1, 7);
 		}
-		else if (autonCounter == 3){
+		else if (autonStep == 3){
 			liftTo(maxLiftHeight, 1);
 		}
-		else if (autonCounter == 4){
+		else if (autonStep == 4){
 			turnTo(70, turnDirection * .75); //85
 		}
-		else if (autonCounter == 5){
+		else if (autonStep == 5){
 			eject();
 		}
-		else if (autonCounter == 6){
+		else if (autonStep == 6){
 			driveTo(20, -1, 2);
 		}
-		else if (autonCounter == 7){
+		else if (autonStep == 7){
 			liftTo(minLiftHeight, 1);
 		}
-		else if (autonCounter == 8){
+		else if (autonStep == 8){
 			turnTo(45, 1);
 		}
 	}
@@ -791,34 +795,34 @@ public class Robot extends IterativeRobot {
 			turnDirection = 1;
 		}
 		
-		if (autonCounter == 1){
+		if (autonStep == 1){
 			liftTo(autonLiftStart, 1);
 		}
-		else if (autonCounter == 2){
+		else if (autonStep == 2){
 			driveTo(210, 1, 5);
 		}
-		else if (autonCounter == 3){
+		else if (autonStep == 3){
 			turnTo(75, turnDirection * .80);
 		}
-		else if (autonCounter == 4){
+		else if (autonStep == 4){
 			driveTo(188, 1, 5);
 		}
-		else if (autonCounter ==5){
+		else if (autonStep ==5){
 			liftTo(maxLiftHeight, 1);
 		}
-		else if (autonCounter == 6){
+		else if (autonStep == 6){
 			turnTo(95, turnDirection * -.85);
 		}
-		else if (autonCounter == 7){
+		else if (autonStep == 7){
 			driveTo(15, .80, 1);
 		}
-		else if (autonCounter == 8){
+		else if (autonStep == 8){
 			drop();
 		}
-		else if (autonCounter == 9){
+		else if (autonStep == 9){
 			driveTo(30, -1, 1);
 		}
-		else if (autonCounter == 10){
+		else if (autonStep == 10){
 			liftTo(autonLiftStart, 1);
 		}
 	}
@@ -834,31 +838,31 @@ public class Robot extends IterativeRobot {
 		}
 		
 		
-		if (autonCounter == 1){
+		if (autonStep == 1){
 			liftTo(autonLiftStart, 1);
 		}
-		else if (autonCounter == 2){
+		else if (autonStep == 2){
 			driveTo(205, 1, 5);
 		}
-		else if (autonCounter == 3){
+		else if (autonStep == 3){
 			turnTo(70, turnDirection * .80);
 		}
-		else if (autonCounter == 4){
+		else if (autonStep == 4){
 			driveTo(200, 1, 5);
 		}
-		else if (autonCounter ==5){
+		else if (autonStep ==5){
 			liftTo(maxLiftHeight, 1);
 		}
-		else if (autonCounter == 6){
+		else if (autonStep == 6){
 			turnTo(85, turnDirection * -.85);
 		}
-		else if (autonCounter == 7){
+		else if (autonStep == 7){
 			driveTo(35, .80, 1);
 		}
-		else if (autonCounter == 8){
+		else if (autonStep == 8){
 			drop();
 		}
-		else if (autonCounter == 9){
+		else if (autonStep == 9){
 			driveTo(24, -.80, 2);
 		}
 	}
@@ -866,28 +870,28 @@ public class Robot extends IterativeRobot {
 	
 	public void centerRightDouble(){
 		
-		System.out.println(autonCounter);
+		System.out.println(autonStep);
 		
-		if (autonCounter == 1) {
+		if (autonStep == 1) {
 			air.s_DSShifter.set(true);
 			driveTo(12, 1, 1);
 		} 
-		else if (autonCounter == 2){
+		else if (autonStep == 2){
 			liftTo(autonLiftStart,1);
 		}
-		else if (autonCounter == 3) {
+		else if (autonStep == 3) {
 			turnTo(50, 0.65);
 		} 
-		else if (autonCounter == 4) {
+		else if (autonStep == 4) {
 			driveTo(55, .90, 4);
 		} 
-		else if (autonCounter == 5) {
+		else if (autonStep == 5) {
 			turnTo(65, -0.65);
 		} 
-		else if (autonCounter == 6){
+		else if (autonStep == 6){
 			driveTo(78,1, 2);
 		} 
-		else if (autonCounter == 7){
+		else if (autonStep == 7){
 			if (ownership0 == "R"){
 				eject();
 				air.s_DSShifter.set(true);
@@ -895,113 +899,113 @@ public class Robot extends IterativeRobot {
 		}
 		//start of second cube routine 
 		// Drive backwards away from switch 
-		else if (autonCounter == 8){
+		else if (autonStep == 8){
 			driveTo(36, -1, 2);
 		}
 		// Goes to lowest arm height 
-		else if (autonCounter == 9){
+		else if (autonStep == 9){
 			liftTo(minLiftHeight, 1);
 		}
 		// Turns towards the cube pile
-		else if (autonCounter == 10){
+		else if (autonStep == 10){
 			turnTo(25, -1);
 		}
 		// Drives towards cube pile
-		else if (autonCounter == 11){
+		else if (autonStep == 11){
 			driveTo(70, 1, 2);
 			intake();
 		}
-		else if (autonCounter == 12){
+		else if (autonStep == 12){
 			closeAndIntake();
 		}
 		// Drives backwards away from cubes
-		else if (autonCounter == 13){
+		else if (autonStep == 13){
 			//closeAndIntake();
 			driveTo(70, -1, 1);
 		}
 		// Turns towards switch 
-		else if (autonCounter == 14){
+		else if (autonStep == 14){
 			
 			liftTo(autonLiftStart, 1);
 		}
-		else if (autonCounter == 15){
+		else if (autonStep == 15){
 			turnTo(25, 1);
 		}
 		// Drives towards switch
-		else if (autonCounter == 16){
+		else if (autonStep == 16){
 			driveTo(74, 1, 2);
 		}
 		// Ejects cube into Switch
-		else if (autonCounter == 17){
+		else if (autonStep == 17){
 			eject();
 		}  
 	}
 	
 	public void centerLeftDouble(){
-		if (autonCounter == 1) {
+		if (autonStep == 1) {
 			//air.s_DSShifter.set(true);
 			liftTo(autonLiftStart,1);
 		}
-		else if (autonCounter == 2) {
+		else if (autonStep == 2) {
 			driveTo(12, 1, 1);
 		} 
-		else if (autonCounter == 3) {
+		else if (autonStep == 3) {
 			turnTo(50, -0.65);
 		} 
-		else if (autonCounter == 4) {
+		else if (autonStep == 4) {
 			driveTo(90, 0.90, 4);
 		} 
-		else if (autonCounter == 5) {
+		else if (autonStep == 5) {
 			turnTo(40, 0.65);
 		} 
-		else if (autonCounter == 6){
+		else if (autonStep == 6){
 			driveTo(55,1, 2);
 		} 
-		else if (autonCounter == 7){
+		else if (autonStep == 7){
 			if (ownership0 == "L"){
 				eject();
 			}
 		}
 		//start of second cube routine 
 		// Drive backwards away from switch 
-		else if (autonCounter == 8){
+		else if (autonStep == 8){
 			driveTo(36, -1, 2);
 		}
 		// Goes to lowest arm height 
-		else if (autonCounter == 9){
+		else if (autonStep == 9){
 			liftTo(minLiftHeight, 1);
 		}
 		// Turns towards the cube pile
-		else if (autonCounter == 10){
+		else if (autonStep == 10){
 			turnTo(25, 1);
 		}
 		// Drives towards cube pile
-		else if (autonCounter == 11){
+		else if (autonStep == 11){
 			driveTo(74, 1, 2);
 			intake();
 		}
-		else if (autonCounter == 12){
+		else if (autonStep == 12){
 			closeAndIntake();
 		}
 		// Drives backwards away from cubes
-		else if (autonCounter == 13){
+		else if (autonStep == 13){
 			//closeAndIntake();
 			driveTo(74, -1, 1);
 		}
 		// Turns towards switch 
-		else if (autonCounter == 14){
+		else if (autonStep == 14){
 			liftTo(autonLiftStart, 1);
 		}
-		else if (autonCounter == 15){
+		else if (autonStep == 15){
 			
 			turnTo(25, -1);
 		}
 		// Drives towards switch
-		else if (autonCounter == 16){
+		else if (autonStep == 16){
 			driveTo(74, 1, 2);
 		}
 		// Ejects cube into Switch
-		else if (autonCounter == 17){
+		else if (autonStep == 17){
 			eject();
 		}  
 		
@@ -1054,8 +1058,8 @@ public class Robot extends IterativeRobot {
 		timer.start();
 		air.s_sol4.set(false);
 		intake.intakeStop();
-		autonCounter++;
-		System.out.println("Next Step "+ autonCounter);
+		autonStep++;
+		System.out.println("Next Step "+ autonStep);
 	}
 
 	// drives to distance in inches at given speed. Then calls nextStep()
