@@ -76,6 +76,10 @@ public class Robot extends IterativeRobot {
 	final double distanceAdjustment = 1.376;  //REMOVE THE 1.042 when we switch to the real robot
 	int autonStep = 1;
 	double turnDirection;
+	
+	// variables for PID turning for auto
+	double turnPIDError;
+	double turnPIDthreshold;
 
 	@Override
 	public void robotInit() {
@@ -361,9 +365,7 @@ public class Robot extends IterativeRobot {
 	// Called during periodic, if it sees jevois it tells you how long it took
 	// to connect and if it does not connect it tries to reconnect
 
-
 	//subtract 5 from any angle you want to go to
-
 
 	// choses which version of drive= -1;Baseline to use based on the starting position
 	public void driveBaseline() {
@@ -587,7 +589,6 @@ public class Robot extends IterativeRobot {
 	}
 	
 	// When no Auton is called this one will be run, we just sit there
-
 	public void DoNothingAuton() {
 		if (autonChooser == doNothingAuton) {
 			// Do nothing
@@ -1011,7 +1012,6 @@ public class Robot extends IterativeRobot {
 		
 	}
 	
-	
 	public void testAuton() {
 
 		if (ownership0 == "R"){
@@ -1022,8 +1022,6 @@ public class Robot extends IterativeRobot {
 			
 		
 	}
-
-
 
 	//Auton Steps to create autos
 	public void getGameData() {
@@ -1220,6 +1218,18 @@ public class Robot extends IterativeRobot {
 		}
 		else if (timer.get() > 1) {
 			nextStep();
+		}
+	}
+	
+	public void turnToPID(double targetAngle, double speed){
+		turnPIDError = targetAngle - sensors.ahrs.getAngle();
+		if (turnPIDError > turnPIDthreshold){
+			//rotation = turnPIDError*variables.pidAutoTurnkP;
+			//keep going
+		}
+		else {
+			//rotation = 0.0;
+			//move to next step
 		}
 	}
 	
