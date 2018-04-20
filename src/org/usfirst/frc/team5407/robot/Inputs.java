@@ -19,6 +19,7 @@ public class Inputs {
     private boolean isSolenoidFiveButtonPressed;
     private boolean isSuperButtonPressed;
     private boolean isemJoyButtonPressed;// end game button
+    private boolean isTestJoyButtonPressed; 
     
     private double throttle;//for drivetrain
     private double turn;//for drivetrain 
@@ -42,6 +43,8 @@ public class Inputs {
     public boolean getIsIntakeOutButtonPressed() { return isIntakeOutButtonPressed; }
     public boolean getIsSuperButtonPressed() {return isSuperButtonPressed;}
     public boolean getIsemJoyButtonPressed() {return isemJoyButtonPressed;}
+    public boolean getIsTestJoyButtonPressed() {return isTestJoyButtonPressed;}
+    
     
     // Public doubles
     public double getThrottle() {return throttle;}
@@ -74,6 +77,7 @@ public class Inputs {
         isCameraButtonPressed = j_rightStick.getRawButton(5);
         isDualSpeedShifterButtonPressed = j_rightStick.getRawButton(6);
         isSolenoidFiveButtonPressed = j_rightStick.getRawButton(1);
+        isTestJoyButtonPressed = j_rightStick.getRawButton(8);
   
     //Operation Controller       
         // Private doubles

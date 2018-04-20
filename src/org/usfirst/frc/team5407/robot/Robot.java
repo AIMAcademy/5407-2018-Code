@@ -14,7 +14,6 @@ import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.PowerDistributionPanel;
 
 /**
  * This program contains FRC team 5407's code for the 2018 competition season
@@ -79,7 +78,7 @@ public class Robot extends IterativeRobot {
 	
 	// variables for PID turning for auto
 	double turnPIDError;
-	double turnPIDthreshold;
+	double turnPIDthreshold = 3;
 
 	@Override
 	public void robotInit() {
@@ -317,6 +316,11 @@ public class Robot extends IterativeRobot {
 				air.s_DSShifter.set(true);
 			}
 		
+		//Test Button
+			if (inputs.getIsTestJoyButtonPressed()){
+				turnToPID(90);
+			}
+			
 
 
 		// Getting the encoder values for the drivetrain and cooking and
@@ -639,6 +643,43 @@ public class Robot extends IterativeRobot {
 		}
 	}
 
+	public void driveBaselineSidesFast(){
+
+		 
+		if (autonStep == 1){
+			liftAndDrive(autonLiftStart, 1, 150, 1, 5);
+		}
+		
+
+		else if (autonStep == 2){
+			if ((startSelected == leftSideStart && ownership0 == "L")
+					|| (startSelected == rightSideStart && ownership0 == "R")){
+				if (startSelected == leftSideStart){
+					turnTo(85, 0.80);
+				}
+				else {
+					turnTo(85, -0.80);
+				}
+			}
+			
+			
+		}
+		else if (autonStep == 3){
+			
+			if ((startSelected == leftSideStart && ownership0 == "L")
+					|| (startSelected == rightSideStart && ownership0 == "R")){
+				driveTo(30, 0.90, 2);
+			}
+			
+		}
+		else if (autonStep == 4){
+			if ((startSelected == leftSideStart && ownership0 == "L")
+					|| (startSelected == rightSideStart && ownership0 == "R")){
+				eject();
+			}
+		}
+	}
+	
 	public void driveBaselineCenterThenRight() {
 
 
@@ -668,6 +709,31 @@ public class Robot extends IterativeRobot {
 		}
 	}
 
+	public void driveBaselineCenterThenRightFast(){
+
+		
+		if (autonStep == 1){
+			liftAndDrive(autonLiftStart, 1, 12, 1, 1);
+		}
+		else if (autonStep == 2) {
+			turnTo(50, 0.65);
+		} 
+		else if (autonStep == 3) {
+			driveTo(48, .90, 4);
+		} 
+		else if (autonStep == 4) {
+			turnTo(65, -0.65);
+		} 
+		else if (autonStep == 5){
+			driveTo(78,1, 2);
+		} 
+		else if (autonStep == 6){
+			if (ownership0 == "R"){
+				eject();
+			}
+		}
+	}
+	
 	public void driveBaselineCenterThenLeft() {
 
 		
@@ -696,6 +762,30 @@ public class Robot extends IterativeRobot {
 		}
 	}
 
+	public void driveBaselineCenterThenLeftFast(){
+		
+		if (autonStep == 1){
+			liftAndDrive(autonLiftStart, 1, 12, 1, 1);
+		}
+		else if (autonStep == 2) {
+			turnTo(50, -0.65);
+		} 
+		else if (autonStep == 3) {
+			driveTo(90, 0.90, 4);
+		} 
+		else if (autonStep == 4) {
+			turnTo(40, 0.65);
+		} 
+		else if (autonStep == 5){
+			driveTo(55,1, 2);
+		} 
+		else if (autonStep == 6){
+			if (ownership0 == "L"){
+				eject();
+			}
+		}
+	}
+	
 	public void aroundTheBack(){
 
 		if (autonStep == 1) {
@@ -731,6 +821,38 @@ public class Robot extends IterativeRobot {
 		}
 	}	
 
+	public void aroundTheBackFast(){
+
+		if (autonStep == 1){
+			liftAndDrive(autonLiftStart, 1, 212, 1, 5);
+		}
+		else if (autonStep == 2){
+			if (startSelected == leftSideStart){
+				turnTo(70,0.80);
+			}
+			else {
+				turnTo(85,-0.80);
+			}
+		}
+		else if (autonStep == 3){
+			driveTo(168, 0.90, 6);
+		}
+		else if (autonStep == 4){
+			if (startSelected == leftSideStart){
+				turnTo(85,0.80);
+			}
+			else {
+				turnTo(85,-0.80);
+			}
+		}
+		else if (autonStep == 5){
+			driveTo(30, .90, 1.5);
+		}
+		else if (autonStep == 6){
+			eject();
+		}
+	}
+	
 	public void closeScaleLeft(){
 		if (startSelected == leftSideStart){
 			turnDirection = 1;
@@ -755,6 +877,28 @@ public class Robot extends IterativeRobot {
 		}
 	}
 
+	public void closeScaleLeftFast(){
+		if (startSelected == leftSideStart){
+			turnDirection = 1;
+		}
+		else {
+			turnDirection = -1;
+		}
+		
+
+		if (autonStep == 1){
+			liftAndDrive(autonLiftStart, 1, 240, 1, 6);
+		}
+		else if (autonStep == 2){
+			liftAndDrive(maxLiftHeight, 1, 50, 1, 3);
+		}
+		else if (autonStep == 3){
+			turnTo(60, turnDirection * .75); //85
+		}
+		else if (autonStep == 4){
+			eject();
+		}
+	}
 	
 	// NEEDs to be changed for right side left side version rn
 	public void closeScaleRight(){
@@ -786,6 +930,41 @@ public class Robot extends IterativeRobot {
 			liftTo(minLiftHeight, 1);
 		}
 		else if (autonStep == 8){
+			turnTo(45, 1);
+		}
+	}
+
+	public void closeScaleRightFast(){
+		if (startSelected == leftSideStart){
+			turnDirection = 1;
+		}
+		else {
+			turnDirection = -1;
+		}
+		
+		
+
+		if (autonStep == 1){
+			liftAndDrive(autonLiftStart, 1, 240, 1, 6);
+		}
+		else if (autonStep == 2){
+			liftAndDrive(maxLiftHeight, 1, 44, 1, 3);
+		}
+		else if (autonStep == 3){
+			turnTo(70, turnDirection * .75); //85
+		}
+		else if (autonStep == 4){
+			eject();
+		}
+		
+		
+		else if (autonStep == 5){
+			driveTo(20, -1, 2);
+		}
+		else if (autonStep == 6){
+			liftTo(minLiftHeight, 1);
+		}
+		else if (autonStep == 7){
 			turnTo(45, 1);
 		}
 	}
@@ -824,6 +1003,44 @@ public class Robot extends IterativeRobot {
 			driveTo(30, -1, 1);
 		}
 		else if (autonStep == 10){
+			liftTo(autonLiftStart, 1);
+		}
+	}
+	
+	public void farScaleLeftStartFast(){
+
+		if (startSelected == leftSideStart){
+			turnDirection = 1;
+		}
+		
+	
+		if (autonStep ==1){
+			liftAndDrive(autonLiftStart, 1, 210, 1, 5);
+		}
+		else if (autonStep == 2){
+			turnTo(75, turnDirection * .80);
+		}
+		else if (autonStep == 3){
+			driveTo(138, 1, 5);
+		}
+		else if(autonStep == 4){
+			liftAndDrive(maxLiftHeight, 1, 50, 1, 5);
+		}
+		else if (autonStep == 5){
+			turnTo(95, turnDirection * -.85);
+		}
+		else if (autonStep == 6){
+			driveTo(15, .80, 1);
+		}
+		else if (autonStep == 7){
+			drop();
+		}
+		
+		
+		else if (autonStep == 8){
+			driveTo(30, -1, 1);
+		}
+		else if (autonStep == 9){
 			liftTo(autonLiftStart, 1);
 		}
 	}
@@ -868,6 +1085,44 @@ public class Robot extends IterativeRobot {
 		}
 	}
 	
+	public void farScaleRightStartFast(){
+
+		if (startSelected == leftSideStart){
+			turnDirection = 1;
+		}
+		else {
+			turnDirection = -1;
+		}
+		
+		
+		
+		if (autonStep == 1){
+			liftAndDrive(autonLiftStart, 1, 205, 1, 5);
+		}
+		else if (autonStep == 2){
+			turnTo(70, turnDirection * .80);
+		}
+		else if (autonStep == 3){
+			driveTo(150, 1, 5);
+		}
+		else if (autonStep == 4){
+			liftAndDrive(maxLiftHeight, 1, 50, 1, 3);
+		}
+		else if (autonStep == 5){
+			turnTo(85, turnDirection * -.85);
+		}
+		else if (autonStep == 6){
+			driveTo(35, .80, 1);
+		}
+		else if (autonStep == 7){
+			drop();
+		}
+		
+		
+		else if (autonStep == 8){
+			driveTo(24, -.80, 2);
+		}
+	}
 	
 	public void centerRightDouble(){
 		
@@ -1221,14 +1476,14 @@ public class Robot extends IterativeRobot {
 		}
 	}
 	
-	public void turnToPID(double targetAngle, double speed){
+	public void turnToPID(double targetAngle){
 		turnPIDError = targetAngle - sensors.ahrs.getAngle();
 		if (turnPIDError > turnPIDthreshold){
-			//rotation = turnPIDError*variables.pidAutoTurnkP;
+			drivetrain.autonDrive(0, turnPIDError*variables.pidAutoTurnkP);
 			//keep going
 		}
 		else {
-			//rotation = 0.0;
+			drivetrain.autonDrive(0,0);
 			//move to next step
 		}
 	}
