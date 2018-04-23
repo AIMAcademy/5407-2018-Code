@@ -129,6 +129,8 @@ public class Robot extends IterativeRobot {
 		// SmartDashboard.updateValues();
 		
 		air.s_sol2.set(true);
+		
+		ownership = null; 
 	}
 
 	public void robotPeriodic() {}
@@ -1463,6 +1465,7 @@ public class Robot extends IterativeRobot {
 		}
 		else {
 			air.s_sol4.set(false);
+			nextStep();
 		}
 	}
 
