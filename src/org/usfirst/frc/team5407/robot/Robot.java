@@ -1482,7 +1482,7 @@ public class Robot extends IterativeRobot {
 	public void turnToPID(double targetAngle){
 		turnPIDError = targetAngle - sensors.ahrs.getAngle();
 		if (turnPIDError > turnPIDthreshold){
-			drivetrain.autonDrive(0, turnPIDError*variables.pidAutoTurnkP);
+			drivetrain.autonDrive(0, (turnPIDError*variables.pidAutoTurnkP)/100);
 			//keep going
 		}
 		else {
