@@ -7,14 +7,13 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.interfaces.Potentiometer;
-import edu.wpi.first.wpilibj.Ultrasonic;
 
 public class Sensors{
 	// Names sensors and its type
 	AHRS ahrs;
 	Potentiometer analogLiftPot;
-	Ultrasonic leftSideUltraSonic;
-	Ultrasonic rightSideUltraSonic;
+	AnalogInput leftSideUltraSonic;
+	AnalogInput rightSideUltraSonic;
 	private AnalogInput mAnalogInputRevAirSensor; 
 
 	// Create and put doubles here
@@ -31,6 +30,9 @@ public class Sensors{
 		//no smartDashBoard output
 		analogLiftPot = new AnalogPotentiometer(0, 360, 30);
 		//double liftHeight = analogLiftPot.get();
+		
+		leftSideUltraSonic = new AnalogInput(2);
+		rightSideUltraSonic = new AnalogInput(3); 
 		
 		// tries to call NavX and if it does not respond an printout appears in the driver station
 	    try {

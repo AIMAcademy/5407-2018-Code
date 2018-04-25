@@ -9,6 +9,7 @@ package org.usfirst.frc.team5407.robot;
 
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 
+import edu.wpi.first.wpilibj.Counter;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -76,6 +77,10 @@ public class Robot extends IterativeRobot {
 	int autonStep = 1;
 	double turnDirection;
 	
+	Timer matchtimer = new Timer();
+	Timer ledtimer = new Timer();
+	boolean b_led = true;
+	
 	// variables for PID turning for auto
 	double turnPIDError;
 	double turnPIDthreshold = 3;
@@ -99,7 +104,7 @@ public class Robot extends IterativeRobot {
 		vision.setJeVoisVideoMode();
 
 		// Calls 4 solenoids in the air class
-		air = new Air(0, 1, 2, 3, 4, 5, 6);
+		air = new Air(0, 1, 2, 3, 4, 5, 6, 7);
 
 		AutonChooser = new SendableChooser<String>();
 		AutonChooser.addDefault("Do Nothing!!", doNothingAuton);
@@ -148,6 +153,13 @@ public class Robot extends IterativeRobot {
 		SmartDashboard.putString("Robot Start Position is ", startSelected);
 		
 		air.s_sol2.set(true);
+		
+		if (air.s_DSShifter.get() == false){
+			air.s_sol7.set(true);
+		}
+		else {
+			air.s_sol7.set(false);
+		}
 	}
 
 	public void autonomousInit() {
@@ -236,6 +248,8 @@ public class Robot extends IterativeRobot {
 	public void teleopInit() {
 		// Zero and initialize all inputs and sensors for teleop
 		air.initializeAir();
+		
+		matchtimer.start();
 
 		drivetrain.frontLeftDriveMotor.setNeutralMode(NeutralMode.Coast);
 		drivetrain.frontRightDriveMotor.setNeutralMode(NeutralMode.Coast);		
@@ -292,6 +306,35 @@ public class Robot extends IterativeRobot {
 			winch.mot_Winch.set(0.0);
 		}
 
+		if (inputs.getIsDualSpeedShifterButtonPressed() == true && matchtimer.get() < 90){
+			air.s_sol7.set(false);
+		} else air.s_sol7.set(true);
+		
+		if (matchtimer.get() > 90){
+			air.s_sol7.set(false);
+		}
+		
+		/*
+		if (matchtimer.get() > 10){
+			ledtimer.start();
+			if (ledtimer.get() > 3){
+				air.s_sol7.set(!air.s_sol7.get());
+				ledtimer.reset();
+			}
+			*/
+		
+		/*
+		if (matchtimer.get() > 11) {
+			ledtimer.start();
+			if (ledtimer.get() > 3){
+				b_led = !b_led;
+				air.s_sol7.set(b_led);
+				ledtimer.reset();
+			}
+				 }
+		*/
+		
+				 
 		if (inputs.getIsIntakeButtonPressed()) {
 			intake.intakeIn();
 		} else if (inputs.getIsIntakeOutButtonPressed()) {
@@ -1235,11 +1278,11 @@ public class Robot extends IterativeRobot {
 		}
 		// Turns towards the cube pile
 		else if (autonStep == 10){
-			turnTo(25, 1);
+			turnTo(35, 1);
 		}
 		// Drives towards cube pile
 		else if (autonStep == 11){
-			driveTo(74, 1, 2);
+			driveTo(85, 1, 2);
 			intake();
 		}
 		else if (autonStep == 12){
@@ -1248,7 +1291,7 @@ public class Robot extends IterativeRobot {
 		// Drives backwards away from cubes
 		else if (autonStep == 13){
 			//closeAndIntake();
-			driveTo(74, -1, 1);
+			driveTo(85, -1, 1);
 		}
 		// Turns towards switch 
 		else if (autonStep == 14){
@@ -1256,11 +1299,11 @@ public class Robot extends IterativeRobot {
 		}
 		else if (autonStep == 15){
 			
-			turnTo(25, -1);
+			turnTo(45, -1);
 		}
 		// Drives towards switch
 		else if (autonStep == 16){
-			driveTo(74, 1, 2);
+			driveTo(85, 1, 2);
 		}
 		// Ejects cube into Switch
 		else if (autonStep == 17){
@@ -1470,11 +1513,11 @@ public class Robot extends IterativeRobot {
 	}
 
 	public void closeAndIntake(){
-		if (timer.get() < 1){
+		if (timer.get() < 1.5){
 		air.s_sol4.set(false);
 		intake.intakeIn();
 		}
-		else if (timer.get() > 1) {
+		else if (timer.get() > 1.5) {
 			nextStep();
 		}
 	}
@@ -1490,5 +1533,10 @@ public class Robot extends IterativeRobot {
 			//move to next step
 		}
 	}
+	
+	public void highSpeedRampDriveTo(){
+		
+	}
+	
 	
 }
