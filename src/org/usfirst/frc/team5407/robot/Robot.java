@@ -171,6 +171,7 @@ public class Robot extends IterativeRobot {
 
 		air.s_sol6.set(true);
 
+
 		// resets both drive encoders to zero
 		drivetrain.frontLeftDriveMotor.setSelectedSensorPosition(variables.encoderpos, 0, 10);
 		drivetrain.frontRightDriveMotor.setSelectedSensorPosition(variables.encoderpos, 0, 10);
@@ -190,7 +191,6 @@ public class Robot extends IterativeRobot {
 	}
 
 	public void autonomousPeriodic() {
-		
 
 
 		//getGameData();
@@ -305,13 +305,13 @@ public class Robot extends IterativeRobot {
 			winch.mot_Winch.set(0.0);
 		}
 
-		if (inputs.getIsDualSpeedShifterButtonPressed() == true && matchtimer.get() < 90){
-			air.s_sol7.set(false);
-		} else air.s_sol7.set(true);
-		
-		if (matchtimer.get() > 90){
-			air.s_sol7.set(false);
-		}
+//		if (inputs.getIsDualSpeedShifterButtonPressed() == true && matchtimer.get() < 90){
+//			air.s_sol7.set(false);
+//		} else air.s_sol7.set(true);
+//		
+//		if (matchtimer.get() > 90){
+//			air.s_sol7.set(false);
+//		}
 		
 		/*
 		if (matchtimer.get() > 10){
@@ -1173,7 +1173,7 @@ public class Robot extends IterativeRobot {
 		System.out.println(autonStep);
 		
 		if (autonStep == 1) {
-			air.s_DSShifter.set(true);
+		//	air.s_DSShifter.set(true);
 			driveTo(12, 1, 1);
 		} 
 		else if (autonStep == 2){

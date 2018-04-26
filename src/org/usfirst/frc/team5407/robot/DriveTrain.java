@@ -26,6 +26,9 @@ public class DriveTrain {
 		// Both front motors have the encoders attached 
 		frontLeftDriveMotor = new WPI_TalonSRX(11); 		/* device IDs here (1 of 2) */
 		frontRightDriveMotor = new WPI_TalonSRX(16); 	
+		
+		frontLeftDriveMotor.configOpenloopRamp(0, 20);
+		frontRightDriveMotor.configOpenloopRamp(0, 20);
 
 		backLeftDriveSlave = new WPI_VictorSPX(17);
 		backRightDriveSlave = new WPI_VictorSPX(18);
