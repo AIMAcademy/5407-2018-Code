@@ -1246,6 +1246,39 @@ public class Robot extends IterativeRobot {
 			eject();
 		}  
 	}
+
+	public void centerRightDoubleTwoPointO(){
+	System.out.println(autonStep);
+		
+		if (autonStep == 1) {
+		//	air.s_DSShifter.set(true);
+			driveTo(12, 1, 1);
+		} 
+		else if (autonStep == 2){
+			liftTo(autonLiftStart,1);
+		}
+		else if (autonStep == 3) {
+			turnTo(50, 0.65);
+		} 
+		else if (autonStep == 4) {
+			driveTo(55, .90, 4);
+		} 
+		else if (autonStep == 5) {
+			turnTo(65, -0.65);
+		} 
+		else if (autonStep == 6){
+			driveTo(78,1, 2);
+		} 
+		else if (autonStep == 7){
+			if (ownership0 == "R"){
+				eject();	
+			}
+		}else if (autonStep == 8){
+			turnTo(50, .90);
+		}else if (autonStep == 9){
+			driveTo(36, .90, 4);
+		}
+	}
 	
 	public void centerLeftDouble(){
 		if (autonStep == 1) {
