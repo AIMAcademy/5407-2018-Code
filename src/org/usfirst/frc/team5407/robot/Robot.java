@@ -78,7 +78,7 @@ public class Robot extends IterativeRobot {
 	
 	Timer matchtimer = new Timer();
 	Timer ledtimer = new Timer();
-	boolean b_led = true;
+	boolean b_led;
 	
 	// variables for PID turning for auto
 	double turnPIDError;
@@ -305,13 +305,17 @@ public class Robot extends IterativeRobot {
 			winch.mot_Winch.set(0.0);
 		}
 
-//		if (inputs.getIsDualSpeedShifterButtonPressed() == true && matchtimer.get() < 90){
-//			air.s_sol7.set(false);
-//		} else air.s_sol7.set(true);
-//		
-//		if (matchtimer.get() > 90){
-//			air.s_sol7.set(false);
-//		}
+		if (inputs.getIsDualSpeedShifterButtonPressed() == true && matchtimer.get() < 90){
+			b_led = false;
+			air.s_sol7.set(b_led);
+		} else if (inputs.getIsDualSpeedShifterButtonPressed() == false && matchtimer.get() < 90){
+			b_led = true;
+			air.s_sol7.set(true);
+		}
+		if (matchtimer.get() > 90){
+			b_led  = false;
+			air.s_sol7.set(b_led);
+		}
 		
 		/*
 		if (matchtimer.get() > 10){
@@ -1194,12 +1198,13 @@ public class Robot extends IterativeRobot {
 		else if (autonStep == 7){
 			if (ownership0 == "R"){
 				eject();
-				air.s_DSShifter.set(true);
+				
 			}
 		}
 		//start of second cube routine 
 		// Drive backwards away from switch 
 		else if (autonStep == 8){
+			air.s_DSShifter.set(false);
 			driveTo(36, -1, 2);
 		}
 		// Goes to lowest arm height 
@@ -1208,11 +1213,12 @@ public class Robot extends IterativeRobot {
 		}
 		// Turns towards the cube pile
 		else if (autonStep == 10){
-			turnTo(25, -1);
+			air.s_DSShifter.set(true);
+			turnTo(35, -1);
 		}
 		// Drives towards cube pile
 		else if (autonStep == 11){
-			driveTo(70, 1, 2);
+			driveTo(70, .60, 2);
 			intake();
 		}
 		else if (autonStep == 12){
@@ -1221,7 +1227,7 @@ public class Robot extends IterativeRobot {
 		// Drives backwards away from cubes
 		else if (autonStep == 13){
 			//closeAndIntake();
-			driveTo(70, -1, 1);
+			driveTo(70, -.80, 1);
 		}
 		// Turns towards switch 
 		else if (autonStep == 14){
@@ -1229,11 +1235,11 @@ public class Robot extends IterativeRobot {
 			liftTo(autonLiftStart, 1);
 		}
 		else if (autonStep == 15){
-			turnTo(25, 1);
+			turnTo(35, 1);
 		}
 		// Drives towards switch
 		else if (autonStep == 16){
-			driveTo(74, 1, 2);
+			driveTo(74, .80, 2);
 		}
 		// Ejects cube into Switch
 		else if (autonStep == 17){
