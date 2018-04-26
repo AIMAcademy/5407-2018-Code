@@ -82,6 +82,7 @@ public class DriveTrain {
 	}
 	
 	public void autonDrive(double speed, double rotate){
+		
 		drive.arcadeDrive(- root(speed), rotate);
 	}
 	
@@ -93,4 +94,6 @@ public class DriveTrain {
 			return -1*Math.sqrt(Math.abs(num));
 		}
 	}
+
+
 }

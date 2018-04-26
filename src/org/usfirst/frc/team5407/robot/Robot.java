@@ -9,7 +9,6 @@ package org.usfirst.frc.team5407.robot;
 
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 
-import edu.wpi.first.wpilibj.Counter;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -1313,13 +1312,6 @@ public class Robot extends IterativeRobot {
 	}
 	
 	public void testAuton() {
-
-		if (ownership0 == "R"){
-			centerRightDouble();
-		}else {
-			centerLeftDouble();
-		}
-			
 		
 	}
 
@@ -1369,8 +1361,7 @@ public class Robot extends IterativeRobot {
 		if (timer.get() > time){
 			drivetrain.autonDrive(0,0);
 			nextStep();
-		}
-		else{
+		}else{
 			if ((drivetrain.getAveragePosition() > (distance - 10) && drivetrain.getAveragePosition() < (distance + 10))){
 				drivetrain.autonDrive(0,0);
 				nextStep();
@@ -1533,10 +1524,6 @@ public class Robot extends IterativeRobot {
 			//move to next step
 		}
 	}
-	
-	public void highSpeedRampDriveTo(){
-		
-	}
-	
+
 	
 }
