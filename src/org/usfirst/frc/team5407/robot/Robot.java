@@ -427,7 +427,7 @@ public class Robot extends IterativeRobot {
 		} 
 		else if (startSelected == centerStartThenRight) {
 			//driveBaselineCenterThenRight();
-			centerRightDouble();
+			centerRightDoubleTwoPointO();
 		} 
 		else if (startSelected == centerStartThenLeft) {
 			centerLeftDouble();
@@ -1174,8 +1174,6 @@ public class Robot extends IterativeRobot {
 	
 	public void centerRightDouble(){
 		
-		System.out.println(autonStep);
-		
 		if (autonStep == 1) {
 		//	air.s_DSShifter.set(true);
 			driveTo(12, 1, 1);
@@ -1264,22 +1262,51 @@ public class Robot extends IterativeRobot {
 			driveTo(55, .90, 4);
 		} 
 		else if (autonStep == 5) {
-			turnTo(65, -0.65);
+			turnTo(55, -0.65);
 		} 
 		else if (autonStep == 6){
 			driveTo(78,1, 2);
-		} 
-		else if (autonStep == 7){
+		}else if (autonStep == 7){
 			if (ownership0 == "R"){
 				eject();	
+				drop();
 			}
+			// Start of two cube
+			// Turn towards fence and shifts to high gear
 		}else if (autonStep == 8){
-			turnTo(50, .90);
+			air.s_DSShifter.set(true);
+			turnTo(30, .90);
+			// Drives backwards
 		}else if (autonStep == 9){
-			driveTo(36, .90, 4);
+			liftAndDrive(minLiftHeight, 1, 12, -.50, 2);
+			
+			// Turn towards cubes
+		}else if (autonStep == 10){
+			liftAndTurn(minLiftHeight, 1,70, -.60);
+			// Drives towards the cubes and intakes
+		}else if (autonStep == 11){
+			driveTo(35, 1, 2);
+			intake();
+			// Closes and intakes
+		}else if (autonStep == 12){
+			closeAndIntake();
+			// Drives away from cubes
+		}else if (autonStep == 13){
+			driveTo(35, -1, 2);
+			// Turn towards switch
+		}else if (autonStep ==14){
+			turnTo(40, 1);
+			// Drive to switch
+		}else if (autonStep == 15){
+			driveTo(36, 1, 1);
+			// Eject then drop cube
+		}else if (autonStep ==16){
+			eject();	
+			drop();
 		}
+		
 	}
-	
+
 	public void centerLeftDouble(){
 		if (autonStep == 1) {
 			//air.s_DSShifter.set(true);
@@ -1316,7 +1343,7 @@ public class Robot extends IterativeRobot {
 		}
 		// Turns towards the cube pile
 		else if (autonStep == 10){
-			turnTo(35, 1);
+			turnTo(45, 1);
 		}
 		// Drives towards cube pile
 		else if (autonStep == 11){
