@@ -1,5 +1,7 @@
 package org.usfirst.frc.team5407.robot;
 
+
+// Import WPI and other helper classes here
 import edu.wpi.first.wpilibj.Solenoid;
 
 public class Air {
@@ -13,6 +15,7 @@ public class Air {
 	Solenoid s_sol6; //Auto open intake
 	Solenoid s_sol7; //LED lights drive and climb
 	
+	// Make an int with the solenoid port number to be called in robot when you declare what port everything is in 
 	public Air(int i_sol0, int i_sol1, int i_sol2, int i_sol3, int i_sol4, int i_sol5, int i_sol6, int i_sol7) {
 		// Calls solenoids name, creates solenoid and gives them a port number
 		s_DSShifter = new Solenoid(i_sol0);

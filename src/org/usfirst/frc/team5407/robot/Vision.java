@@ -1,5 +1,6 @@
 package org.usfirst.frc.team5407.robot;
 
+// Call-import wpi and other helper classes such as cross the roads here
 import edu.wpi.cscore.UsbCamera;
 import edu.wpi.cscore.VideoMode;
 import edu.wpi.cscore.VideoMode.PixelFormat;
@@ -8,6 +9,7 @@ import edu.wpi.first.wpilibj.SerialPort;
 
 public class Vision {
 	
+	// Brings in inputs
 	Inputs inputs;
 
 	// JeVois Variables
@@ -17,6 +19,7 @@ public class Vision {
 
 	public ICameraSettings _currentCameraSettings;
 	
+	// This initiates the camera and specifices the parameters needed  
 	public Vision() {
 		// BEGIN JeVois Code //
 		// Get default camera settings
@@ -82,12 +85,13 @@ public class Vision {
 
 	}
 	
-	
+	// This function sets the Jevois' camera mode 
 	public void setJeVoisVideoMode() {
 		jevoisCam.setVideoMode(PixelFormat.kYUYV, _currentCameraSettings.getWidth(),
 				_currentCameraSettings.getHeight(), _currentCameraSettings.getFps());
 	}
 	
+	// Sets the Jevois config parameters 
 	public void setJeVoisConfigParameters() {
 		if (jevois == null) return;
 			jevois.writeString("setcam brightness " + _currentCameraSettings.getBrightness() + "\n");
@@ -147,6 +151,7 @@ public class Vision {
 		// needs additional settings - stopping here for testing purposes
 	}
 
+	// This class implements the interface camera settings, gets the wanted parameters, and holds the  
 	public class CameraSettings implements ICameraSettings {
 		private int width;
 		private int height;

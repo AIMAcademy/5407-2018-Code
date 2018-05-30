@@ -1,5 +1,6 @@
 package org.usfirst.frc.team5407.robot;
 
+// Call-import wpi and other helper classes here
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
@@ -58,11 +59,14 @@ public class DriveTrain {
 		//negative 1 added for invert sensor, needs testing!!!
 	}
 	
+	// Just gets both values, adds them and divides them by 2
 	public double getAveragePosition(){
 		
 		return ((getRightQuadPosition() + getLeftQuadPosition())/2);
 	}
 	
+	
+	// We never used this for anything but it was a test for velocity reading and to make it readable convert to real world units, which in this case are feet per second
 	public double getAverageVelocity(){
 		//gets each sides velocity
 		leftSideVeloctiy = frontLeftDriveMotor.getSelectedSensorVelocity(0);
@@ -75,20 +79,26 @@ public class DriveTrain {
 		return (getAverageVelocity);
 	}
 	
+	
+	// Resets the encoder values to 0 and the 10 is for millisecond delay
 	public void resetEncoders() {
 		this.frontLeftDriveMotor.getSensorCollection().setQuadraturePosition(0, 10);
 		this.frontRightDriveMotor.getSensorCollection().setQuadraturePosition(0, 10);
 	}
 
+	
+	// Stops both drive motors
 	public void stop(){
 		drive.arcadeDrive(0, 0);
 	}
 	
+	// The WPI drive is square rooted so this fuction makes it possible to just type in the power wanted without doing initial math
 	public void autonDrive(double speed, double rotate){
 		
 		drive.arcadeDrive(- root(speed), rotate);
 	}
 	
+	// To help with the autonDrive function above a root function was needed to do the math 
 	public double root(double num){
 		if (num >= 0){
 			return Math.sqrt(num);

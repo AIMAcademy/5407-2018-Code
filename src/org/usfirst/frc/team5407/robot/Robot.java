@@ -7,6 +7,7 @@
 
 package org.usfirst.frc.team5407.robot;
 
+// Call-import wpi and other helper classes such as cross the roads here
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 
 import edu.wpi.first.wpilibj.DriverStation;
@@ -139,10 +140,13 @@ public class Robot extends IterativeRobot {
 
 	public void robotPeriodic() {}
 
+	// What happened before the robot is initialized 
 	public void disabledInit() {
+		// Sets the solenoid state we want
 		air.s_sol2.set(true);
 	}
 
+	// When the robot is disabled, below is what it does
 	public void disabledPeriodic() {
 
 		autonChooser = AutonChooser.getSelected();
@@ -151,6 +155,7 @@ public class Robot extends IterativeRobot {
 		startSelected = StartChooser.getSelected();
 		SmartDashboard.putString("Robot Start Position is ", startSelected);
 		
+		// Sets the solenoid state we want
 		air.s_sol2.set(true);
 		
 		if (air.s_DSShifter.get() == false){
@@ -169,6 +174,7 @@ public class Robot extends IterativeRobot {
 		drivetrain.frontRightDriveMotor.setNeutralMode(NeutralMode.Brake);
 		drivetrain.backRightDriveSlave.setNeutralMode(NeutralMode.Brake);
 
+		// Set starting state of solenoids for auto
 		air.s_sol6.set(true);
 
 
@@ -182,11 +188,14 @@ public class Robot extends IterativeRobot {
 		// Reset encoders
 		drivetrain.resetEncoders();
 
+		// Sets initial value of autonStep to 1 
 		autonStep = 1;
 
+		// Resets and starts auton timer
 		timer.reset();
 		timer.start();
 
+		// Gets game data from fms
 		getGameData();
 	}
 
@@ -248,8 +257,10 @@ public class Robot extends IterativeRobot {
 		// Zero and initialize all inputs and sensors for teleop
 		air.initializeAir();
 		
+		// Starts a match timer to let us know what the aprox time is 
 		matchtimer.start();
 
+		// Sets the neutral mode of the drive speed controllers which is either brake mode or coast mode
 		drivetrain.frontLeftDriveMotor.setNeutralMode(NeutralMode.Coast);
 		drivetrain.frontRightDriveMotor.setNeutralMode(NeutralMode.Coast);		
 		drivetrain.backLeftDriveSlave.setNeutralMode(NeutralMode.Coast);
@@ -269,6 +280,7 @@ public class Robot extends IterativeRobot {
 	}
 
 	public void teleopPeriodic() {
+		// This calls the function in inputs that reads the joystick inputs
 		inputs.ReadValues();
 
 		// Camera toggle between PassThrough and ObjectTracker
@@ -290,6 +302,7 @@ public class Robot extends IterativeRobot {
 		air.s_sol1.set(inputs.getIsSolenoidThreeButtonPressed()); //
 		air.s_sol5.set(inputs.getIsSolenoidFiveButtonPresses()); //
 
+		// If else statement opens the solenoids on the claw
 		if (inputs.getIsSolenoidTwoButtonPressed() && inputs.getIsemJoyButtonPressed()) {
 			air.s_sol2.set(!inputs.getIsSolenoidTwoButtonPressed()); // release
 			// arm
@@ -297,6 +310,7 @@ public class Robot extends IterativeRobot {
 			air.s_sol2.set(true);
 		}
 
+		// If else statement for controlling the lift winch
 		if (inputs.getIsemJoyButtonPressed() && inputs.getWinchSpeed() < 0) {
 			winch.mot_Winch.set(inputs.getWinchSpeed());
 		} else if (inputs.getIsCameraButtonPressed() && inputs.getIsDualSpeedShifterButtonPressed()) {
@@ -305,6 +319,7 @@ public class Robot extends IterativeRobot {
 			winch.mot_Winch.set(0.0);
 		}
 
+		// Expiremental led light strip if else statement  
 		if (inputs.getIsDualSpeedShifterButtonPressed() == true && matchtimer.get() < 90){
 			b_led = false;
 			air.s_sol7.set(b_led);
@@ -317,27 +332,7 @@ public class Robot extends IterativeRobot {
 			air.s_sol7.set(b_led);
 		}
 		
-		/*
-		if (matchtimer.get() > 10){
-			ledtimer.start();
-			if (ledtimer.get() > 3){
-				air.s_sol7.set(!air.s_sol7.get());
-				ledtimer.reset();
-			}
-			*/
-		
-		/*
-		if (matchtimer.get() > 11) {
-			ledtimer.start();
-			if (ledtimer.get() > 3){
-				b_led = !b_led;
-				air.s_sol7.set(b_led);
-				ledtimer.reset();
-			}
-				 }
-		*/
-		
-				 
+		// If else statement for intake motors
 		if (inputs.getIsIntakeButtonPressed()) {
 			intake.intakeIn();
 		} else if (inputs.getIsIntakeOutButtonPressed()) {
@@ -347,8 +342,11 @@ public class Robot extends IterativeRobot {
 			intake.intakeStop();
 		}
 
+		// Sets the lifts dart based on the operators y input and its reversed
 		lift.mot_liftDart.set(inputs.getLiftSpeed());
 
+		
+		// This top part was for auto shifting be was removed for relibilty reasons 
 //		if (drivetrain.getAverageVelocity() > 1200){
 //			timer.reset();
 //			timer.start();
@@ -414,8 +412,9 @@ public class Robot extends IterativeRobot {
 		SmartDashboard.updateValues();
 	}
 
-	// Called during periodic, if it sees jevois it tells you how long it took
-	// to connect and if it does not connect it tries to reconnect
+
+	
+	// Below are the functions that you put the individual autons into  
 
 	//subtract 5 from any angle you want to go to
 
@@ -639,6 +638,9 @@ public class Robot extends IterativeRobot {
 			aroundTheBack();
 		}
 	}
+	
+	
+	// Individual autons with all their steps 
 	
 	// When no Auton is called this one will be run, we just sit there
 	public void DoNothingAuton() {
@@ -1382,6 +1384,8 @@ public class Robot extends IterativeRobot {
 	}
 
 	//Auton Steps to create autos
+	
+	// This function gets and separates game data and then prints it out
 	public void getGameData() {
 		ownership = ds.getGameSpecificMessage();
 
@@ -1405,7 +1409,7 @@ public class Robot extends IterativeRobot {
 		}
 	}
 
-	// steps through the auton counter, stops drive, and resets all sensors
+	// Next step goes through the auton counter, stops drive, and resets all sensors
 	public void nextStep() {
 		drivetrain.stop();
 		sensors.ahrs.reset();
@@ -1474,6 +1478,7 @@ public class Robot extends IterativeRobot {
 
 	}	
 
+	// Function straightens out the robots angle 
 	public void straightenOut(double angle){
 		if (timer.get() < 0.25){
 			drivetrain.autonDrive(0, (angle -(sensors.getPresentAngleNAVX()))* 0.038) ;
@@ -1483,6 +1488,7 @@ public class Robot extends IterativeRobot {
 		}
 	}
 
+	// This function implements dumb pid with no feedback while moving the lift
 	public void liftTo(double height, double speed) {
 
 		System.out.println(sensors.analogLiftPot.get());
@@ -1509,6 +1515,7 @@ public class Robot extends IterativeRobot {
 		}
 	}
 
+	
 	public void liftPlus(double height, double speed) {
 
 
@@ -1534,16 +1541,19 @@ public class Robot extends IterativeRobot {
 		}
 	}
 
+	// This function moves the lift and drives for auto
 	public void liftAndDrive(double height, double liftSpeed, double distance, double driveSpeed, double time){
 		liftPlus(height, liftSpeed);
 		driveTo(distance, driveSpeed, time);
 	}
 
+	// This function moves the lift and turns for auto 
 	public void liftAndTurn(double height, double liftSpeed, double angle, double turnSpeed){
 		liftPlus(height, liftSpeed);
 		turnTo(angle, turnSpeed);
 	}
 
+	// This function is used to eject the cube
 	public void eject() {
 		if (timer.get() < 1) {
 			intake.mot_leftSideIntake.set(0.6);
@@ -1554,11 +1564,13 @@ public class Robot extends IterativeRobot {
 		}
 	}
 
+	// This function is used to intake the cube
 	public void intake() {
 			intake.intakeIn();
 			air.s_sol4.set(true);
 	}
 	
+	// This function opens the intake
 	public void drop() {
 		if (timer.get() <0.5){
 			air.s_sol4.set(true);
@@ -1569,6 +1581,7 @@ public class Robot extends IterativeRobot {
 		}
 	}
 
+	// This function closes the inake and then intakes it
 	public void closeAndIntake(){
 		if (timer.get() < 1.5){
 		air.s_sol4.set(false);
@@ -1579,6 +1592,7 @@ public class Robot extends IterativeRobot {
 		}
 	}
 	
+	// This function was an experimental use of pid for turning and will be worked on over the off season and was never used in competition   
 	public void turnToPID(double targetAngle){
 		turnPIDError = targetAngle - sensors.ahrs.getAngle();
 		if (turnPIDError > turnPIDthreshold){
