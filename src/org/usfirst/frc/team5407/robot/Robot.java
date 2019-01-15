@@ -7,6 +7,7 @@
 
 package org.usfirst.frc.team5407.robot;
 
+// Call-import wpi and other helper classes such as cross the roads here
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 
 import edu.wpi.first.wpilibj.DriverStation;
@@ -14,7 +15,6 @@ import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.PowerDistributionPanel;
 
 /**
  * This program contains FRC team 5407's code for the 2018 competition season
@@ -76,6 +76,14 @@ public class Robot extends IterativeRobot {
 	final double distanceAdjustment = 1.376;  //REMOVE THE 1.042 when we switch to the real robot
 	int autonStep = 1;
 	double turnDirection;
+	
+	Timer matchtimer = new Timer();
+	Timer ledtimer = new Timer();
+	boolean b_led;
+	
+	// variables for PID turning for auto
+	double turnPIDError;
+	double turnPIDthreshold = 3;
 
 	@Override
 	public void robotInit() {
@@ -96,7 +104,7 @@ public class Robot extends IterativeRobot {
 		vision.setJeVoisVideoMode();
 
 		// Calls 4 solenoids in the air class
-		air = new Air(0, 1, 2, 3, 4, 5, 6);
+		air = new Air(0, 1, 2, 3, 4, 5, 6, 7);
 
 		AutonChooser = new SendableChooser<String>();
 		AutonChooser.addDefault("Do Nothing!!", doNothingAuton);
@@ -126,14 +134,19 @@ public class Robot extends IterativeRobot {
 		// SmartDashboard.updateValues();
 		
 		air.s_sol2.set(true);
+		
+		ownership = null; 
 	}
 
 	public void robotPeriodic() {}
 
+	// What happened before the robot is initialized 
 	public void disabledInit() {
+		// Sets the solenoid state we want
 		air.s_sol2.set(true);
 	}
 
+	// When the robot is disabled, below is what it does
 	public void disabledPeriodic() {
 
 		autonChooser = AutonChooser.getSelected();
@@ -142,7 +155,15 @@ public class Robot extends IterativeRobot {
 		startSelected = StartChooser.getSelected();
 		SmartDashboard.putString("Robot Start Position is ", startSelected);
 		
+		// Sets the solenoid state we want
 		air.s_sol2.set(true);
+		
+		if (air.s_DSShifter.get() == false){
+			air.s_sol7.set(true);
+		}
+		else {
+			air.s_sol7.set(false);
+		}
 	}
 
 	public void autonomousInit() {
@@ -153,7 +174,9 @@ public class Robot extends IterativeRobot {
 		drivetrain.frontRightDriveMotor.setNeutralMode(NeutralMode.Brake);
 		drivetrain.backRightDriveSlave.setNeutralMode(NeutralMode.Brake);
 
+		// Set starting state of solenoids for auto
 		air.s_sol6.set(true);
+
 
 		// resets both drive encoders to zero
 		drivetrain.frontLeftDriveMotor.setSelectedSensorPosition(variables.encoderpos, 0, 10);
@@ -165,16 +188,18 @@ public class Robot extends IterativeRobot {
 		// Reset encoders
 		drivetrain.resetEncoders();
 
+		// Sets initial value of autonStep to 1 
 		autonStep = 1;
 
+		// Resets and starts auton timer
 		timer.reset();
 		timer.start();
 
+		// Gets game data from fms
 		getGameData();
 	}
 
 	public void autonomousPeriodic() {
-		
 
 
 		//getGameData();
@@ -231,7 +256,11 @@ public class Robot extends IterativeRobot {
 	public void teleopInit() {
 		// Zero and initialize all inputs and sensors for teleop
 		air.initializeAir();
+		
+		// Starts a match timer to let us know what the aprox time is 
+		matchtimer.start();
 
+		// Sets the neutral mode of the drive speed controllers which is either brake mode or coast mode
 		drivetrain.frontLeftDriveMotor.setNeutralMode(NeutralMode.Coast);
 		drivetrain.frontRightDriveMotor.setNeutralMode(NeutralMode.Coast);		
 		drivetrain.backLeftDriveSlave.setNeutralMode(NeutralMode.Coast);
@@ -251,6 +280,7 @@ public class Robot extends IterativeRobot {
 	}
 
 	public void teleopPeriodic() {
+		// This calls the function in inputs that reads the joystick inputs
 		inputs.ReadValues();
 
 		// Camera toggle between PassThrough and ObjectTracker
@@ -272,6 +302,7 @@ public class Robot extends IterativeRobot {
 		air.s_sol1.set(inputs.getIsSolenoidThreeButtonPressed()); //
 		air.s_sol5.set(inputs.getIsSolenoidFiveButtonPresses()); //
 
+		// If else statement opens the solenoids on the claw
 		if (inputs.getIsSolenoidTwoButtonPressed() && inputs.getIsemJoyButtonPressed()) {
 			air.s_sol2.set(!inputs.getIsSolenoidTwoButtonPressed()); // release
 			// arm
@@ -279,6 +310,7 @@ public class Robot extends IterativeRobot {
 			air.s_sol2.set(true);
 		}
 
+		// If else statement for controlling the lift winch
 		if (inputs.getIsemJoyButtonPressed() && inputs.getWinchSpeed() < 0) {
 			winch.mot_Winch.set(inputs.getWinchSpeed());
 		} else if (inputs.getIsCameraButtonPressed() && inputs.getIsDualSpeedShifterButtonPressed()) {
@@ -287,6 +319,20 @@ public class Robot extends IterativeRobot {
 			winch.mot_Winch.set(0.0);
 		}
 
+		// Expiremental led light strip if else statement  
+		if (inputs.getIsDualSpeedShifterButtonPressed() == true && matchtimer.get() < 90){
+			b_led = false;
+			air.s_sol7.set(b_led);
+		} else if (inputs.getIsDualSpeedShifterButtonPressed() == false && matchtimer.get() < 90){
+			b_led = true;
+			air.s_sol7.set(true);
+		}
+		if (matchtimer.get() > 90){
+			b_led  = false;
+			air.s_sol7.set(b_led);
+		}
+		
+		// If else statement for intake motors
 		if (inputs.getIsIntakeButtonPressed()) {
 			intake.intakeIn();
 		} else if (inputs.getIsIntakeOutButtonPressed()) {
@@ -296,8 +342,11 @@ public class Robot extends IterativeRobot {
 			intake.intakeStop();
 		}
 
+		// Sets the lifts dart based on the operators y input and its reversed
 		lift.mot_liftDart.set(inputs.getLiftSpeed());
 
+		
+		// This top part was for auto shifting be was removed for relibilty reasons 
 //		if (drivetrain.getAverageVelocity() > 1200){
 //			timer.reset();
 //			timer.start();
@@ -313,6 +362,11 @@ public class Robot extends IterativeRobot {
 				air.s_DSShifter.set(true);
 			}
 		
+		//Test Button
+			if (inputs.getIsTestJoyButtonPressed()){
+				turnToPID(90);
+			}
+			
 
 
 		// Getting the encoder values for the drivetrain and cooking and
@@ -358,12 +412,11 @@ public class Robot extends IterativeRobot {
 		SmartDashboard.updateValues();
 	}
 
-	// Called during periodic, if it sees jevois it tells you how long it took
-	// to connect and if it does not connect it tries to reconnect
 
+	
+	// Below are the functions that you put the individual autons into  
 
 	//subtract 5 from any angle you want to go to
-
 
 	// choses which version of drive= -1;Baseline to use based on the starting position
 	public void driveBaseline() {
@@ -373,7 +426,7 @@ public class Robot extends IterativeRobot {
 		} 
 		else if (startSelected == centerStartThenRight) {
 			//driveBaselineCenterThenRight();
-			centerRightDouble();
+			centerRightDoubleTwoPointO();
 		} 
 		else if (startSelected == centerStartThenLeft) {
 			centerLeftDouble();
@@ -586,8 +639,10 @@ public class Robot extends IterativeRobot {
 		}
 	}
 	
+	
+	// Individual autons with all their steps 
+	
 	// When no Auton is called this one will be run, we just sit there
-
 	public void DoNothingAuton() {
 		if (autonChooser == doNothingAuton) {
 			// Do nothing
@@ -638,6 +693,43 @@ public class Robot extends IterativeRobot {
 		}
 	}
 
+	public void driveBaselineSidesFast(){
+
+		 
+		if (autonStep == 1){
+			liftAndDrive(autonLiftStart, 1, 150, 1, 5);
+		}
+		
+
+		else if (autonStep == 2){
+			if ((startSelected == leftSideStart && ownership0 == "L")
+					|| (startSelected == rightSideStart && ownership0 == "R")){
+				if (startSelected == leftSideStart){
+					turnTo(85, 0.80);
+				}
+				else {
+					turnTo(85, -0.80);
+				}
+			}
+			
+			
+		}
+		else if (autonStep == 3){
+			
+			if ((startSelected == leftSideStart && ownership0 == "L")
+					|| (startSelected == rightSideStart && ownership0 == "R")){
+				driveTo(30, 0.90, 2);
+			}
+			
+		}
+		else if (autonStep == 4){
+			if ((startSelected == leftSideStart && ownership0 == "L")
+					|| (startSelected == rightSideStart && ownership0 == "R")){
+				eject();
+			}
+		}
+	}
+	
 	public void driveBaselineCenterThenRight() {
 
 
@@ -667,6 +759,31 @@ public class Robot extends IterativeRobot {
 		}
 	}
 
+	public void driveBaselineCenterThenRightFast(){
+
+		
+		if (autonStep == 1){
+			liftAndDrive(autonLiftStart, 1, 12, 1, 1);
+		}
+		else if (autonStep == 2) {
+			turnTo(50, 0.65);
+		} 
+		else if (autonStep == 3) {
+			driveTo(48, .90, 4);
+		} 
+		else if (autonStep == 4) {
+			turnTo(65, -0.65);
+		} 
+		else if (autonStep == 5){
+			driveTo(78,1, 2);
+		} 
+		else if (autonStep == 6){
+			if (ownership0 == "R"){
+				eject();
+			}
+		}
+	}
+	
 	public void driveBaselineCenterThenLeft() {
 
 		
@@ -695,6 +812,30 @@ public class Robot extends IterativeRobot {
 		}
 	}
 
+	public void driveBaselineCenterThenLeftFast(){
+		
+		if (autonStep == 1){
+			liftAndDrive(autonLiftStart, 1, 12, 1, 1);
+		}
+		else if (autonStep == 2) {
+			turnTo(50, -0.65);
+		} 
+		else if (autonStep == 3) {
+			driveTo(90, 0.90, 4);
+		} 
+		else if (autonStep == 4) {
+			turnTo(40, 0.65);
+		} 
+		else if (autonStep == 5){
+			driveTo(55,1, 2);
+		} 
+		else if (autonStep == 6){
+			if (ownership0 == "L"){
+				eject();
+			}
+		}
+	}
+	
 	public void aroundTheBack(){
 
 		if (autonStep == 1) {
@@ -730,6 +871,38 @@ public class Robot extends IterativeRobot {
 		}
 	}	
 
+	public void aroundTheBackFast(){
+
+		if (autonStep == 1){
+			liftAndDrive(autonLiftStart, 1, 212, 1, 5);
+		}
+		else if (autonStep == 2){
+			if (startSelected == leftSideStart){
+				turnTo(70,0.80);
+			}
+			else {
+				turnTo(85,-0.80);
+			}
+		}
+		else if (autonStep == 3){
+			driveTo(168, 0.90, 6);
+		}
+		else if (autonStep == 4){
+			if (startSelected == leftSideStart){
+				turnTo(85,0.80);
+			}
+			else {
+				turnTo(85,-0.80);
+			}
+		}
+		else if (autonStep == 5){
+			driveTo(30, .90, 1.5);
+		}
+		else if (autonStep == 6){
+			eject();
+		}
+	}
+	
 	public void closeScaleLeft(){
 		if (startSelected == leftSideStart){
 			turnDirection = 1;
@@ -754,6 +927,28 @@ public class Robot extends IterativeRobot {
 		}
 	}
 
+	public void closeScaleLeftFast(){
+		if (startSelected == leftSideStart){
+			turnDirection = 1;
+		}
+		else {
+			turnDirection = -1;
+		}
+		
+
+		if (autonStep == 1){
+			liftAndDrive(autonLiftStart, 1, 240, 1, 6);
+		}
+		else if (autonStep == 2){
+			liftAndDrive(maxLiftHeight, 1, 50, 1, 3);
+		}
+		else if (autonStep == 3){
+			turnTo(60, turnDirection * .75); //85
+		}
+		else if (autonStep == 4){
+			eject();
+		}
+	}
 	
 	// NEEDs to be changed for right side left side version rn
 	public void closeScaleRight(){
@@ -785,6 +980,41 @@ public class Robot extends IterativeRobot {
 			liftTo(minLiftHeight, 1);
 		}
 		else if (autonStep == 8){
+			turnTo(45, 1);
+		}
+	}
+
+	public void closeScaleRightFast(){
+		if (startSelected == leftSideStart){
+			turnDirection = 1;
+		}
+		else {
+			turnDirection = -1;
+		}
+		
+		
+
+		if (autonStep == 1){
+			liftAndDrive(autonLiftStart, 1, 240, 1, 6);
+		}
+		else if (autonStep == 2){
+			liftAndDrive(maxLiftHeight, 1, 44, 1, 3);
+		}
+		else if (autonStep == 3){
+			turnTo(70, turnDirection * .75); //85
+		}
+		else if (autonStep == 4){
+			eject();
+		}
+		
+		
+		else if (autonStep == 5){
+			driveTo(20, -1, 2);
+		}
+		else if (autonStep == 6){
+			liftTo(minLiftHeight, 1);
+		}
+		else if (autonStep == 7){
 			turnTo(45, 1);
 		}
 	}
@@ -823,6 +1053,44 @@ public class Robot extends IterativeRobot {
 			driveTo(30, -1, 1);
 		}
 		else if (autonStep == 10){
+			liftTo(autonLiftStart, 1);
+		}
+	}
+	
+	public void farScaleLeftStartFast(){
+
+		if (startSelected == leftSideStart){
+			turnDirection = 1;
+		}
+		
+	
+		if (autonStep ==1){
+			liftAndDrive(autonLiftStart, 1, 210, 1, 5);
+		}
+		else if (autonStep == 2){
+			turnTo(75, turnDirection * .80);
+		}
+		else if (autonStep == 3){
+			driveTo(138, 1, 5);
+		}
+		else if(autonStep == 4){
+			liftAndDrive(maxLiftHeight, 1, 50, 1, 5);
+		}
+		else if (autonStep == 5){
+			turnTo(95, turnDirection * -.85);
+		}
+		else if (autonStep == 6){
+			driveTo(15, .80, 1);
+		}
+		else if (autonStep == 7){
+			drop();
+		}
+		
+		
+		else if (autonStep == 8){
+			driveTo(30, -1, 1);
+		}
+		else if (autonStep == 9){
 			liftTo(autonLiftStart, 1);
 		}
 	}
@@ -867,13 +1135,49 @@ public class Robot extends IterativeRobot {
 		}
 	}
 	
+	public void farScaleRightStartFast(){
+
+		if (startSelected == leftSideStart){
+			turnDirection = 1;
+		}
+		else {
+			turnDirection = -1;
+		}
+		
+		
+		
+		if (autonStep == 1){
+			liftAndDrive(autonLiftStart, 1, 205, 1, 5);
+		}
+		else if (autonStep == 2){
+			turnTo(70, turnDirection * .80);
+		}
+		else if (autonStep == 3){
+			driveTo(150, 1, 5);
+		}
+		else if (autonStep == 4){
+			liftAndDrive(maxLiftHeight, 1, 50, 1, 3);
+		}
+		else if (autonStep == 5){
+			turnTo(85, turnDirection * -.85);
+		}
+		else if (autonStep == 6){
+			driveTo(35, .80, 1);
+		}
+		else if (autonStep == 7){
+			drop();
+		}
+		
+		
+		else if (autonStep == 8){
+			driveTo(24, -.80, 2);
+		}
+	}
 	
 	public void centerRightDouble(){
 		
-		System.out.println(autonStep);
-		
 		if (autonStep == 1) {
-			air.s_DSShifter.set(true);
+		//	air.s_DSShifter.set(true);
 			driveTo(12, 1, 1);
 		} 
 		else if (autonStep == 2){
@@ -894,12 +1198,13 @@ public class Robot extends IterativeRobot {
 		else if (autonStep == 7){
 			if (ownership0 == "R"){
 				eject();
-				air.s_DSShifter.set(true);
+				
 			}
 		}
 		//start of second cube routine 
 		// Drive backwards away from switch 
 		else if (autonStep == 8){
+			air.s_DSShifter.set(false);
 			driveTo(36, -1, 2);
 		}
 		// Goes to lowest arm height 
@@ -908,11 +1213,12 @@ public class Robot extends IterativeRobot {
 		}
 		// Turns towards the cube pile
 		else if (autonStep == 10){
-			turnTo(25, -1);
+			air.s_DSShifter.set(true);
+			turnTo(35, -1);
 		}
 		// Drives towards cube pile
 		else if (autonStep == 11){
-			driveTo(70, 1, 2);
+			driveTo(70, .60, 2);
 			intake();
 		}
 		else if (autonStep == 12){
@@ -921,7 +1227,7 @@ public class Robot extends IterativeRobot {
 		// Drives backwards away from cubes
 		else if (autonStep == 13){
 			//closeAndIntake();
-			driveTo(70, -1, 1);
+			driveTo(70, -.80, 1);
 		}
 		// Turns towards switch 
 		else if (autonStep == 14){
@@ -929,18 +1235,80 @@ public class Robot extends IterativeRobot {
 			liftTo(autonLiftStart, 1);
 		}
 		else if (autonStep == 15){
-			turnTo(25, 1);
+			turnTo(35, 1);
 		}
 		// Drives towards switch
 		else if (autonStep == 16){
-			driveTo(74, 1, 2);
+			driveTo(74, .80, 2);
 		}
 		// Ejects cube into Switch
 		else if (autonStep == 17){
 			eject();
 		}  
 	}
-	
+
+	public void centerRightDoubleTwoPointO(){
+	System.out.println(autonStep);
+		
+		if (autonStep == 1) {
+		//	air.s_DSShifter.set(true);
+			driveTo(12, 1, 1);
+		} 
+		else if (autonStep == 2){
+			liftTo(autonLiftStart,1);
+		}
+		else if (autonStep == 3) {
+			turnTo(50, 0.65);
+		} 
+		else if (autonStep == 4) {
+			driveTo(55, .90, 4);
+		} 
+		else if (autonStep == 5) {
+			turnTo(55, -0.65);
+		} 
+		else if (autonStep == 6){
+			driveTo(78,1, 2);
+		}else if (autonStep == 7){
+			if (ownership0 == "R"){
+				eject();	
+				drop();
+			}
+			// Start of two cube
+			// Turn towards fence and shifts to high gear
+		}else if (autonStep == 8){
+			air.s_DSShifter.set(true);
+			turnTo(30, .90);
+			// Drives backwards
+		}else if (autonStep == 9){
+			liftAndDrive(minLiftHeight, 1, 12, -.50, 2);
+			
+			// Turn towards cubes
+		}else if (autonStep == 10){
+			liftAndTurn(minLiftHeight, 1,70, -.60);
+			// Drives towards the cubes and intakes
+		}else if (autonStep == 11){
+			driveTo(35, 1, 2);
+			intake();
+			// Closes and intakes
+		}else if (autonStep == 12){
+			closeAndIntake();
+			// Drives away from cubes
+		}else if (autonStep == 13){
+			driveTo(35, -1, 2);
+			// Turn towards switch
+		}else if (autonStep ==14){
+			turnTo(40, 1);
+			// Drive to switch
+		}else if (autonStep == 15){
+			driveTo(36, 1, 1);
+			// Eject then drop cube
+		}else if (autonStep ==16){
+			eject();	
+			drop();
+		}
+		
+	}
+
 	public void centerLeftDouble(){
 		if (autonStep == 1) {
 			//air.s_DSShifter.set(true);
@@ -977,11 +1345,11 @@ public class Robot extends IterativeRobot {
 		}
 		// Turns towards the cube pile
 		else if (autonStep == 10){
-			turnTo(25, 1);
+			turnTo(45, 1);
 		}
 		// Drives towards cube pile
 		else if (autonStep == 11){
-			driveTo(74, 1, 2);
+			driveTo(85, 1, 2);
 			intake();
 		}
 		else if (autonStep == 12){
@@ -990,7 +1358,7 @@ public class Robot extends IterativeRobot {
 		// Drives backwards away from cubes
 		else if (autonStep == 13){
 			//closeAndIntake();
-			driveTo(74, -1, 1);
+			driveTo(85, -1, 1);
 		}
 		// Turns towards switch 
 		else if (autonStep == 14){
@@ -998,11 +1366,11 @@ public class Robot extends IterativeRobot {
 		}
 		else if (autonStep == 15){
 			
-			turnTo(25, -1);
+			turnTo(45, -1);
 		}
 		// Drives towards switch
 		else if (autonStep == 16){
-			driveTo(74, 1, 2);
+			driveTo(85, 1, 2);
 		}
 		// Ejects cube into Switch
 		else if (autonStep == 17){
@@ -1011,21 +1379,13 @@ public class Robot extends IterativeRobot {
 		
 	}
 	
-	
 	public void testAuton() {
-
-		if (ownership0 == "R"){
-			centerRightDouble();
-		}else {
-			centerLeftDouble();
-		}
-			
 		
 	}
 
-
-
 	//Auton Steps to create autos
+	
+	// This function gets and separates game data and then prints it out
 	public void getGameData() {
 		ownership = ds.getGameSpecificMessage();
 
@@ -1049,7 +1409,7 @@ public class Robot extends IterativeRobot {
 		}
 	}
 
-	// steps through the auton counter, stops drive, and resets all sensors
+	// Next step goes through the auton counter, stops drive, and resets all sensors
 	public void nextStep() {
 		drivetrain.stop();
 		sensors.ahrs.reset();
@@ -1071,8 +1431,7 @@ public class Robot extends IterativeRobot {
 		if (timer.get() > time){
 			drivetrain.autonDrive(0,0);
 			nextStep();
-		}
-		else{
+		}else{
 			if ((drivetrain.getAveragePosition() > (distance - 10) && drivetrain.getAveragePosition() < (distance + 10))){
 				drivetrain.autonDrive(0,0);
 				nextStep();
@@ -1119,6 +1478,7 @@ public class Robot extends IterativeRobot {
 
 	}	
 
+	// Function straightens out the robots angle 
 	public void straightenOut(double angle){
 		if (timer.get() < 0.25){
 			drivetrain.autonDrive(0, (angle -(sensors.getPresentAngleNAVX()))* 0.038) ;
@@ -1128,6 +1488,7 @@ public class Robot extends IterativeRobot {
 		}
 	}
 
+	// This function implements dumb pid with no feedback while moving the lift
 	public void liftTo(double height, double speed) {
 
 		System.out.println(sensors.analogLiftPot.get());
@@ -1154,6 +1515,7 @@ public class Robot extends IterativeRobot {
 		}
 	}
 
+	
 	public void liftPlus(double height, double speed) {
 
 
@@ -1179,16 +1541,19 @@ public class Robot extends IterativeRobot {
 		}
 	}
 
+	// This function moves the lift and drives for auto
 	public void liftAndDrive(double height, double liftSpeed, double distance, double driveSpeed, double time){
 		liftPlus(height, liftSpeed);
 		driveTo(distance, driveSpeed, time);
 	}
 
+	// This function moves the lift and turns for auto 
 	public void liftAndTurn(double height, double liftSpeed, double angle, double turnSpeed){
 		liftPlus(height, liftSpeed);
 		turnTo(angle, turnSpeed);
 	}
 
+	// This function is used to eject the cube
 	public void eject() {
 		if (timer.get() < 1) {
 			intake.mot_leftSideIntake.set(0.6);
@@ -1199,28 +1564,46 @@ public class Robot extends IterativeRobot {
 		}
 	}
 
+	// This function is used to intake the cube
 	public void intake() {
 			intake.intakeIn();
 			air.s_sol4.set(true);
 	}
 	
+	// This function opens the intake
 	public void drop() {
 		if (timer.get() <0.5){
 			air.s_sol4.set(true);
 		}
 		else {
 			air.s_sol4.set(false);
-		}
-	}
-
-	public void closeAndIntake(){
-		if (timer.get() < 1){
-		air.s_sol4.set(false);
-		intake.intakeIn();
-		}
-		else if (timer.get() > 1) {
 			nextStep();
 		}
 	}
+
+	// This function closes the inake and then intakes it
+	public void closeAndIntake(){
+		if (timer.get() < 1.5){
+		air.s_sol4.set(false);
+		intake.intakeIn();
+		}
+		else if (timer.get() > 1.5) {
+			nextStep();
+		}
+	}
+	
+	// This function was an experimental use of pid for turning and will be worked on over the off season and was never used in competition   
+	public void turnToPID(double targetAngle){
+		turnPIDError = targetAngle - sensors.ahrs.getAngle();
+		if (turnPIDError > turnPIDthreshold){
+			drivetrain.autonDrive(0, (turnPIDError*variables.pidAutoTurnkP)/100);
+			//keep going
+		}
+		else {
+			drivetrain.autonDrive(0,0);
+			//move to next step
+		}
+	}
+
 	
 }

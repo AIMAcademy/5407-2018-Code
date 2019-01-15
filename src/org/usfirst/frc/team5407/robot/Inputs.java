@@ -1,14 +1,18 @@
 package org.usfirst.frc.team5407.robot;
 
+//Call-import wpi and other helper classes such as cross the roads here
 import edu.wpi.first.wpilibj.Joystick;
 
 public class Inputs {
+	// Creates the joystick as an object 
     public Joystick j_leftStick;
     public Joystick j_rightStick;
     public Joystick j_emJoy;
     
+    // Create public doubles here
     public double shootSpeed;
 
+    // Create private booleans here to protect the states
     private boolean isCameraButtonPressed;
     private boolean isIntakeButtonPressed;
     private boolean isDualSpeedShifterButtonPressed;
@@ -19,19 +23,22 @@ public class Inputs {
     private boolean isSolenoidFiveButtonPressed;
     private boolean isSuperButtonPressed;
     private boolean isemJoyButtonPressed;// end game button
+    private boolean isTestJoyButtonPressed; 
     
+    // Create private doubles here to protect their values
     private double throttle;//for drivetrain
     private double turn;//for drivetrain 
     private double winchSpeed;//end game lift winch 
     private double liftSpeed;
 
+    // Creates the joystick objects and gives them a port value also used in the Robot class
     public Inputs(int leftJoystickPort, int rightJoystickPort, int emJoy) {
         j_leftStick = new Joystick(leftJoystickPort);
         j_rightStick = new Joystick(rightJoystickPort);
         j_emJoy = new Joystick(emJoy);
     }
     
-    // Public Booleans
+    // Public Boolean used to protect the state of the boolean from being changed in classes other than inputs
     public boolean getIsCameraButtonPressed() { return isCameraButtonPressed; }
     public boolean getIsDualSpeedShifterButtonPressed() { return isDualSpeedShifterButtonPressed; }
     public boolean getIsSolenoidFourButtonPressed() { return isSolenoidFourButtonPressed; }
@@ -42,13 +49,16 @@ public class Inputs {
     public boolean getIsIntakeOutButtonPressed() { return isIntakeOutButtonPressed; }
     public boolean getIsSuperButtonPressed() {return isSuperButtonPressed;}
     public boolean getIsemJoyButtonPressed() {return isemJoyButtonPressed;}
+    public boolean getIsTestJoyButtonPressed() {return isTestJoyButtonPressed;}
     
-    // Public doubles
+    
+    // Public doubles used to protect the state of the boolean from being changed in classes other than inputs
     public double getThrottle() {return throttle;}
     public double getTurn() {return turn;}
     public double getWinchSpeed() {return winchSpeed;}
     public double getLiftSpeed() {return liftSpeed;}
 
+    // Read values function gets all the values from the joysticks and returns them and is called in robot under teleop periodic 
     public void ReadValues() {
     	//Driver Controller
 		// Private doubles
@@ -74,8 +84,9 @@ public class Inputs {
         isCameraButtonPressed = j_rightStick.getRawButton(5);
         isDualSpeedShifterButtonPressed = j_rightStick.getRawButton(6);
         isSolenoidFiveButtonPressed = j_rightStick.getRawButton(1);
+        isTestJoyButtonPressed = j_rightStick.getRawButton(8);
   
-    //Operation Controller       
+        //Operation Controller       
         // Private doubles
         if(j_leftStick.getRawAxis(1) < 0.2 && j_leftStick.getRawAxis(1) > -0.2){
         	liftSpeed = 0.0;

@@ -1,5 +1,6 @@
 package org.usfirst.frc.team5407.robot;
 
+// Call-import wpi and other helper classes such as cross the roads here
 import com.kauailabs.navx.frc.AHRS;
 import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.AnalogPotentiometer;
@@ -7,14 +8,13 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.interfaces.Potentiometer;
-import edu.wpi.first.wpilibj.Ultrasonic;
 
 public class Sensors{
 	// Names sensors and its type
 	AHRS ahrs;
 	Potentiometer analogLiftPot;
-	Ultrasonic leftSideUltraSonic;
-	Ultrasonic rightSideUltraSonic;
+	AnalogInput leftSideUltraSonic;
+	AnalogInput rightSideUltraSonic;
 	private AnalogInput mAnalogInputRevAirSensor; 
 
 	// Create and put doubles here
@@ -25,14 +25,17 @@ public class Sensors{
 	Timer counter;
 
 	public Sensors(){
-		//create the sensor named above and call its port number and any other needed settings
+		// Create the sensor named above and call its port number and any other needed settings
 		mAnalogInputRevAirSensor = new AnalogInput(1);
 		
-		//no smartDashBoard output
+		// No smartDashBoard output
 		analogLiftPot = new AnalogPotentiometer(0, 360, 30);
 		//double liftHeight = analogLiftPot.get();
 		
-		// tries to call NavX and if it does not respond an printout appears in the driver station
+		leftSideUltraSonic = new AnalogInput(2);
+		rightSideUltraSonic = new AnalogInput(3); 
+		
+		// Tries to call NavX and if it does not respond an printout appears in the driver station
 	    try {
 	        ahrs = new AHRS(SPI.Port.kMXP);
 	    } catch (RuntimeException ex ) {
